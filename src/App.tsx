@@ -825,7 +825,11 @@ export default function App() {
   const demoStorageBalance =
     activeItemId === 'upload'
       ? { value: '23.48 FIL', detail: '≈ $184.27 USD' }
-      : { value: '12.46 FIL', detail: '≈ $61.82 USD' };
+      : activeItemId === 'datasets'
+        ? { value: '120.46 FIL', detail: '≈ $8,452.12 USD' }
+        : activeItemId === 'activity'
+          ? { value: '32.46 FIL', detail: '≈ $145.32 USD' }
+          : { value: '12.46 FIL', detail: '≈ $61.82 USD' };
 
   return (
     <div className={`app-shell app-shell--${activeItemId}`}>

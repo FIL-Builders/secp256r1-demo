@@ -189,11 +189,18 @@ export function DatasetsPage({
                     <span>
                       <strong>{display.label}</strong>
                       <small>{display.meta}</small>
+                      <small className="dataset-identifiers">
+                        <span>ID&nbsp;&nbsp;{datasetIdentifierDisplay(dataset, index, runtimeMode)}</span>
+                        <span>Client&nbsp;&nbsp;{clientIdentifierDisplay(dataset, index, runtimeMode)}</span>
+                      </small>
                     </span>
                   </span>
-                  <span>
-                    <strong>{display.provider}</strong>
-                    <small>{display.providerId}</small>
+                  <span className="provider-cell">
+                    <ProviderMark provider={display.provider} />
+                    <span>
+                      <strong>{display.provider}</strong>
+                      <small>{display.providerId}</small>
+                    </span>
                   </span>
                   <span>
                     <strong>{display.pieces}</strong>
@@ -313,6 +320,30 @@ function MetricCard({ label, value, icon }: { label: string; value: string; icon
       <strong className="metric-value">{value}</strong>
     </article>
   );
+}
+
+function ProviderMark({ provider }: { provider: string }) {
+  return <span className={`provider-mark provider-mark--${provider.toLowerCase().replace(/\s+/g, '-')}`}>{provider.slice(0, 1)}</span>;
+}
+
+function datasetIdentifierDisplay(dataset: DatasetSummary, index: number, runtimeMode: DemoRuntimeMode): string {
+  if (runtimeMode !== 'simulation') {
+    return shortId(dataset.datasetId, 8, 4);
+  }
+
+  const ids = ['dset_3k8...7m2p', 'dset_9f1...2a7b', 'dset_0a9...b8c3', 'dset_7d6...z9y1', 'dset_5e3...k4l0', 'dset_1b2...m5n6'];
+
+  return ids[index % ids.length];
+}
+
+function clientIdentifierDisplay(dataset: DatasetSummary, index: number, runtimeMode: DemoRuntimeMode): string {
+  if (runtimeMode !== 'simulation') {
+    return dataset.clientDatasetId ? shortId(dataset.clientDatasetId, 8, 4) : 'unavailable';
+  }
+
+  const ids = ['client_a1b2', 'client_c3d4', 'client_ef56', 'client_gh78', 'client_ij90', 'client_kl12'];
+
+  return ids[index % ids.length];
 }
 
 function datasetDisplay(

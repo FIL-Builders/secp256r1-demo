@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Bell, ChevronDown, Circle, Fingerprint, FlaskConical, Clock3, ShieldCheck } from 'lucide-react';
+import { Bell, ChevronDown, Circle, Fingerprint, FlaskConical, Clock3, ShieldCheck, UserRound } from 'lucide-react';
 import { classNames } from './utils';
 import type { NetworkMode, RuntimeMode, SidebarItemId, UploadAvailability } from './types';
 import { StatusPill } from './StatusPill';
@@ -73,6 +73,7 @@ export function TopNavbar({
   const showPrecompileStatus = activeItemId !== 'files';
   const showNetworkDetail = activeItemId === 'upload' || activeItemId === 'activity';
   const walletFirst = activeItemId === 'upload' || activeItemId === 'datasets';
+  const showBell = activeItemId !== 'files';
   const precompileLabel = activeItemId === 'upload' ? 'P-256 Precompile' : 'P256VERIFY';
   const precompileDetail = activeItemId === 'upload' ? 'Detected at 0x0100' : '0x0100';
   const passkeySessionPill = <StatusPill tone="neutral" icon={Fingerprint} label="Passkey Session" detail={passkeySessionLabel} />;
@@ -118,12 +119,14 @@ export function TopNavbar({
       <div className="shell-navbar__secondary">
         {walletFirst ? walletControls : passkeySessionPill}
         {walletFirst ? passkeySessionPill : walletControls}
-        <button type="button" className="shell-icon-control" aria-label="Notifications">
-          <Bell size={17} />
-        </button>
-        <button type="button" className="shell-avatar-control" aria-label="Account menu">
-          MS
-          <ChevronDown size={14} aria-hidden="true" />
+        {showBell ? (
+          <button type="button" className="shell-icon-control" aria-label="Notifications">
+            <Bell size={17} />
+          </button>
+        ) : null}
+        <button type="button" className={classNames('shell-avatar-control', activeItemId === 'files' && 'shell-avatar-control--icon')} aria-label="Account menu">
+          {activeItemId === 'files' ? <UserRound size={18} /> : 'MS'}
+          {activeItemId === 'files' ? null : <ChevronDown size={14} aria-hidden="true" />}
         </button>
       </div>
     </header>

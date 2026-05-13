@@ -149,6 +149,7 @@ export function ActivityPage({
             {filteredActivity.map((event) => {
               const Icon = iconForKind(event.kind);
               const tone = eventTone(event);
+              const display = activityDisplay(event, runtimeMode, networkLabel);
 
               return (
                 <button
@@ -162,18 +163,18 @@ export function ActivityPage({
                   </span>
                   <span className="activity-timeline-body">
                     <span className="activity-title-line">
-                      <strong>{event.title}</strong>
-                      <small>{formatRelativeTime(event.createdAt)}</small>
+                      <strong>{display.title}</strong>
+                      <small>{display.time}</small>
                     </span>
-                    <span>{event.detail}</span>
+                    <span>{display.detail}</span>
                     <span className="tag-row">
-                      <span className="tag">{networkLabel}</span>
+                      <span className="tag">{display.network}</span>
                       {runtimeMode === 'simulation' ? null : (
                         <span className={`tag tag--${sourceTone(event.source)}`}>{sourceLabel(event.source)}</span>
                       )}
-                      {event.transactionHash ? <span className="tag">Tx: {shortId(event.transactionHash, 8, 6)}</span> : null}
-                      {event.provider ? <span className="tag">Provider: {event.provider}</span> : null}
-                      {event.pieceCid ? <span className="tag">PieceCID: {shortId(event.pieceCid, 8, 6)}</span> : null}
+                      {display.tags.map((tag) => (
+                        <span key={tag} className="tag">{tag}</span>
+                      ))}
                     </span>
                   </span>
                 </button>
@@ -190,6 +191,12 @@ export function ActivityPage({
                   : 'The selected network returned no events for this source and filter.'}
               </p>
             </div>
+          ) : null}
+          {filteredActivity.length > 0 ? (
+            <button type="button" className="load-older-button">
+              <span>Load older events</span>
+              <ChevronDownIcon />
+            </button>
           ) : null}
         </article>
 
@@ -278,6 +285,108 @@ function SummaryRow({ icon, label, value }: { icon: ReactNode; label: string; va
       <dd>{value.toLocaleString()}</dd>
     </div>
   );
+}
+
+function ChevronDownIcon() {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
+function activityDisplay(event: ActivityEvent, runtimeMode: DemoRuntimeMode, networkLabel: string) {
+  if (runtimeMode !== 'simulation') {
+    return {
+      title: event.title,
+      detail: event.detail,
+      time: formatRelativeTime(event.createdAt),
+      network: networkLabel,
+      tags: [
+        event.transactionHash ? `Tx: ${shortId(event.transactionHash, 8, 6)}` : undefined,
+        event.provider ? `Provider: ${event.provider}` : undefined,
+        event.pieceCid ? `PieceCID: ${shortId(event.pieceCid, 8, 6)}` : undefined,
+      ].filter(Boolean) as string[],
+    };
+  }
+
+  const demoNetwork = networkLabel;
+  const tx = event.transactionHash ? `Tx: ${shortId(event.transactionHash, 7, 4)}` : undefined;
+
+  switch (event.kind) {
+    case 'dataset-created':
+      return {
+        title: 'Dataset created',
+        detail: 'research-dataset',
+        time: '12m ago',
+        network: demoNetwork,
+        tags: ['Public', tx].filter(Boolean) as string[],
+      };
+    case 'upload':
+      return {
+        title: 'Upload initiated',
+        detail: 'research-dataset.zip (2.45 GB)',
+        time: '15m ago',
+        network: demoNetwork,
+        tags: [tx].filter(Boolean) as string[],
+      };
+    case 'piece-added':
+      return {
+        title: 'File committed',
+        detail: 'research-dataset.zip (2.45 GB)',
+        time: '20m ago',
+        network: demoNetwork,
+        tags: ['Provider: f01234', 'PieceCID: bafy...z3kj', tx, 'View on Explorer'].filter(Boolean) as string[],
+      };
+    case 'payment-approved':
+      return {
+        title: 'Payment confirmed',
+        detail: 'Storage payment approved',
+        time: '21m ago',
+        network: demoNetwork,
+        tags: ['Amount: 2.12 FIL', tx].filter(Boolean) as string[],
+      };
+    case 'session-authorized':
+      return {
+        title: 'Passkey session active',
+        detail: 'Device: MacBook Pro (This device)',
+        time: '32m ago',
+        network: demoNetwork,
+        tags: ['Expires: May 20, 2025', tx].filter(Boolean) as string[],
+      };
+    case 'verification-failed':
+      return {
+        title: 'Verification check failed',
+        detail: 'Expired session detected',
+        time: '2h ago',
+        network: demoNetwork,
+        tags: ['Check: Expired session', tx].filter(Boolean) as string[],
+      };
+    case 'session-revoked':
+      return {
+        title: 'Passkey session revoked',
+        detail: 'Device: iPhone 15 Pro',
+        time: '5h ago',
+        network: demoNetwork,
+        tags: ['Revoked by user', tx].filter(Boolean) as string[],
+      };
+    case 'network-switched':
+      return {
+        title: 'Network switched',
+        detail: 'Mainnet → Calibration',
+        time: '6h ago',
+        network: demoNetwork,
+        tags: ['By user'],
+      };
+    default:
+      return {
+        title: event.title,
+        detail: event.detail.replace(/^Demo data: /, ''),
+        time: formatRelativeTime(event.createdAt),
+        network: demoNetwork,
+        tags: [tx].filter(Boolean) as string[],
+      };
+  }
 }
 
 function ActivityHighlight({

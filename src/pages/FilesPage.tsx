@@ -104,6 +104,7 @@ export function FilesPage({
   const totalSizeMetric = runtimeMode === 'simulation' ? '128.54 GB' : formatBytes(totalSize);
   const verifiedMetric = runtimeMode === 'simulation' ? 'All on-chain verified' : `${verifiedCount.toLocaleString()} on-chain`;
   const selectedExplorerUrl = createExplorerMessageUrl(explorerUrl, selectedFile?.transactionHash);
+  const selectedFileModified = selectedFile ? fileModifiedDisplay(selectedFile, runtimeMode) : undefined;
 
   return (
     <main className="page page-files">
@@ -209,6 +210,7 @@ export function FilesPage({
             {filteredFiles.map((file) => {
               const Icon = iconForMime(file.mimeType);
               const dataset = datasetById.get(file.datasetId);
+              const modifiedDisplay = fileModifiedDisplay(file, runtimeMode);
 
               return (
                 <button
@@ -236,8 +238,8 @@ export function FilesPage({
                   </span>
                   <span>{formatBytes(file.size)}</span>
                   <span>
-                    <strong>{formatDate(file.modifiedAt ?? file.createdAt)}</strong>
-                    <small>{formatFileTime(file.modifiedAt ?? file.createdAt)}</small>
+                    <strong>{modifiedDisplay.date}</strong>
+                    <small>{modifiedDisplay.time}</small>
                   </span>
                   <span>
                     <span className={`badge ${verificationTone(file.verificationStatus)}`}>
@@ -302,6 +304,7 @@ export function FilesPage({
                     <strong>{selectedFile.name}</strong>
                     <p>
                       {formatBytes(selectedFile.size)} · {fileKindLabel(selectedFile.mimeType)}
+                      {selectedFileModified ? ` · Modified ${selectedFileModified.full}` : ''}
                     </p>
                   </div>
                 </div>
@@ -309,9 +312,10 @@ export function FilesPage({
                 <section className={`callout compact ${selectedFile.verificationStatus === 'verified' ? 'success' : 'warning'}`}>
                   <ShieldCheck size={18} />
                   <span>
-                    <strong>{verificationSummaryTitle(selectedFile.verificationStatus)}</strong>{' '}
+                    <strong>{verificationSummaryTitle(selectedFile.verificationStatus)}</strong>
+                    <br />
                     {selectedFile.verificationStatus === 'verified'
-                      ? 'This file is represented as stored and verified for the selected source.'
+                      ? 'This file is safely stored and verified on-chain.'
                       : selectedFile.verificationStatus === 'pending'
                         ? 'This row is waiting on proof status and should not be presented as verified yet.'
                         : 'This read path found the file but does not expose a proof timestamp or verified status.'}
@@ -319,10 +323,30 @@ export function FilesPage({
                 </section>
 
                 <dl className="status-list">
-                  <StatusRow label="Dataset" value={selectedFile.datasetLabel ?? selectedFile.datasetId} />
-                  <StatusRow label="Storage provider" value={selectedFile.provider ?? 'Unknown'} />
-                  <StatusRow label="Authorization" value={authorizationLabel(selectedFile.authorizationStatus)} />
-                  <StatusRow label="Verification" value={verificationLabel(selectedFile.verificationStatus)} />
+                  <StatusRow
+                    label="Dataset"
+                    value={selectedFile.datasetLabel ?? selectedFile.datasetId}
+                    detail={shortId(selectedFile.datasetId, 8, 4)}
+                    accent
+                  />
+                  <StatusRow
+                    label="Storage Provider"
+                    value={providerCode(selectedFile.providerAddress)}
+                    detail={selectedFile.provider ?? 'Unknown'}
+                    accent
+                  />
+                  <StatusRow
+                    label="Authorization"
+                    value={authorizationLabel(selectedFile.authorizationStatus)}
+                    detail="Authorized with your device"
+                    accent
+                  />
+                  <StatusRow
+                    label="Verification"
+                    value={selectedFile.verificationStatus === 'verified' ? 'On-chain verified' : verificationLabel(selectedFile.verificationStatus)}
+                    detail="via Synapse and Filecoin"
+                    accent
+                  />
                   <StatusRow label="Network" value={`${networkLabel} (${chainId})`} />
                 </dl>
 
@@ -350,10 +374,17 @@ export function FilesPage({
                   {selectedExplorerUrl ? (
                     <a className="secondary-button" href={selectedExplorerUrl} target="_blank" rel="noreferrer">
                       <ExternalLink size={16} />
-                      <span>View on explorer</span>
+                      <span>View Details</span>
                     </a>
                   ) : null}
                 </div>
+
+                <section className="callout compact callout--file-bytes">
+                  <span>
+                    <strong>File bytes are stored with providers.</strong>
+                    <small>Retrieval downloads the file from storage providers.</small>
+                  </span>
+                </section>
               </>
             ) : (
               <p className="panel-copy">Select a file to view retrieval, authorization, and proof details.</p>
@@ -393,17 +424,6 @@ export function FilesPage({
   );
 }
 
-function formatFileTime(value?: number): string {
-  if (!value) {
-    return 'Unknown time';
-  }
-
-  return new Intl.DateTimeFormat('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(value);
-}
-
 function providerCode(value?: string): string {
   if (!value) {
     return 'Unknown';
@@ -437,11 +457,14 @@ function Metric({
   );
 }
 
-function StatusRow({ label, value }: { label: string; value: string }) {
+function StatusRow({ label, value, detail, accent }: { label: string; value: string; detail?: string; accent?: boolean }) {
   return (
     <div className="status-row">
       <dt>{label}</dt>
-      <dd>{value}</dd>
+      <dd className={accent ? 'status-row__accent' : undefined}>
+        <strong>{value}</strong>
+        {detail ? <small>{detail}</small> : null}
+      </dd>
     </div>
   );
 }
@@ -472,6 +495,41 @@ function verificationSummaryTitle(value: FileSummary['verificationStatus']): str
   }
 
   return 'Verification status unknown.';
+}
+
+function fileModifiedDisplay(file: FileSummary, runtimeMode: DemoRuntimeMode): { date: string; time: string; full: string } {
+  if (runtimeMode !== 'simulation') {
+    const timestamp = file.modifiedAt ?? file.createdAt;
+
+    if (!timestamp) {
+      return { date: 'Unknown', time: 'Unknown', full: 'Unknown' };
+    }
+
+    const date = new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }).format(timestamp);
+    const time = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(timestamp);
+
+    return { date, time, full: `${date} ${time}` };
+  }
+
+  const displayDates: Record<string, { date: string; time: string; full: string }> = {
+    'research-dataset.zip': { date: 'May 22, 2025', time: '10:24 AM', full: 'May 22, 2025 10:24 AM' },
+    'market-report.png': { date: 'May 21, 2025', time: '4:15 PM', full: 'May 21, 2025 4:15 PM' },
+    'whitepaper.pdf': { date: 'May 20, 2025', time: '9:02 AM', full: 'May 20, 2025 9:02 AM' },
+    'data-analysis.csv': { date: 'May 19, 2025', time: '2:33 PM', full: 'May 19, 2025 2:33 PM' },
+    'experiment-results/': { date: 'May 18, 2025', time: '11:11 AM', full: 'May 18, 2025 11:11 AM' },
+    'demo-video.mp4': { date: 'May 17, 2025', time: '5:47 PM', full: 'May 17, 2025 5:47 PM' },
+    'project-notes.docx': { date: 'May 16, 2025', time: '8:19 AM', full: 'May 16, 2025 8:19 AM' },
+    'analysis.ipynb': { date: 'May 15, 2025', time: '1:44 PM', full: 'May 15, 2025 1:44 PM' },
+  };
+
+  return displayDates[file.name] ?? { date: 'Unknown', time: 'Unknown', full: 'Unknown' };
 }
 
 function iconForMime(mimeType: string): LucideIcon {

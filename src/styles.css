@@ -89,12 +89,18 @@ select {
 
 .shell-sidebar__brand-mark {
   display: grid;
-  width: 40px;
+  width: 42px;
   height: 40px;
   place-items: center;
   border-radius: 0;
   background: transparent;
   color: #5b3df5;
+}
+
+.shell-sidebar__brand-mark svg {
+  display: block;
+  width: 42px;
+  height: 32px;
 }
 
 .shell-sidebar__brand-kicker {
@@ -161,6 +167,17 @@ select {
   border-top: 1px solid #edf1f5;
   margin-top: 10px;
   padding-top: 10px;
+}
+
+.app-shell--upload .shell-sidebar__secondary-nav,
+.app-shell--datasets .shell-sidebar__secondary-nav,
+.app-shell--files .shell-sidebar__secondary-nav,
+.app-shell--activity .shell-sidebar__secondary-nav,
+.app-shell--upload .shell-sidebar__mode-card,
+.app-shell--datasets .shell-sidebar__mode-card,
+.app-shell--files .shell-sidebar__mode-card,
+.app-shell--activity .shell-sidebar__mode-card {
+  display: none;
 }
 
 .shell-sidebar__help-card {
@@ -285,6 +302,20 @@ select {
   white-space: nowrap;
 }
 
+.shell-sidebar__wallet-link {
+  color: #5b3df5;
+  font-size: 12px;
+  font-weight: 760;
+  text-decoration: none;
+}
+
+.shell-sidebar__wallet-card--files .shell-sidebar__wallet {
+  min-height: 40px;
+  border: 1px solid #e1e7ef;
+  border-radius: 8px;
+  padding: 8px;
+}
+
 .shell-sidebar__wallet-dot {
   width: 12px;
   height: 12px;
@@ -295,6 +326,22 @@ select {
 
 .shell-sidebar__wallet-dot--connected {
   background: #22c55e;
+}
+
+.shell-sidebar__wallet-avatar {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 30% 30%, #38bdf8 0 18%, transparent 19%),
+    radial-gradient(circle at 72% 33%, #7c3aed 0 20%, transparent 21%),
+    linear-gradient(135deg, #38bdf8, #6d4aff 58%, #f59e0b);
+}
+
+.shell-sidebar__wallet-copy {
+  margin-left: auto;
+  color: #64748b;
 }
 
 .shell-sidebar__mode-card {
@@ -697,6 +744,16 @@ select {
     radial-gradient(circle at 32% 30%, #22c55e 0 14%, transparent 15%),
     radial-gradient(circle at 72% 36%, #7c3aed 0 18%, transparent 19%),
     linear-gradient(135deg, #38bdf8, #7c3aed 55%, #f59e0b);
+}
+
+.shell-avatar-control--icon {
+  width: 42px;
+  padding: 0;
+  color: #64748b;
+}
+
+.shell-avatar-control--icon::before {
+  display: none;
 }
 
 .app-shell--upload .shell-navbar__secondary .shell-status-pill {
@@ -1428,6 +1485,64 @@ select {
   font-size: 20px;
 }
 
+.dataset-identifiers {
+  display: grid;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  gap: 2px;
+  margin-top: 0;
+  font-size: 11.5px;
+}
+
+.dataset-identifiers span {
+  display: block;
+}
+
+.provider-cell {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px !important;
+}
+
+.provider-cell > span {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.resource-table--datasets .resource-name > span:last-child {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 86px;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.resource-table--datasets .resource-name > span:last-child > strong,
+.resource-table--datasets .resource-name > span:last-child > small:not(.dataset-identifiers) {
+  grid-column: 1;
+}
+
+.provider-mark {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 999px;
+  background: #16a3c7;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 820;
+}
+
+.provider-mark--estuary {
+  background: #2563eb;
+}
+
+.provider-mark--boost {
+  background: #22c55e;
+}
+
 .info-card-head,
 .panel-head,
 .state-card-head,
@@ -1598,6 +1713,21 @@ select {
   font-weight: 760;
   text-align: right;
   overflow-wrap: anywhere;
+}
+
+.status-row dd strong {
+  display: block;
+}
+
+.status-row dd small {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 580;
+}
+
+.status-row__accent strong {
+  color: #087443;
 }
 
 .primary-action {
@@ -2078,7 +2208,7 @@ select {
 .resource-table--datasets .resource-table-header,
 .resource-table--datasets .resource-table-row {
   grid-template-columns:
-    minmax(220px, 1.85fr) minmax(96px, 0.72fr) minmax(58px, 0.42fr)
+    minmax(260px, 1.95fr) minmax(112px, 0.76fr) minmax(58px, 0.42fr)
     minmax(88px, 0.64fr) minmax(84px, 0.6fr) minmax(88px, 0.62fr)
     minmax(60px, 0.42fr);
   min-width: 800px;
@@ -2087,8 +2217,8 @@ select {
 .resource-table--files .resource-table-header,
 .resource-table--files .resource-table-row {
   grid-template-columns:
-    minmax(210px, 1.6fr) minmax(112px, 0.72fr) minmax(108px, 0.72fr)
-    minmax(78px, 0.52fr) minmax(96px, 0.62fr) minmax(84px, 0.56fr)
+    minmax(190px, 1.46fr) minmax(108px, 0.72fr) minmax(102px, 0.68fr)
+    minmax(76px, 0.5fr) minmax(120px, 0.82fr) minmax(84px, 0.56fr)
     minmax(22px, 0.15fr);
   min-width: 800px;
 }
@@ -2102,6 +2232,10 @@ select {
 .page-files .resource-table-row {
   padding-right: 14px;
   padding-left: 14px;
+}
+
+.page-files .resource-table-row strong {
+  font-size: 14px;
 }
 
 .page-files .resource-table-row--selected {
@@ -2256,6 +2390,43 @@ select {
   padding: 12px;
 }
 
+.page-files .detail-rail > .panel:first-child {
+  gap: 14px;
+  padding: 22px 20px 16px;
+}
+
+.page-files .detail-hero {
+  padding-right: 28px;
+}
+
+.page-files .detail-hero-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+}
+
+.page-files .callout.compact.success {
+  gap: 14px;
+  padding: 16px;
+}
+
+.page-files .status-list {
+  gap: 13px;
+}
+
+.callout--file-bytes {
+  border-color: #ddd6fe;
+  background: #fbfaff;
+  color: #334155;
+  font-size: 12px;
+}
+
+.callout--file-bytes small {
+  display: block;
+  margin-top: 2px;
+  color: #64748b;
+}
+
 .empty-state {
   display: grid;
   gap: 6px;
@@ -2379,7 +2550,7 @@ select {
 }
 
 .page-activity .activity-timeline {
-  gap: 14px;
+  gap: 12px;
   padding-left: 54px;
 }
 
@@ -2395,8 +2566,8 @@ select {
 }
 
 .page-activity .activity-timeline-row {
-  min-height: 74px;
-  padding: 14px 18px;
+  min-height: 72px;
+  padding: 10px 18px;
 }
 
 .page-activity .activity-timeline-icon {
@@ -2405,7 +2576,7 @@ select {
 
 .page-activity .activity-timeline-body {
   grid-template-columns: minmax(240px, 1fr) auto;
-  gap: 6px 16px;
+  gap: 4px 16px;
 }
 
 .page-activity .activity-title-line {
@@ -2425,6 +2596,32 @@ select {
   justify-content: flex-start;
   max-width: 430px;
   overflow: hidden;
+}
+
+.page-activity .tag {
+  min-height: 30px;
+  white-space: nowrap;
+}
+
+.load-older-button {
+  display: inline-flex;
+  width: 220px;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  justify-self: center;
+  border: 1px solid #dbe2ea;
+  border-radius: 999px;
+  background: #fff;
+  color: #111827;
+  cursor: pointer;
+  font-weight: 720;
+}
+
+.load-older-button svg {
+  width: 16px;
+  height: 16px;
 }
 
 .activity-timeline-body > span:not(.activity-title-line):not(.tag-row) {

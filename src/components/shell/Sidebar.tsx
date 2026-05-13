@@ -3,7 +3,7 @@ import {
   CheckCircle2,
   ChevronRight,
   CircleDollarSign,
-  CloudUpload,
+  Copy,
   Database,
   FileText,
   Fingerprint,
@@ -106,19 +106,31 @@ export function Sidebar({
     </section>
   );
   const walletCard = (
-    <section key="wallet" className="shell-sidebar__card">
+    <section key="wallet" className={classNames('shell-sidebar__card', activeItemId === 'files' && 'shell-sidebar__wallet-card--files')}>
       <div className="shell-sidebar__card-head">
         <span className="shell-sidebar__card-label">Connected Wallet</span>
-        <ChevronRight size={15} />
+        {activeItemId === 'files' ? null : <ChevronRight size={15} />}
       </div>
       <div className="shell-sidebar__wallet">
-        <span className={classNames('shell-sidebar__wallet-dot', walletConnected && 'shell-sidebar__wallet-dot--connected')} />
+        <span
+          className={classNames(
+            activeItemId === 'files' ? 'shell-sidebar__wallet-avatar' : 'shell-sidebar__wallet-dot',
+            activeItemId !== 'files' && walletConnected && 'shell-sidebar__wallet-dot--connected',
+          )}
+        />
         <div>
           <strong>{walletLabel}</strong>
-          <small>{walletConnected ? 'Root Wallet connected' : 'Wallet not connected'}</small>
+          {activeItemId === 'files' ? null : <small>{walletConnected ? 'Root Wallet connected' : 'Wallet not connected'}</small>}
         </div>
+        {activeItemId === 'files' ? <Copy className="shell-sidebar__wallet-copy" size={14} /> : null}
       </div>
-      <small>{selectedNetworkLabel} scope · {selectedNetworkDetail}</small>
+      {activeItemId === 'files' ? (
+        <a className="shell-sidebar__wallet-link" href="https://filfox.info/" target="_blank" rel="noreferrer">
+          View on Explorer
+        </a>
+      ) : (
+        <small>{selectedNetworkLabel} scope · {selectedNetworkDetail}</small>
+      )}
     </section>
   );
   const footerCards = activeItemId === 'files' ? [networkCard, walletCard] : [walletCard, networkCard];
@@ -127,7 +139,7 @@ export function Sidebar({
     <aside className={classNames('shell-sidebar', className)}>
       <div className="shell-sidebar__brand">
         <span className="shell-sidebar__brand-mark">
-          <CloudUpload size={28} />
+          <SynapseBrandMark />
         </span>
         <div>
           <div className="shell-sidebar__brand-title">Synapse</div>
@@ -215,5 +227,28 @@ export function Sidebar({
         />
       </section>
     </aside>
+  );
+}
+
+function SynapseBrandMark() {
+  return (
+    <svg viewBox="0 0 44 32" role="img" aria-label="Synapse">
+      <path
+        d="M16.7 25.2H12.4a8.5 8.5 0 0 1-1.5-16.9 10.5 10.5 0 0 1 19.6 1.2 7.9 7.9 0 0 1 2.2-.3 8 8 0 1 1 0 16H29"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="3.2"
+      />
+      <path
+        d="M16.3 20.5c2.4-4.3 5.3-6.4 8.8-6.4 2 0 3.6.5 4.9 1.5M17.8 25.2c1.8-4 4.2-6 7.3-6 1.8 0 3.3.5 4.4 1.6"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="3.2"
+      />
+    </svg>
   );
 }
