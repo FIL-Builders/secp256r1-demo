@@ -80,7 +80,19 @@ export function TopNavbar({
   const precompileLabel = activeItemId === 'activity' ? 'P-256 Precompile' : activeItemId === 'upload' ? 'P-256 Precompile' : 'P256VERIFY';
   const precompileDetail = activeItemId === 'activity' ? 'Available' : activeItemId === 'datasets' ? '0x0100' : activeItemId === 'upload' ? 'Detected at 0x0100' : '0x0100';
   const PrecompileIcon = activeItemId === 'datasets' ? undefined : activeItemId === 'upload' ? CheckCircle2 : activeItemId === 'activity' ? CheckCircle2 : ShieldCheck;
-  const passkeySessionPill = <StatusPill tone="neutral" icon={Fingerprint} label="Passkey Session" detail={passkeySessionLabel} />;
+  const passkeySessionPill = (
+    <StatusPill
+      className={classNames(
+        'shell-status-pill--passkey-session',
+        activeItemId === 'upload' && 'shell-status-pill--passkey-session-upload',
+        activeItemId === 'activity' && 'shell-status-pill--passkey-session-activity',
+      )}
+      tone="neutral"
+      icon={Fingerprint}
+      label="Passkey Session"
+      detail={passkeySessionLabel}
+    />
+  );
 
   return (
     <header className={classNames('shell-navbar', className)}>
