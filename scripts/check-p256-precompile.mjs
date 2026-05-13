@@ -196,8 +196,9 @@ function classify(validResult, invalidResult) {
 
   if (normalizedValid === VALID_RETURN) {
     return {
-      status: 'available_unexpected_invalid_result',
-      summary: 'P256VERIFY accepted the valid signature, but invalid-input behavior was unexpected.',
+      status: 'unexpected_invalid_result',
+      summary:
+        'P256VERIFY accepted the valid signature, but invalid-input behavior was unexpected. Treat this network as not safe for activation.',
     };
   }
 
