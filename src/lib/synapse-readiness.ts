@@ -3,6 +3,7 @@ import { getBalance } from 'viem/actions';
 
 import type {
   Address,
+  ActivityEvent,
   CapabilityBlocker,
   CapabilityState,
   DatasetSummary,
@@ -63,6 +64,21 @@ function asNumber(value: bigint | null | undefined): number | null {
 
   const numberValue = Number(value);
   return Number.isSafeInteger(numberValue) ? numberValue : null;
+}
+
+function providerLabel(providerId: bigint | number | string, name?: string): string {
+  return name && name.trim().length > 0 ? name : `Provider ${providerId.toString()}`;
+}
+
+function metadataLabel(metadata: Record<string, string>, fallback: string): string {
+  return metadata.name ?? metadata.label ?? metadata.title ?? fallback;
+}
+
+function parseMetadataSize(metadata: Record<string, string>): number {
+  const rawValue = metadata.size ?? metadata.fileSize ?? metadata.contentLength ?? '0';
+  const parsed = Number.parseInt(rawValue, 10);
+
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
 }
 
 function unavailableReadiness(input: SynapseReadinessInput, message: string): StorageReadiness {
@@ -334,6 +350,49 @@ export async function listSynapseDatasets(input: SynapseReadinessInput): Promise
     return [];
   }
 
+  const [client, warmStorage] = await Promise.all([
+    createReadClient({
+      network: input.network,
+      rpcUrl: input.rpcUrl,
+    }),
+    import('@filoz/synapse-core/warm-storage'),
+  ]);
+  const datasets = await warmStorage.getPdpDataSets(client, {
+    address: input.rootAddress as ViemAddress,
+    offset: 0n,
+    limit: 100n,
+  });
+
+  return datasets.map((dataset) => {
+    const datasetId = dataset.dataSetId.toString();
+    const pieceCount = asNumber(dataset.activePieceCount) ?? 0;
+    const provider = providerLabel(dataset.providerId, dataset.provider.name);
+
+    return {
+      network: input.network,
+      chainId: input.chainId,
+      datasetId,
+      clientDatasetId: dataset.clientDataSetId.toString(),
+      label: metadataLabel(dataset.metadata, `Dataset ${datasetId}`),
+      fileCount: pieceCount,
+      pieceCount,
+      source: 'chain',
+      createdAt: 0,
+      visibility: dataset.metadata.visibility === 'public' ? 'public' : 'private',
+      provider,
+      providerAddress: dataset.provider.serviceProvider as Address,
+      paymentRailStatus: 'unknown',
+      proofStatus: dataset.live ? 'unknown' : 'pending',
+      metadata: dataset.metadata,
+    };
+  });
+}
+
+export async function listSynapseFiles(input: SynapseReadinessInput): Promise<FileSummary[]> {
+  if (!input.rootAddress) {
+    return [];
+  }
+
   const [client, warmStorage, pdpVerifier] = await Promise.all([
     createReadClient({
       network: input.network,
@@ -342,38 +401,135 @@ export async function listSynapseDatasets(input: SynapseReadinessInput): Promise
     import('@filoz/synapse-core/warm-storage'),
     import('@filoz/synapse-core/pdp-verifier'),
   ]);
-  const datasets = await warmStorage.getClientDataSets(client, {
+  const datasets = await warmStorage.getPdpDataSets(client, {
     address: input.rootAddress as ViemAddress,
     offset: 0n,
     limit: 100n,
   });
-
-  return Promise.all(
+  const datasetRows = await Promise.allSettled(
     datasets.map(async (dataset) => {
-      const datasetId = dataset.dataSetId.toString();
-      const [metadataResult, pieceCountResult] = await Promise.allSettled([
-        warmStorage.getAllDataSetMetadata(client, { dataSetId: dataset.dataSetId }),
-        pdpVerifier.getActivePieceCount(client, { dataSetId: dataset.dataSetId }),
-      ]);
-      const metadata = metadataResult.status === 'fulfilled' ? metadataResult.value : {};
-      const label = metadata.name ?? metadata.label ?? `Dataset ${datasetId}`;
-      const pieceCount =
-        pieceCountResult.status === 'fulfilled' ? asNumber(pieceCountResult.value) ?? 0 : 0;
+      const provider = providerLabel(dataset.providerId, dataset.provider.name);
+      const pieces = await pdpVerifier.getPiecesWithMetadata(client, {
+        dataSet: dataset,
+        address: input.rootAddress as ViemAddress,
+        offset: 0n,
+        limit: 100n,
+      });
 
-      return {
-        network: input.network,
-        chainId: input.chainId,
-        datasetId,
-        label,
-        fileCount: pieceCount,
-        pieceCount,
-        source: 'chain',
-        createdAt: Date.now(),
-      };
+      return pieces.pieces.map((piece) => {
+        const pieceCid = piece.cid.toString();
+        const metadata = piece.metadata;
+        const fileName = metadataLabel(metadata, pieceCid);
+
+        return {
+          network: input.network,
+          chainId: input.chainId,
+          fileId: `${dataset.dataSetId.toString()}-${piece.id.toString()}`,
+          datasetId: dataset.dataSetId.toString(),
+          datasetLabel: metadataLabel(dataset.metadata, `Dataset ${dataset.dataSetId.toString()}`),
+          name: fileName,
+          size: parseMetadataSize(metadata),
+          mimeType: metadata.mimeType ?? metadata.type ?? 'application/octet-stream',
+          source: 'chain' as const,
+          createdAt: 0,
+          provider,
+          providerAddress: dataset.provider.serviceProvider as Address,
+          pieceCid,
+          retrievalUrl: piece.url,
+          verificationStatus: dataset.live ? ('unknown' as const) : ('pending' as const),
+          authorizationStatus: 'wallet-authorized' as const,
+          metadata,
+        };
+      });
     }),
   );
+
+  return datasetRows.flatMap((result) => (result.status === 'fulfilled' ? result.value : []));
 }
 
-export async function listSynapseFiles(): Promise<FileSummary[]> {
-  return [];
+export async function listSynapseActivity(input: SynapseReadinessInput): Promise<ActivityEvent[]> {
+  if (!input.rootAddress) {
+    return [];
+  }
+
+  const observedAt = Date.now();
+  const [datasetsResult, filesResult] = await Promise.allSettled([
+    listSynapseDatasets(input),
+    listSynapseFiles(input),
+  ]);
+  const events: ActivityEvent[] = [];
+
+  if (datasetsResult.status === 'fulfilled') {
+    for (const dataset of datasetsResult.value) {
+      events.push({
+        network: input.network,
+        chainId: input.chainId,
+        eventId: `chain-dataset-indexed-${dataset.datasetId}`,
+        kind: 'dataset-indexed',
+        title: 'Dataset indexed from chain',
+        detail:
+          `Readback found ${dataset.label}. Original creation time is not exposed by this read path, so the timestamp is the refresh time.`,
+        simulated: false,
+        source: 'chain',
+        createdAt: observedAt,
+        datasetId: dataset.datasetId,
+        provider: dataset.provider,
+        providerAddress: dataset.providerAddress,
+        severity: 'info',
+        metadata: {
+          timestamp: 'refresh-observed',
+          proofStatus: dataset.proofStatus ?? 'unknown',
+          paymentRailStatus: dataset.paymentRailStatus ?? 'unknown',
+        },
+      });
+    }
+  }
+
+  if (filesResult.status === 'fulfilled') {
+    for (const file of filesResult.value) {
+      events.push({
+        network: input.network,
+        chainId: input.chainId,
+        eventId: `chain-file-indexed-${file.fileId}`,
+        kind: 'file-indexed',
+        title: 'File indexed from chain',
+        detail:
+          `Readback found ${file.name}. Original commit time is not exposed by this read path, so the timestamp is the refresh time.`,
+        simulated: false,
+        source: 'chain',
+        createdAt: observedAt,
+        datasetId: file.datasetId,
+        fileId: file.fileId,
+        pieceCid: file.pieceCid,
+        provider: file.provider,
+        providerAddress: file.providerAddress,
+        severity: 'info',
+        metadata: {
+          timestamp: 'refresh-observed',
+          verificationStatus: file.verificationStatus ?? 'unknown',
+        },
+      });
+    }
+  }
+
+  if (datasetsResult.status === 'rejected' || filesResult.status === 'rejected') {
+    events.push({
+      network: input.network,
+      chainId: input.chainId,
+      eventId: `chain-readback-warning-${observedAt}`,
+      kind: 'readback-incomplete',
+      title: 'Chain readback incomplete',
+      detail: 'The app could not reconstruct every dataset or file row from the selected network during this refresh.',
+      simulated: false,
+      source: 'chain',
+      createdAt: observedAt,
+      severity: 'warning',
+      metadata: {
+        datasets: datasetsResult.status,
+        files: filesResult.status,
+      },
+    });
+  }
+
+  return events.sort((left, right) => right.createdAt - left.createdAt);
 }

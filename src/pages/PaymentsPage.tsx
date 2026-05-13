@@ -113,7 +113,7 @@ export function PaymentsPage({
           </div>
           <dl className="status-list">
             <StatusRow label="Deposit needed" value={formatToken(payment?.depositNeeded)} />
-            <StatusRow label="FWSS approval" value={payment?.needsServiceApproval ? 'Required' : payment ? 'Ready' : 'Unknown'} />
+            <StatusRow label="Warm Storage approval" value={payment?.needsServiceApproval ? 'Required' : payment ? 'Ready' : 'Unknown'} />
             <StatusRow label="Rate / epoch" value={formatToken(payment?.ratePerEpoch)} />
             <StatusRow label="Rate / month" value={formatToken(payment?.ratePerMonth)} />
             <StatusRow label="Network" value={networkLabel} />

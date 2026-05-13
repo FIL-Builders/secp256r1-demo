@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, Database, FileText, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, FileText, ShieldCheck } from 'lucide-react';
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi';
 import { Sidebar, TopNavbar, type SidebarItemId } from './components/shell';
 import { WalletControls } from './components/wallet';
 import {
   HomePage,
+  ActivityPage,
+  DatasetsPage,
+  FilesPage,
   NetworkStatesPage,
   PasskeySessionPage,
   PaymentsPage,
@@ -695,23 +698,47 @@ export default function App() {
         );
       case 'datasets':
         return (
-          <PlaceholderPage
-            title="Datasets"
-            detail="Fixture-backed datasets are part of Sprint 5; the app shell route is ready."
+          <DatasetsPage
+            networkLabel={networkConfig.label}
+            chainId={networkConfig.chainId}
+            runtimeMode={runtimeMode}
+            walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
+            walletConnected={walletState.isConnected}
+            datasets={datasets}
+            files={files}
+            refreshing={storageRefreshing}
+            explorerUrl={networkConfig.explorerUrl}
+            onRefresh={handleRefreshStorageReadiness}
           />
         );
       case 'files':
         return (
-          <PlaceholderPage
-            title="Files"
-            detail="The global committed-files browser will use the same StorageAdapter boundary."
+          <FilesPage
+            networkLabel={networkConfig.label}
+            chainId={networkConfig.chainId}
+            runtimeMode={runtimeMode}
+            walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
+            walletConnected={walletState.isConnected}
+            datasets={datasets}
+            files={files}
+            refreshing={storageRefreshing}
+            explorerUrl={networkConfig.explorerUrl}
+            onRefresh={handleRefreshStorageReadiness}
+            onUpload={() => setActiveItemId('upload')}
           />
         );
       case 'activity':
         return (
-          <PlaceholderPage
-            title="Activity"
-            detail="The activity page will read chain-backed events or explicitly labeled fixture events."
+          <ActivityPage
+            networkLabel={networkConfig.label}
+            chainId={networkConfig.chainId}
+            runtimeMode={runtimeMode}
+            walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
+            walletConnected={walletState.isConnected}
+            activity={activity}
+            refreshing={storageRefreshing}
+            explorerUrl={networkConfig.explorerUrl}
+            onRefresh={handleRefreshStorageReadiness}
           />
         );
       case 'payments':

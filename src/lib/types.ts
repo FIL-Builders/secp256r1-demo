@@ -199,6 +199,12 @@ export interface StorageUploadReceipt {
   labels: readonly string[];
 }
 
+export type ChainDataSource = 'chain' | 'simulation';
+
+export type VerificationStatus = 'verified' | 'pending' | 'failed' | 'unknown';
+
+export type PaymentRailStatus = 'paid' | 'due-soon' | 'past-due' | 'unknown' | 'not-applicable';
+
 export interface StorageAdapter {
   readiness(chainId: number, rootAddress?: Address): Promise<StorageReadiness>;
   upload(input: StorageUploadInput): Promise<StorageUploadReceipt>;
@@ -213,8 +219,19 @@ export interface DatasetSummary {
   label: string;
   fileCount: number;
   pieceCount: number;
-  source: 'chain' | 'simulation';
+  source: ChainDataSource;
   createdAt: number;
+  clientDatasetId?: string;
+  visibility?: 'private' | 'public' | 'unknown';
+  provider?: string;
+  providerAddress?: Address;
+  totalSize?: number;
+  paymentRailStatus?: PaymentRailStatus;
+  proofStatus?: VerificationStatus;
+  lastActivityAt?: number;
+  transactionHash?: Hex;
+  explorerUrl?: string;
+  metadata?: Record<string, string | number | boolean>;
 }
 
 export interface FileSummary {
@@ -225,18 +242,36 @@ export interface FileSummary {
   name: string;
   size: number;
   mimeType: string;
-  source: 'chain' | 'simulation';
+  source: ChainDataSource;
   createdAt: number;
+  datasetLabel?: string;
+  provider?: string;
+  providerAddress?: Address;
+  pieceCid?: string;
+  transactionHash?: Hex;
+  explorerUrl?: string;
+  retrievalUrl?: string;
+  verificationStatus?: VerificationStatus;
+  authorizationStatus?: 'passkey-protected' | 'wallet-authorized' | 'unknown';
+  proofDeadline?: number;
+  verifiedAt?: number;
+  modifiedAt?: number;
+  metadata?: Record<string, string | number | boolean>;
 }
 
 export type ActivityKind =
   | 'upload'
   | 'verification'
+  | 'verification-failed'
+  | 'readback-incomplete'
   | 'dataset-created'
+  | 'dataset-indexed'
   | 'piece-added'
+  | 'file-indexed'
   | 'session-authorized'
   | 'session-revoked'
-  | 'payment-approved';
+  | 'payment-approved'
+  | 'network-switched';
 
 export interface ActivityEvent {
   network: DemoNetwork;
@@ -246,8 +281,19 @@ export interface ActivityEvent {
   title: string;
   detail: string;
   simulated: boolean;
-  source: 'chain' | 'simulation';
+  source: ChainDataSource;
   createdAt: number;
+  datasetId?: string;
+  fileId?: string;
+  pieceCid?: string;
+  provider?: string;
+  providerAddress?: Address;
+  transactionHash?: Hex;
+  explorerUrl?: string;
+  amountLabel?: string;
+  actor?: string;
+  severity?: CapabilitySeverity;
+  metadata?: Record<string, string | number | boolean>;
 }
 
 export interface ActivityAdapter {

@@ -18,7 +18,12 @@ import type {
   ActivityAdapter,
   P256VerifierAdapter,
 } from './types';
-import { listSynapseDatasets, listSynapseFiles, probeSynapseReadiness } from './synapse-readiness';
+import {
+  listSynapseActivity,
+  listSynapseDatasets,
+  listSynapseFiles,
+  probeSynapseReadiness,
+} from './synapse-readiness';
 import {
   createRpcP256VerifierAdapter,
   createSimulatedP256VerifierAdapter,
@@ -162,8 +167,17 @@ export function createSynapseLiveStorageAdapter(options: {
       }
     },
 
-    async listFiles(): Promise<FileSummary[]> {
-      return listSynapseFiles();
+    async listFiles(input: ChainScopedQuery): Promise<FileSummary[]> {
+      try {
+        return await listSynapseFiles({
+          network: options.network,
+          chainId: options.chainId,
+          rpcUrl: options.rpcUrl,
+          rootAddress: input.rootAddress,
+        });
+      } catch {
+        return [];
+      }
     },
   };
 }
@@ -172,6 +186,27 @@ export function createUnavailableActivityAdapter(): ActivityAdapter {
   return {
     async listActivity(): Promise<ActivityEvent[]> {
       return [];
+    },
+  };
+}
+
+export function createSynapseLiveActivityAdapter(options: {
+  network: DemoNetwork;
+  chainId: number;
+  rpcUrl: string;
+}): ActivityAdapter {
+  return {
+    async listActivity(input: ChainScopedQuery): Promise<ActivityEvent[]> {
+      try {
+        return await listSynapseActivity({
+          network: options.network,
+          chainId: options.chainId,
+          rpcUrl: options.rpcUrl,
+          rootAddress: input.rootAddress,
+        });
+      } catch {
+        return [];
+      }
     },
   };
 }
@@ -216,7 +251,13 @@ export function createRuntimeAdapters(options: {
           rpcUrl: options.rpcUrl ?? '',
         });
   const activity =
-    options.mode === 'simulation' ? createFixtureActivityAdapter() : createUnavailableActivityAdapter();
+    options.mode === 'simulation'
+      ? createFixtureActivityAdapter()
+      : createSynapseLiveActivityAdapter({
+          network: options.network,
+          chainId: options.chainId,
+          rpcUrl: options.rpcUrl ?? '',
+        });
 
   return {
     verifier,

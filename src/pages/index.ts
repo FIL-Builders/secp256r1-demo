@@ -1,3 +1,6 @@
+export * from './ActivityPage';
+export * from './DatasetsPage';
+export * from './FilesPage';
 export * from './HomePage';
 export * from './NetworkStatesPage';
 export * from './PasskeySessionPage';

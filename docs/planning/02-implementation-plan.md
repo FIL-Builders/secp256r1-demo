@@ -176,6 +176,14 @@ Acceptance criteria:
 - file detail exposes friendly details first and advanced PieceCID/transaction/provider/proof details second
 - each event links back to the relevant dataset, file, provider, and explorer reference when available
 
+Sprint 5 status:
+
+- Datasets, Files, and Activity placeholders have been replaced with production-shaped pages that match the generated design direction: summary cards, search/filter controls, dense rows, selected-item detail rails, and advanced protocol details.
+- shared dataset/file/activity types now include provider, payment, proof, PieceCID, transaction, metadata, source, and status fields so page components can render live chain state or explicitly labeled simulation data through the same adapter boundary.
+- simulation fixtures are richer and intentionally labeled; they exercise the final UI without pretending to be the live happy path.
+- non-simulation file listing now attempts read-only chain-backed reconstruction with Synapse Core PDP dataset and piece metadata reads. Activity derives conservative chain-indexed readback rows from that state; historical upload/commit timestamps remain unknown until an event-log read path is added.
+- upload, removal, and explorer actions stay disabled or conditional unless the backing live capability is present.
+
 ## Milestone 6: Payments And Readiness
 
 Scope:
