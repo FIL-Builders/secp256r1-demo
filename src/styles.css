@@ -110,12 +110,12 @@ select {
 
 .shell-sidebar__nav {
   display: grid;
-  gap: 8px;
+  gap: 7px;
 }
 
 .shell-sidebar__item {
   display: flex;
-  min-height: 46px;
+  min-height: 42px;
   align-items: center;
   gap: 10px;
   border: 0;
@@ -145,7 +145,16 @@ select {
 .shell-sidebar__footer {
   display: grid;
   gap: 14px;
-  margin-top: 18px;
+  margin-top: 8px;
+}
+
+.app-shell--upload .shell-sidebar__footer {
+  margin-top: 26px;
+}
+
+.app-shell--datasets .shell-sidebar__footer,
+.app-shell--activity .shell-sidebar__footer {
+  margin-top: 21px;
 }
 
 .shell-sidebar__secondary-nav {
@@ -167,11 +176,11 @@ select {
 
 .shell-sidebar__card {
   display: grid;
-  gap: 10px;
+  gap: 9px;
   border: 1px solid #e1e7ef;
   border-radius: 8px;
   background: #fff;
-  padding: 14px;
+  padding: 13px;
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.035);
 }
 
@@ -221,7 +230,7 @@ select {
 .shell-sidebar__choice {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  min-height: 52px;
+  min-height: 48px;
   align-items: center;
   gap: 10px;
   border: 1px solid #e1e7ef;
@@ -236,6 +245,14 @@ select {
 .shell-sidebar__choice--selected {
   border-color: #b8a8ff;
   background: #fbfaff;
+}
+
+.app-shell--files .shell-sidebar__choice:not(.shell-sidebar__choice--selected) {
+  display: none;
+}
+
+.app-shell--files .shell-sidebar__choice {
+  min-height: 52px;
 }
 
 .shell-sidebar__choice span {
@@ -2168,6 +2185,24 @@ select {
 .detail-rail {
   display: grid;
   gap: 16px;
+}
+
+.page-files .detail-rail > .panel:first-child {
+  position: relative;
+}
+
+.detail-close-button {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
 }
 
 .detail-hero {

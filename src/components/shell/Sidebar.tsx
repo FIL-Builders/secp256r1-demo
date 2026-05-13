@@ -74,6 +74,54 @@ export function Sidebar({
   const secondaryItems = visibleItems.filter((item) => item.secondary);
   const selectedNetworkLabel = network === 'mainnet' ? 'Mainnet' : 'Calibration';
   const selectedNetworkDetail = network === 'mainnet' ? 'Filecoin mainnet · 314' : 'Filecoin testnet · 314159';
+  const networkCard = (
+    <section key="network" className="shell-sidebar__card">
+      <div className="shell-sidebar__card-head">
+        <span className="shell-sidebar__card-label">Network</span>
+        <Globe2 size={14} />
+      </div>
+      <div className="shell-sidebar__choices" role="group" aria-label="Network selection">
+        {(['mainnet', 'calibration'] as const).map((option) => {
+          const selected = option === network;
+          const Icon = option === 'mainnet' ? Globe2 : FlaskConical;
+
+          return (
+            <button
+              key={option}
+              type="button"
+              className={classNames('shell-sidebar__choice', selected && 'shell-sidebar__choice--selected')}
+              aria-pressed={selected}
+              onClick={() => onNetworkChange?.(option)}
+            >
+              <Icon size={16} />
+              <span>
+                <strong>{option === 'mainnet' ? 'Mainnet' : 'Calibration'}</strong>
+                <small>{option === 'mainnet' ? 'Filecoin mainnet · 314' : 'Filecoin testnet · 314159'}</small>
+              </span>
+              {selected ? <CheckCircle2 size={15} /> : null}
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+  const walletCard = (
+    <section key="wallet" className="shell-sidebar__card">
+      <div className="shell-sidebar__card-head">
+        <span className="shell-sidebar__card-label">Connected Wallet</span>
+        <ChevronRight size={15} />
+      </div>
+      <div className="shell-sidebar__wallet">
+        <span className={classNames('shell-sidebar__wallet-dot', walletConnected && 'shell-sidebar__wallet-dot--connected')} />
+        <div>
+          <strong>{walletLabel}</strong>
+          <small>{walletConnected ? 'Root Wallet connected' : 'Wallet not connected'}</small>
+        </div>
+      </div>
+      <small>{selectedNetworkLabel} scope · {selectedNetworkDetail}</small>
+    </section>
+  );
+  const footerCards = activeItemId === 'files' ? [networkCard, walletCard] : [walletCard, networkCard];
 
   return (
     <aside className={classNames('shell-sidebar', className)}>
@@ -121,50 +169,7 @@ export function Sidebar({
           </button>
         </section>
 
-        <section className="shell-sidebar__card">
-          <div className="shell-sidebar__card-head">
-            <span className="shell-sidebar__card-label">Network</span>
-            <Globe2 size={14} />
-          </div>
-          <div className="shell-sidebar__choices" role="group" aria-label="Network selection">
-            {(['mainnet', 'calibration'] as const).map((option) => {
-              const selected = option === network;
-              const Icon = option === 'mainnet' ? Globe2 : FlaskConical;
-
-              return (
-                <button
-                  key={option}
-                  type="button"
-                  className={classNames('shell-sidebar__choice', selected && 'shell-sidebar__choice--selected')}
-                  aria-pressed={selected}
-                  onClick={() => onNetworkChange?.(option)}
-                >
-                  <Icon size={16} />
-                  <span>
-                    <strong>{option === 'mainnet' ? 'Mainnet' : 'Calibration'}</strong>
-                    <small>{option === 'mainnet' ? 'Filecoin mainnet · 314' : 'Filecoin testnet · 314159'}</small>
-                  </span>
-                  {selected ? <CheckCircle2 size={15} /> : null}
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="shell-sidebar__card">
-          <div className="shell-sidebar__card-head">
-            <span className="shell-sidebar__card-label">Connected Wallet</span>
-            <ChevronRight size={15} />
-          </div>
-          <div className="shell-sidebar__wallet">
-            <span className={classNames('shell-sidebar__wallet-dot', walletConnected && 'shell-sidebar__wallet-dot--connected')} />
-            <div>
-              <strong>{walletLabel}</strong>
-              <small>{walletConnected ? 'Root Wallet connected' : 'Wallet not connected'}</small>
-            </div>
-          </div>
-          <small>{selectedNetworkLabel} scope · {selectedNetworkDetail}</small>
-        </section>
+        {footerCards}
 
       </div>
 

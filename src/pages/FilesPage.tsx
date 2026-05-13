@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   Trash2,
   Upload,
+  X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -281,6 +282,9 @@ export function FilesPage({
 
         <aside className="detail-rail">
           <article className="panel">
+            <button type="button" className="detail-close-button" aria-label="Close file details">
+              <X size={18} />
+            </button>
             <div className="panel-head">
               <h2 className="panel-title">File details</h2>
               <span className={`badge ${selectedFile ? sourceTone(selectedFile.source) : 'warning'}`}>
