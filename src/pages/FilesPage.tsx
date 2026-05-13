@@ -185,7 +185,7 @@ export function FilesPage({
       <section className="summary-strip">
         <Metric label="Files" value={filesMetric} />
         <Metric label="Datasets" value={datasets.length.toLocaleString()} />
-        <Metric label="Total size" value={totalSizeMetric} />
+        <Metric label="Total Size" value={totalSizeMetric} />
         <Metric
           label="Verified"
           value={verifiedMetric}
@@ -410,8 +410,8 @@ export function FilesPage({
                 <dl className="status-list">
                   <StatusRow label="PieceCID" value={shortId(selectedFile.pieceCid, 12, 10)} />
                   <StatusRow label="Transaction" value={shortId(selectedFile.transactionHash, 10, 8)} />
-                  <StatusRow label="Provider address" value={shortId(selectedFile.providerAddress, 10, 8)} />
-                  <StatusRow label="Proof deadline" value={formatDate(selectedFile.proofDeadline)} />
+                  <StatusRow label="Provider Address" value={shortId(selectedFile.providerAddress, 10, 8)} />
+                  <StatusRow label="Proof Deadline" value={formatDate(selectedFile.proofDeadline)} />
                   <StatusRow label="Verified" value={formatDate(selectedFile.verifiedAt)} />
                   <StatusRow label="Chain" value={`${networkLabel} (${chainId})`} />
                 </dl>

@@ -149,6 +149,18 @@ export function paymentRailTone(status: PaymentRailStatus | undefined): string {
 }
 
 export function fileKindLabel(mimeType: string): string {
+  if (mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+    return 'DOCX';
+  }
+
+  if (mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    return 'XLSX';
+  }
+
+  if (mimeType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
+    return 'PPTX';
+  }
+
   if (mimeType.includes('/')) {
     return mimeType.split('/').at(-1)?.toUpperCase() ?? mimeType.toUpperCase();
   }
