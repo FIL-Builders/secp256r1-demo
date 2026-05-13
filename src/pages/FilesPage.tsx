@@ -402,21 +402,25 @@ export function FilesPage({
 
           <article className="panel">
             <div className="panel-head">
-              <h2 className="panel-title">Advanced details</h2>
+              <h2 className="panel-title">Advanced Details</h2>
               <span className="panel-meta">Piece state</span>
             </div>
             {selectedFile ? (
-              <dl className="status-list">
-                <StatusRow label="PieceCID" value={shortId(selectedFile.pieceCid, 12, 10)} />
-                <StatusRow label="Transaction" value={shortId(selectedFile.transactionHash, 10, 8)} />
-                <StatusRow label="Provider address" value={shortId(selectedFile.providerAddress, 10, 8)} />
-                <StatusRow label="Proof deadline" value={formatDate(selectedFile.proofDeadline)} />
-                <StatusRow label="Verified" value={formatDate(selectedFile.verifiedAt)} />
-                <StatusRow label="Chain" value={`${networkLabel} (${chainId})`} />
-                {Object.entries(selectedFile.metadata ?? {}).map(([key, value]) => (
-                  <StatusRow key={key} label={key} value={String(value)} />
-                ))}
-              </dl>
+              <>
+                <dl className="status-list">
+                  <StatusRow label="PieceCID" value={shortId(selectedFile.pieceCid, 12, 10)} />
+                  <StatusRow label="Transaction" value={shortId(selectedFile.transactionHash, 10, 8)} />
+                  <StatusRow label="Provider address" value={shortId(selectedFile.providerAddress, 10, 8)} />
+                  <StatusRow label="Proof deadline" value={formatDate(selectedFile.proofDeadline)} />
+                  <StatusRow label="Verified" value={formatDate(selectedFile.verifiedAt)} />
+                  <StatusRow label="Chain" value={`${networkLabel} (${chainId})`} />
+                </dl>
+                {selectedExplorerUrl ? (
+                  <a className="panel-link" href={selectedExplorerUrl} target="_blank" rel="noreferrer">
+                    View on Explorer <ExternalLink size={13} />
+                  </a>
+                ) : null}
+              </>
             ) : (
               <p className="panel-copy">No advanced file details are selected.</p>
             )}
@@ -486,18 +490,18 @@ function authorizationLabel(value: FileSummary['authorizationStatus']): string {
 
 function verificationSummaryTitle(value: FileSummary['verificationStatus']): string {
   if (value === 'verified') {
-    return 'Stored and verified.';
+    return 'Stored and verified';
   }
 
   if (value === 'pending') {
-    return 'Verification pending.';
+    return 'Verification pending';
   }
 
   if (value === 'failed') {
-    return 'Verification failed.';
+    return 'Verification failed';
   }
 
-  return 'Verification status unknown.';
+  return 'Verification status unknown';
 }
 
 function fileModifiedDisplay(file: FileSummary, runtimeMode: DemoRuntimeMode): { date: string; time: string; full: string } {

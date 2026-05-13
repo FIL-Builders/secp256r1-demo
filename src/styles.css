@@ -1616,6 +1616,10 @@ select {
   min-width: 0;
 }
 
+.upload-main {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .upload-rail .passkey-session-card {
   height: 288px;
   gap: 12px;
@@ -1873,6 +1877,10 @@ select {
   font-weight: 790;
 }
 
+.page-upload-passkey .upload-primary-cta {
+  margin-top: -6px;
+}
+
 .upload-primary-cta:disabled {
   cursor: not-allowed;
   opacity: 0.55;
@@ -1928,12 +1936,19 @@ select {
 .upload-bottom-note {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   border: 1px solid #e1e7ef;
   border-radius: 8px;
   background: #fff;
   color: #334155;
-  padding: 14px 16px;
+  padding: 14px 15px;
+  font-size: 12px;
+}
+
+.upload-bottom-note > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .upload-bottom-note a {
@@ -3213,6 +3228,27 @@ select {
 
 .page-files .detail-rail > .panel:nth-child(3) {
   margin-top: -10px;
+  gap: 8px;
+  padding: 18px 16px 12px;
+}
+
+.page-files .detail-rail > .panel:nth-child(3) .status-list {
+  gap: 3px;
+}
+
+.page-files .detail-rail > .panel:nth-child(3) .status-row {
+  min-height: 26px;
+  gap: 6px;
+}
+
+.page-files .detail-rail > .panel:nth-child(3) .status-row dt,
+.page-files .detail-rail > .panel:nth-child(3) .status-row dd strong {
+  font-size: 13px;
+}
+
+.page-files .detail-rail > .panel:nth-child(3) .status-row dd small,
+.page-files .detail-rail > .panel:nth-child(3) .panel-link {
+  font-size: 12px;
 }
 
 .callout--file-bytes {

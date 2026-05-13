@@ -213,7 +213,7 @@ export function ActivityPage({
         <aside className="detail-rail">
           <article className="panel">
             <div className="panel-head">
-              <h2 className="panel-title">Activity summary</h2>
+              <h2 className="panel-title">Activity Summary</h2>
               <span className="panel-meta">{runtimeMode === 'simulation' ? 'May 6 – May 13, 2025' : `${activity.length.toLocaleString()} events`}</span>
             </div>
             <dl className="status-list">
