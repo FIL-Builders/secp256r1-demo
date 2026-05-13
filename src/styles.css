@@ -52,7 +52,7 @@ select {
 }
 
 .app-shell--datasets {
-  grid-template-columns: 156px minmax(0, 1fr);
+  grid-template-columns: 232px minmax(0, 1fr);
 }
 
 .sidebar {
@@ -164,44 +164,44 @@ select {
 }
 
 .app-shell--datasets .shell-sidebar {
-  gap: 10px;
-  padding: 18px 14px 16px;
+  gap: 12px;
+  padding: 22px 18px 20px;
 }
 
 .app-shell--datasets .shell-sidebar__brand {
-  gap: 6px;
-  padding: 0 2px 16px;
+  gap: 10px;
+  padding: 0 8px 18px;
 }
 
 .app-shell--datasets .shell-sidebar__brand-mark {
-  width: 28px;
-  height: 28px;
+  width: 42px;
+  height: 40px;
 }
 
 .app-shell--datasets .shell-sidebar__brand-mark svg {
-  width: 30px;
-  height: 22px;
+  width: 42px;
+  height: 32px;
 }
 
 .app-shell--datasets .shell-sidebar__brand-title {
-  font-size: 19px;
+  font-size: 26px;
 }
 
 .app-shell--datasets .shell-sidebar__nav {
-  gap: 5px;
+  gap: 7px;
 }
 
 .app-shell--datasets .shell-sidebar__item {
-  min-height: 36px;
-  gap: 7px;
-  border-radius: 6px;
-  padding: 0 8px;
-  font-size: 13px;
+  min-height: 42px;
+  gap: 10px;
+  border-radius: 8px;
+  padding: 0 14px;
+  font-size: 16px;
 }
 
 .app-shell--datasets .shell-sidebar__item-icon {
-  width: 15px;
-  height: 15px;
+  width: 18px;
+  height: 18px;
 }
 
 .app-shell--datasets .shell-sidebar__footer {
@@ -210,55 +210,55 @@ select {
 }
 
 .app-shell--datasets .shell-sidebar__card {
-  gap: 7px;
-  padding: 9px;
+  gap: 9px;
+  padding: 13px;
 }
 
 .app-shell--datasets .shell-sidebar__card-label {
-  font-size: 10px;
-}
-
-.app-shell--datasets .shell-sidebar__balance strong {
-  font-size: 19px;
-}
-
-.app-shell--datasets .shell-sidebar__card small {
-  font-size: 10px;
-}
-
-.app-shell--datasets .shell-sidebar__card-action {
-  min-height: 30px;
-  gap: 5px;
-  font-size: 11px;
-}
-
-.app-shell--datasets .shell-sidebar__wallet {
-  gap: 7px;
-}
-
-.app-shell--datasets .shell-sidebar__wallet strong {
-  font-size: 13px;
-}
-
-.app-shell--datasets .shell-sidebar__wallet small {
-  font-size: 10px;
-}
-
-.app-shell--datasets .shell-sidebar__connected-pill {
-  min-height: 20px;
-  padding: 0 6px;
-  font-size: 10px;
-}
-
-.app-shell--datasets .shell-sidebar__choice {
-  min-height: 44px;
-  gap: 7px;
-  padding: 6px 7px;
   font-size: 12px;
 }
 
+.app-shell--datasets .shell-sidebar__balance strong {
+  font-size: 25px;
+}
+
+.app-shell--datasets .shell-sidebar__card small {
+  font-size: 12px;
+}
+
+.app-shell--datasets .shell-sidebar__card-action {
+  min-height: 38px;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.app-shell--datasets .shell-sidebar__wallet {
+  gap: 10px;
+}
+
+.app-shell--datasets .shell-sidebar__wallet strong {
+  font-size: 16px;
+}
+
+.app-shell--datasets .shell-sidebar__wallet small {
+  font-size: 12px;
+}
+
+.app-shell--datasets .shell-sidebar__connected-pill {
+  min-height: 24px;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+.app-shell--datasets .shell-sidebar__choice {
+  min-height: 48px;
+  gap: 10px;
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
 .app-shell--datasets .shell-sidebar__help-card {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .shell-sidebar__secondary-nav {
@@ -1587,6 +1587,37 @@ select {
   display: grid;
   gap: 16px;
   min-width: 0;
+}
+
+.upload-rail > .panel:nth-child(2) {
+  gap: 12px;
+  padding: 20px;
+}
+
+.upload-rail .recent-activity-list {
+  gap: 0;
+}
+
+.upload-rail .activity-mini {
+  grid-template-columns: 36px minmax(0, 1fr) 42px;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.upload-rail .activity-mini > span {
+  width: 34px;
+  height: 34px;
+}
+
+.upload-rail .activity-mini strong {
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.upload-rail .activity-mini small,
+.upload-rail .activity-mini time {
+  font-size: 11px;
 }
 
 .upload-hero-row {
@@ -3166,7 +3197,7 @@ select {
 }
 
 .page-activity .activity-timeline {
-  gap: 12px;
+  gap: 10px;
   padding-left: 54px;
 }
 
@@ -3222,8 +3253,19 @@ select {
 }
 
 .page-activity .activity-timeline-row {
-  min-height: 72px;
-  padding: 10px 18px;
+  min-height: 66px;
+  padding: 8px 38px 8px 18px;
+}
+
+.page-activity .activity-timeline-row::after {
+  content: '\203A';
+  position: absolute;
+  top: 50%;
+  right: 17px;
+  color: #475569;
+  font-size: 20px;
+  line-height: 1;
+  transform: translateY(-50%) rotate(90deg);
 }
 
 .page-activity .activity-timeline-icon {
@@ -3264,7 +3306,7 @@ select {
 
 .page-activity .activity-timeline-body {
   grid-template-columns: 300px minmax(0, 1fr);
-  gap: 4px 16px;
+  gap: 2px 16px;
 }
 
 .page-activity .detail-rail .panel-title {
@@ -3299,8 +3341,12 @@ select {
 }
 
 .page-activity .tag {
-  min-height: 30px;
+  min-height: 26px;
   white-space: nowrap;
+}
+
+.page-activity .load-older-button {
+  margin-top: 2px;
 }
 
 .load-older-button {
