@@ -5,21 +5,21 @@ const day = 86_400_000;
 const hour = 3_600_000;
 const minute = 60_000;
 
-export const SIMULATED_DATASETS: DatasetSummary[] = [
+const CALIBRATION_DATASETS: DatasetSummary[] = [
   {
     network: 'calibration',
     chainId: 314159,
     datasetId: 'dataset-demo-calibration-001',
     clientDatasetId: 'client-research-q2',
     label: 'Research Q2',
-    fileCount: 2,
-    pieceCount: 2,
+    fileCount: 1,
+    pieceCount: 1,
     source: 'simulation',
     createdAt: baseTime - 2 * day,
     visibility: 'private',
     provider: 'GlacierEdge',
     providerAddress: '0x0000000000000000000000000000000000123456',
-    totalSize: 2_452_649_546,
+    totalSize: 2_451_807_232,
     paymentRailStatus: 'paid',
     proofStatus: 'verified',
     lastActivityAt: baseTime - 8 * minute,
@@ -58,7 +58,7 @@ export const SIMULATED_DATASETS: DatasetSummary[] = [
     chainId: 314159,
     datasetId: 'dataset-demo-calibration-003',
     clientDatasetId: 'client-demos',
-    label: 'Demo Captures',
+    label: 'Demos',
     fileCount: 1,
     pieceCount: 1,
     source: 'simulation',
@@ -77,31 +77,77 @@ export const SIMULATED_DATASETS: DatasetSummary[] = [
     },
   },
   {
-    network: 'mainnet',
-    chainId: 314,
-    datasetId: 'dataset-demo-mainnet-001',
-    clientDatasetId: 'client-receipts',
-    label: 'Mainnet Receipts',
+    network: 'calibration',
+    chainId: 314159,
+    datasetId: 'dataset-demo-calibration-004',
+    clientDatasetId: 'client-reports',
+    label: 'Reports',
     fileCount: 1,
     pieceCount: 1,
     source: 'simulation',
-    createdAt: baseTime - day,
-    visibility: 'private',
-    provider: 'Glif',
-    providerAddress: '0x0000000000000000000000000000000000123456',
-    totalSize: 314_159,
+    createdAt: baseTime - 2 * day,
+    visibility: 'public',
+    provider: 'Ramo Storage',
+    providerAddress: '0x0000000000000000000000000000000000456789',
+    totalSize: 1_210_000,
     paymentRailStatus: 'paid',
     proofStatus: 'verified',
-    lastActivityAt: baseTime - day,
-    transactionHash: '0x7b2c9d4800000000000000000000000000000000000000000000000000000000',
+    lastActivityAt: baseTime - 38 * minute,
+    transactionHash: '0x2d6f39a100000000000000000000000000000000000000000000000000000000',
     metadata: {
-      project: 'mainnet-readback',
-      retention: '365 days',
+      project: 'market-readback',
+      retention: '90 days',
+    },
+  },
+  {
+    network: 'calibration',
+    chainId: 314159,
+    datasetId: 'dataset-demo-calibration-005',
+    clientDatasetId: 'client-research-q1',
+    label: 'Research Q1',
+    fileCount: 3,
+    pieceCount: 3,
+    source: 'simulation',
+    createdAt: baseTime - 5 * day,
+    visibility: 'private',
+    provider: 'GlacierEdge',
+    providerAddress: '0x0000000000000000000000000000000000678901',
+    totalSize: 18_766_512_314,
+    paymentRailStatus: 'paid',
+    proofStatus: 'verified',
+    lastActivityAt: baseTime - 4 * hour,
+    transactionHash: '0x7efaa2b300000000000000000000000000000000000000000000000000000000',
+    metadata: {
+      project: 'research-archive',
+      retention: '120 days',
+    },
+  },
+  {
+    network: 'calibration',
+    chainId: 314159,
+    datasetId: 'dataset-demo-calibration-006',
+    clientDatasetId: 'client-notes',
+    label: 'Notes',
+    fileCount: 1,
+    pieceCount: 1,
+    source: 'simulation',
+    createdAt: baseTime - 4 * day,
+    visibility: 'private',
+    provider: 'Starboard',
+    providerAddress: '0x0000000000000000000000000000000000890123',
+    totalSize: 320_000,
+    paymentRailStatus: 'paid',
+    proofStatus: 'verified',
+    lastActivityAt: baseTime - 5 * hour,
+    transactionHash: '0x9a8bbcc700000000000000000000000000000000000000000000000000000000',
+    metadata: {
+      project: 'research-notes',
+      retention: '180 days',
     },
   },
 ];
 
-export const SIMULATED_FILES: FileSummary[] = [
+const CALIBRATION_FILES: FileSummary[] = [
   {
     network: 'calibration',
     chainId: 314159,
@@ -131,8 +177,8 @@ export const SIMULATED_FILES: FileSummary[] = [
     network: 'calibration',
     chainId: 314159,
     fileId: 'file-demo-calibration-002',
-    datasetId: 'dataset-demo-calibration-001',
-    datasetLabel: 'Research Q2',
+    datasetId: 'dataset-demo-calibration-005',
+    datasetLabel: 'Research Q1',
     name: 'data-analysis.csv',
     size: 842_314,
     mimeType: 'text/csv',
@@ -140,7 +186,7 @@ export const SIMULATED_FILES: FileSummary[] = [
     createdAt: baseTime - 2 * hour,
     modifiedAt: baseTime - hour,
     provider: 'GlacierEdge',
-    providerAddress: '0x0000000000000000000000000000000000123456',
+    providerAddress: '0x0000000000000000000000000000000000678901',
     pieceCid: 'bafybeih2m4hjv4izsfcdcw63oxzr34a7qb6ldclpo7hquq5ztxbo3an7ku',
     transactionHash: '0x1e7a44df00000000000000000000000000000000000000000000000000000000',
     verificationStatus: 'verified',
@@ -150,6 +196,31 @@ export const SIMULATED_FILES: FileSummary[] = [
     metadata: {
       type: 'CSV',
       rows: 1280,
+    },
+  },
+  {
+    network: 'calibration',
+    chainId: 314159,
+    fileId: 'file-demo-calibration-005',
+    datasetId: 'dataset-demo-calibration-004',
+    datasetLabel: 'Reports',
+    name: 'market-report.png',
+    size: 1_210_000,
+    mimeType: 'image/png',
+    source: 'simulation',
+    createdAt: baseTime - 2 * day,
+    modifiedAt: baseTime - 45 * minute,
+    provider: 'Ramo Storage',
+    providerAddress: '0x0000000000000000000000000000000000456789',
+    pieceCid: 'bafybeigw2zlz3nc75en7ab67laq4ib6exytpbpkbe2y4lwr2kh5lzdnexu',
+    transactionHash: '0x2d6f39a100000000000000000000000000000000000000000000000000000000',
+    verificationStatus: 'verified',
+    authorizationStatus: 'passkey-protected',
+    proofDeadline: baseTime + 20 * day,
+    verifiedAt: baseTime - 42 * minute,
+    metadata: {
+      type: 'PNG',
+      label: 'Market summary',
     },
   },
   {
@@ -182,7 +253,7 @@ export const SIMULATED_FILES: FileSummary[] = [
     chainId: 314159,
     fileId: 'file-demo-calibration-004',
     datasetId: 'dataset-demo-calibration-003',
-    datasetLabel: 'Demo Captures',
+    datasetLabel: 'Demos',
     name: 'demo-video.mp4',
     size: 456_320_000,
     mimeType: 'video/mp4',
@@ -202,33 +273,131 @@ export const SIMULATED_FILES: FileSummary[] = [
     },
   },
   {
-    network: 'mainnet',
-    chainId: 314,
-    fileId: 'file-demo-mainnet-001',
-    datasetId: 'dataset-demo-mainnet-001',
-    datasetLabel: 'Mainnet Receipts',
-    name: 'mainnet-receipt.png',
-    size: 314_159,
-    mimeType: 'image/png',
+    network: 'calibration',
+    chainId: 314159,
+    fileId: 'file-demo-calibration-006',
+    datasetId: 'dataset-demo-calibration-005',
+    datasetLabel: 'Research Q1',
+    name: 'experiment-results/',
+    size: 18_760_000_000,
+    mimeType: 'application/x-directory',
     source: 'simulation',
-    createdAt: baseTime - day,
-    modifiedAt: baseTime - day,
-    provider: 'Glif',
-    providerAddress: '0x0000000000000000000000000000000000123456',
-    pieceCid: 'bafybeif7q4wvvktj7jtdsmqqnli2cdn2czvwwlcm3n735rki5z7vx2iw5m',
-    transactionHash: '0x7b2c9d4800000000000000000000000000000000000000000000000000000000',
+    createdAt: baseTime - 4 * day,
+    modifiedAt: baseTime - 4 * hour,
+    provider: 'GlacierEdge',
+    providerAddress: '0x0000000000000000000000000000000000678901',
+    pieceCid: 'bafybeib4y2n43egmdmmy2rg7pmn2kjogkromu2g2tr27kgqngcidcqgzg4',
+    transactionHash: '0x7efaa2b300000000000000000000000000000000000000000000000000000000',
+    verificationStatus: 'verified',
+    authorizationStatus: 'passkey-protected',
+    proofDeadline: baseTime + 16 * day,
+    verifiedAt: baseTime - 4 * hour,
+    metadata: {
+      type: 'Folder',
+      label: 'Experiment output bundle',
+    },
+  },
+  {
+    network: 'calibration',
+    chainId: 314159,
+    fileId: 'file-demo-calibration-007',
+    datasetId: 'dataset-demo-calibration-006',
+    datasetLabel: 'Notes',
+    name: 'project-notes.docx',
+    size: 320_000,
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    source: 'simulation',
+    createdAt: baseTime - 5 * day,
+    modifiedAt: baseTime - 5 * hour,
+    provider: 'Starboard',
+    providerAddress: '0x0000000000000000000000000000000000890123',
+    pieceCid: 'bafybeibr4rd4wu3mihggngftzqpy7v6ev24kdmaoxnl3ffjitxt2v7a3g4',
+    transactionHash: '0x9a8bbcc700000000000000000000000000000000000000000000000000000000',
+    verificationStatus: 'verified',
+    authorizationStatus: 'passkey-protected',
+    proofDeadline: baseTime + 24 * day,
+    verifiedAt: baseTime - 5 * hour,
+    metadata: {
+      type: 'DOCX',
+      label: 'Project notes',
+    },
+  },
+  {
+    network: 'calibration',
+    chainId: 314159,
+    fileId: 'file-demo-calibration-008',
+    datasetId: 'dataset-demo-calibration-005',
+    datasetLabel: 'Research Q1',
+    name: 'analysis.ipynb',
+    size: 5_670_000,
+    mimeType: 'application/x-ipynb+json',
+    source: 'simulation',
+    createdAt: baseTime - 6 * day,
+    modifiedAt: baseTime - 6 * hour,
+    provider: 'GlacierEdge',
+    providerAddress: '0x0000000000000000000000000000000000678901',
+    pieceCid: 'bafybeig22l5a4n6fxipapzsuv5i7jzzcx4tuycfsgvzytlgpbfh4i2jwwy',
+    transactionHash: '0xa23bcce100000000000000000000000000000000000000000000000000000000',
     verificationStatus: 'verified',
     authorizationStatus: 'wallet-authorized',
-    proofDeadline: baseTime + 31 * day,
-    verifiedAt: baseTime - day,
+    proofDeadline: baseTime + 14 * day,
+    verifiedAt: baseTime - 6 * hour,
     metadata: {
-      type: 'PNG',
-      label: 'Mainnet sample receipt',
+      type: 'IPYNB',
+      label: 'Analysis notebook',
     },
   },
 ];
 
-export const SIMULATED_ACTIVITY: ActivityEvent[] = [
+function mirrorDatasetToMainnet(dataset: DatasetSummary, index: number): DatasetSummary {
+  const mainnetDatasetId = `dataset-demo-mainnet-${String(index + 1).padStart(3, '0')}`;
+
+  return {
+    ...dataset,
+    network: 'mainnet',
+    chainId: 314,
+    datasetId: mainnetDatasetId,
+    clientDatasetId: dataset.clientDatasetId?.replace('client-', 'client-mainnet-'),
+    metadata: {
+      ...dataset.metadata,
+      network: 'mainnet',
+    },
+  };
+}
+
+function mirrorFileToMainnet(file: FileSummary): FileSummary {
+  const datasetNumber = file.datasetId.split('-').at(-1) ?? '001';
+  const fileNumber = file.fileId.split('-').at(-1) ?? '001';
+
+  return {
+    ...file,
+    network: 'mainnet',
+    chainId: 314,
+    fileId: `file-demo-mainnet-${fileNumber}`,
+    datasetId: `dataset-demo-mainnet-${datasetNumber}`,
+    provider: file.provider === 'GlacierEdge' ? 'Glif' : file.provider,
+    providerAddress:
+      file.providerAddress === '0x0000000000000000000000000000000000678901'
+        ? '0x0000000000000000000000000000000000123456'
+        : file.providerAddress,
+    metadata: {
+      ...file.metadata,
+      network: 'mainnet',
+    },
+  };
+}
+
+export const SIMULATED_DATASETS: DatasetSummary[] = [
+  ...CALIBRATION_DATASETS,
+  ...CALIBRATION_DATASETS.map(mirrorDatasetToMainnet),
+];
+
+export const SIMULATED_FILES: FileSummary[] = [
+  ...CALIBRATION_FILES,
+  ...CALIBRATION_FILES.map(mirrorFileToMainnet),
+];
+
+const CALIBRATION_ACTIVITY: ActivityEvent[] = [
   {
     network: 'calibration',
     chainId: 314159,
@@ -317,19 +486,30 @@ export const SIMULATED_ACTIVITY: ActivityEvent[] = [
     transactionHash: '0x5b9ac33e00000000000000000000000000000000000000000000000000000000',
     severity: 'warning',
   },
-  {
+];
+
+function mirrorActivityToMainnet(event: ActivityEvent, index: number): ActivityEvent {
+  const suffix = String(index + 1).padStart(3, '0');
+
+  return {
+    ...event,
     network: 'mainnet',
     chainId: 314,
-    eventId: 'activity-demo-mainnet-001',
-    kind: 'payment-approved',
-    title: 'Payment readiness confirmed',
-    detail: 'Demo data: mainnet payment surface shown as ready for presenter mode.',
-    simulated: true,
-    source: 'simulation',
-    createdAt: baseTime - day,
-    amountLabel: '1.04 FIL equivalent',
-    severity: 'info',
-  },
+    eventId: `activity-demo-mainnet-${suffix}`,
+    detail: event.detail.replace('calibration', 'mainnet').replace('Calibration', 'Mainnet'),
+    datasetId: event.datasetId?.replace('dataset-demo-calibration', 'dataset-demo-mainnet'),
+    fileId: event.fileId?.replace('file-demo-calibration', 'file-demo-mainnet'),
+    provider: event.provider === 'GlacierEdge' ? 'Glif' : event.provider,
+    metadata: {
+      ...event.metadata,
+      network: 'mainnet',
+    },
+  };
+}
+
+export const SIMULATED_ACTIVITY: ActivityEvent[] = [
+  ...CALIBRATION_ACTIVITY,
+  ...CALIBRATION_ACTIVITY.map(mirrorActivityToMainnet),
 ];
 
 export const SIMULATED_UPLOAD_RECEIPT: StorageUploadReceipt = {

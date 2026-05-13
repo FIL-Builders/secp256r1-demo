@@ -60,7 +60,7 @@ select {
   display: flex;
   height: 100vh;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   border-right: 1px solid #e5e7eb;
   background: rgba(255, 255, 255, 0.96);
   padding: 28px 18px 20px;
@@ -71,7 +71,7 @@ select {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 8px 20px;
+  padding: 0 8px 8px;
 }
 
 .shell-sidebar__brand-mark {
@@ -105,7 +105,7 @@ select {
 
 .shell-sidebar__item {
   display: flex;
-  min-height: 44px;
+  min-height: 42px;
   align-items: center;
   gap: 10px;
   border: 0;
@@ -134,23 +134,34 @@ select {
 
 .shell-sidebar__footer {
   display: grid;
-  gap: 14px;
-  margin-top: 8px;
+  gap: 12px;
+  margin-top: 0;
 }
 
 .shell-sidebar__secondary-nav {
   border-top: 1px solid #edf1f5;
-  margin-top: 4px;
+  margin-top: 10px;
   padding-top: 10px;
+}
+
+.shell-sidebar__help-card {
+  margin-top: 0;
+}
+
+.shell-sidebar__help-card a {
+  color: #5b3df5;
+  font-size: 12px;
+  font-weight: 760;
+  text-decoration: none;
 }
 
 .shell-sidebar__card {
   display: grid;
-  gap: 12px;
+  gap: 8px;
   border: 1px solid #e1e7ef;
   border-radius: 8px;
   background: #fff;
-  padding: 16px;
+  padding: 12px;
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.035);
 }
 
@@ -200,7 +211,7 @@ select {
 .shell-sidebar__choice {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  min-height: 54px;
+  min-height: 46px;
   align-items: center;
   gap: 10px;
   border: 1px solid #e1e7ef;
@@ -208,7 +219,7 @@ select {
   background: #fff;
   color: #111827;
   cursor: pointer;
-  padding: 8px 10px;
+  padding: 6px 10px;
   text-align: left;
 }
 
@@ -695,8 +706,14 @@ select {
 .page-title {
   margin: 0;
   color: #111827;
-  font-size: clamp(28px, 3vw, 40px);
-  line-height: 1.08;
+  font-size: clamp(28px, 2.4vw, 34px);
+  line-height: 1.1;
+}
+
+.page-files .page-kicker,
+.page-datasets .page-kicker,
+.page-activity .page-kicker {
+  display: none;
 }
 
 .page-kicker,
@@ -717,6 +734,52 @@ select {
 .muted {
   margin: 6px 0 0;
   color: #64748b;
+}
+
+.page-files {
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 380px);
+  align-items: start;
+  column-gap: 24px;
+  row-gap: 18px;
+  padding-top: 24px;
+}
+
+.page-files > .page-header,
+.page-files > .data-toolbar,
+.page-files > .summary-strip {
+  grid-column: 1;
+}
+
+.page-files > .content-with-rail {
+  display: contents;
+}
+
+.page-files > .content-with-rail > .panel {
+  grid-column: 1;
+}
+
+.page-files > .content-with-rail > .detail-rail {
+  grid-column: 2;
+  grid-row: 1 / span 5;
+}
+
+.page-files .detail-rail > .panel:first-child .panel-head {
+  display: none;
+}
+
+.page-files .data-toolbar {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 140px 122px 136px 142px;
+}
+
+.page-files .search-field {
+  min-width: 0;
+}
+
+.page-files .data-toolbar .secondary-button,
+.page-files .data-toolbar .select-field {
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .page-grid {
@@ -1247,7 +1310,7 @@ select {
   display: grid;
   gap: 4px;
   border-right: 1px solid #edf1f5;
-  padding: 18px 24px;
+  padding: 16px 24px;
 }
 
 .summary-strip-item:last-child {
@@ -1261,8 +1324,28 @@ select {
 }
 
 .summary-strip-item strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   color: #111827;
   font-size: 22px;
+}
+
+.summary-strip-item small {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.summary-strip-icon {
+  display: inline-grid;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #087443;
 }
 
 .resource-table {
@@ -1279,7 +1362,7 @@ select {
   gap: 14px;
   align-items: center;
   border-bottom: 1px solid #edf1f5;
-  padding: 14px 16px;
+  padding: 13px 16px;
 }
 
 .resource-table-header {
@@ -1353,13 +1436,48 @@ select {
 
 .resource-icon {
   display: grid;
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   flex: 0 0 auto;
   place-items: center;
   border-radius: 8px;
   background: #eeebff;
   color: #5534e8;
+}
+
+.resource-icon--image {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.resource-icon--pdf {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.resource-icon--sheet {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.resource-icon--folder {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.resource-icon--video {
+  background: #f3e8ff;
+  color: #9333ea;
+}
+
+.resource-icon--code {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.resource-icon--archive {
+  background: #ede9fe;
+  color: #6d4aff;
 }
 
 .detail-rail {
@@ -1373,6 +1491,10 @@ select {
   gap: 14px;
 }
 
+.page-files .detail-hero {
+  align-items: flex-start;
+}
+
 .detail-hero p {
   margin: 2px 0 0;
   color: #64748b;
@@ -1380,8 +1502,8 @@ select {
 
 .detail-hero-icon {
   display: grid;
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   flex: 0 0 auto;
   place-items: center;
   border-radius: 999px;
@@ -1463,12 +1585,25 @@ select {
 
 .activity-timeline {
   display: grid;
+  position: relative;
   gap: 10px;
+  padding-left: 36px;
+}
+
+.activity-timeline::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 18px;
+  width: 1px;
+  background: #dbe2ea;
 }
 
 .activity-timeline-row {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  position: relative;
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
   align-items: start;
   border: 1px solid #e1e7ef;
@@ -1488,6 +1623,10 @@ select {
 
 .activity-timeline-icon {
   display: grid;
+  position: absolute;
+  top: 14px;
+  left: -35px;
+  z-index: 1;
   width: 36px;
   height: 36px;
   place-items: center;
@@ -1552,6 +1691,7 @@ select {
   .grid.two,
   .grid.three,
   .grid.four,
+  .page-files,
   .page-grid-primary,
   .page-grid-secondary,
   .page-datasets .page-grid-primary,
@@ -1563,6 +1703,19 @@ select {
 
   .page-header-with-actions {
     grid-template-columns: 1fr;
+  }
+
+  .page-files > .page-header,
+  .page-files > .data-toolbar,
+  .page-files > .summary-strip,
+  .page-files > .content-with-rail > .panel,
+  .page-files > .content-with-rail > .detail-rail {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .page-files > .content-with-rail {
+    display: grid;
   }
 }
 

@@ -49,8 +49,8 @@ import {
   writeStoredRuntimeMode,
 } from './lib';
 
-const INITIAL_NETWORK: DemoNetwork = 'calibration';
-const INITIAL_MODE: DemoRuntimeMode = 'pending-network';
+const INITIAL_NETWORK: DemoNetwork = 'mainnet';
+const INITIAL_MODE: DemoRuntimeMode = 'simulation';
 
 function formatBytes(value: number): string {
   if (value < 1_000_000) {

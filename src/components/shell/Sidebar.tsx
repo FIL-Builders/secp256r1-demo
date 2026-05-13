@@ -9,6 +9,7 @@ import {
   Fingerprint,
   FlaskConical,
   Globe2,
+  HelpCircle,
   Home,
   CreditCard,
   Settings,
@@ -166,6 +167,16 @@ export function Sidebar({
         </section>
 
       </div>
+
+      <section className="shell-sidebar__card shell-sidebar__help-card">
+        <div className="shell-sidebar__card-head">
+          <span className="shell-sidebar__card-label">Need help?</span>
+          <HelpCircle size={14} />
+        </div>
+        <small>Read docs or contact support.</small>
+        <a href="https://docs.filecoin.io/" target="_blank" rel="noreferrer">Documentation</a>
+        <a href="https://github.com/FilOzone/synapse-sdk" target="_blank" rel="noreferrer">Support</a>
+      </section>
 
       <nav className="shell-sidebar__nav shell-sidebar__secondary-nav" aria-label="Secondary">
         {secondaryItems.map((item) => {

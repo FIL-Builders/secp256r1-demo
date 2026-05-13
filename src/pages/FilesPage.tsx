@@ -6,6 +6,7 @@ import {
   FileImage,
   FileText,
   Filter,
+  FolderOpen,
   RefreshCw,
   Search,
   ShieldCheck,
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 
 import type { DatasetSummary, DemoRuntimeMode, FileSummary } from '../lib';
 import {
@@ -59,17 +61,23 @@ export function FilesPage({
 }: FilesPageProps) {
   const [query, setQuery] = useState('');
   const [datasetFilter, setDatasetFilter] = useState('all');
+  const [providerFilter, setProviderFilter] = useState('all');
   const [verificationFilter, setVerificationFilter] = useState<VerificationFilter>('all');
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
   const datasetById = useMemo(
     () => new Map(datasets.map((dataset) => [dataset.datasetId, dataset])),
     [datasets],
   );
+  const providerOptions = useMemo(
+    () => Array.from(new Set(files.map((file) => file.provider).filter(Boolean))).sort(),
+    [files],
+  );
   const filteredFiles = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
     return files.filter((file) => {
       const matchesDataset = datasetFilter === 'all' || file.datasetId === datasetFilter;
+      const matchesProvider = providerFilter === 'all' || file.provider === providerFilter;
       const matchesVerification =
         verificationFilter === 'all' ||
         (verificationFilter === 'verified'
@@ -81,9 +89,9 @@ export function FilesPage({
           .filter(Boolean)
           .some((value) => value?.toLowerCase().includes(normalizedQuery));
 
-      return matchesDataset && matchesVerification && matchesQuery;
-    });
-  }, [datasetFilter, files, query, verificationFilter]);
+      return matchesDataset && matchesProvider && matchesVerification && matchesQuery;
+    }).sort((a, b) => fileDisplayRank(a.name) - fileDisplayRank(b.name));
+  }, [datasetFilter, files, providerFilter, query, verificationFilter]);
   const selectedFile =
     filteredFiles.find((file) => file.fileId === selectedFileId) ??
     filteredFiles[0];
@@ -141,6 +149,19 @@ export function FilesPage({
         </select>
         <select
           className="select-field"
+          value={providerFilter}
+          onChange={(event) => setProviderFilter(event.target.value)}
+          aria-label="Filter by provider"
+        >
+          <option value="all">Provider</option>
+          {providerOptions.map((provider) => (
+            <option key={provider} value={provider}>
+              {provider}
+            </option>
+          ))}
+        </select>
+        <select
+          className="select-field"
           value={verificationFilter}
           onChange={(event) => setVerificationFilter(event.target.value as VerificationFilter)}
           aria-label="Filter by verification status"
@@ -162,7 +183,9 @@ export function FilesPage({
         <Metric
           label="Verified"
           value={`${verifiedCount.toLocaleString()} ${runtimeMode === 'simulation' ? 'simulated' : 'on-chain'}`}
+          note={runtimeMode === 'simulation' ? 'Fixture-backed proof state' : 'via Synapse and Filecoin'}
           tone="success"
+          icon={<ShieldCheck size={18} />}
         />
       </section>
 
@@ -189,7 +212,7 @@ export function FilesPage({
                   onClick={() => setSelectedFileId(file.fileId)}
                 >
                   <span className="resource-name">
-                    <span className="resource-icon">
+                    <span className={`resource-icon ${iconToneForMime(file.mimeType)}`}>
                       <Icon size={16} />
                     </span>
                     <span>
@@ -246,7 +269,7 @@ export function FilesPage({
             {selectedFile ? (
               <>
                 <div className="detail-hero">
-                  <span className="detail-hero-icon">
+                  <span className={`detail-hero-icon ${iconToneForMime(selectedFile.mimeType)}`}>
                     {renderFileIcon(selectedFile.mimeType)}
                   </span>
                   <div>
@@ -332,11 +355,27 @@ export function FilesPage({
   );
 }
 
-function Metric({ label, value, tone }: { label: string; value: string; tone?: string }) {
+function Metric({
+  label,
+  value,
+  tone,
+  note,
+  icon,
+}: {
+  label: string;
+  value: string;
+  tone?: string;
+  note?: string;
+  icon?: ReactNode;
+}) {
   return (
     <div className="summary-strip-item">
       <span>{label}</span>
-      <strong className={tone ? `text-${tone}` : undefined}>{value}</strong>
+      <strong className={tone ? `text-${tone}` : undefined}>
+        {icon ? <span className="summary-strip-icon">{icon}</span> : null}
+        {value}
+      </strong>
+      {note ? <small>{note}</small> : null}
     </div>
   );
 }
@@ -379,6 +418,10 @@ function verificationSummaryTitle(value: FileSummary['verificationStatus']): str
 }
 
 function iconForMime(mimeType: string): LucideIcon {
+  if (mimeType === 'application/x-directory') {
+    return FolderOpen;
+  }
+
   if (mimeType.startsWith('image/')) {
     return FileImage;
   }
@@ -390,7 +433,51 @@ function iconForMime(mimeType: string): LucideIcon {
   return FileText;
 }
 
+function iconToneForMime(mimeType: string): string {
+  if (mimeType === 'application/x-directory') {
+    return 'resource-icon--folder';
+  }
+
+  if (mimeType.startsWith('image/')) {
+    return 'resource-icon--image';
+  }
+
+  if (mimeType.includes('pdf')) {
+    return 'resource-icon--pdf';
+  }
+
+  if (mimeType.includes('csv') || mimeType.includes('spreadsheet')) {
+    return 'resource-icon--sheet';
+  }
+
+  if (mimeType.includes('video')) {
+    return 'resource-icon--video';
+  }
+
+  if (mimeType.includes('ipynb') || mimeType.includes('json')) {
+    return 'resource-icon--code';
+  }
+
+  return 'resource-icon--archive';
+}
+
 function renderFileIcon(mimeType: string) {
   const Icon = iconForMime(mimeType);
   return <Icon size={22} />;
+}
+
+function fileDisplayRank(name: string): number {
+  const order = [
+    'research-dataset.zip',
+    'market-report.png',
+    'whitepaper.pdf',
+    'data-analysis.csv',
+    'experiment-results/',
+    'demo-video.mp4',
+    'project-notes.docx',
+    'analysis.ipynb',
+  ];
+
+  const index = order.indexOf(name);
+  return index === -1 ? order.length : index;
 }

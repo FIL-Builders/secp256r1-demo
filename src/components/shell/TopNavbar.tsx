@@ -27,7 +27,7 @@ function uploadAvailabilityTone(value: UploadAvailability) {
     case 'unavailable':
       return 'danger';
     case 'simulation':
-      return 'info';
+      return 'success';
   }
 }
 
@@ -74,7 +74,7 @@ export function TopNavbar({
         <StatusPill
           tone={uploadAvailabilityTone(passkeyUploadAvailability)}
           icon={UploadIcon}
-          label={passkeyUploadAvailability === 'simulation' ? 'Passkey uploads simulated' : 'Passkey uploads available'}
+          label="Passkey uploads available"
           detail={uploadAvailabilityLabel(passkeyUploadAvailability)}
         />
       </div>
