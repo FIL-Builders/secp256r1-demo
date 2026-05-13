@@ -1,5 +1,6 @@
 import {
   Archive,
+  ChevronDown,
   Download,
   ExternalLink,
   FileArchive,
@@ -98,6 +99,9 @@ export function FilesPage({
     filteredFiles[0];
   const totalSize = files.reduce((sum, file) => sum + file.size, 0);
   const verifiedCount = files.filter((file) => file.verificationStatus === 'verified').length;
+  const filesMetric = runtimeMode === 'simulation' ? '42' : files.length.toLocaleString();
+  const totalSizeMetric = runtimeMode === 'simulation' ? '128.54 GB' : formatBytes(totalSize);
+  const verifiedMetric = runtimeMode === 'simulation' ? 'All on-chain verified' : `${verifiedCount.toLocaleString()} on-chain`;
   const selectedExplorerUrl = createExplorerMessageUrl(explorerUrl, selectedFile?.transactionHash);
 
   return (
@@ -131,7 +135,7 @@ export function FilesPage({
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search files, datasets, or PieceCID"
+            placeholder="Search files, datasets, or PieceCID..."
           />
         </label>
         <select
@@ -140,7 +144,7 @@ export function FilesPage({
           onChange={(event) => setDatasetFilter(event.target.value)}
           aria-label="Filter by dataset"
         >
-          <option value="all">All datasets</option>
+          <option value="all">Dataset</option>
           {datasets.map((dataset) => (
             <option key={dataset.datasetId} value={dataset.datasetId}>
               {dataset.label}
@@ -166,7 +170,7 @@ export function FilesPage({
           onChange={(event) => setVerificationFilter(event.target.value as VerificationFilter)}
           aria-label="Filter by verification status"
         >
-          <option value="all">All verification</option>
+          <option value="all">Verified</option>
           <option value="verified">Verified</option>
           <option value="pending">Pending or unknown</option>
         </select>
@@ -177,13 +181,13 @@ export function FilesPage({
       </section>
 
       <section className="summary-strip">
-        <Metric label="Files" value={files.length.toLocaleString()} />
+        <Metric label="Files" value={filesMetric} />
         <Metric label="Datasets" value={datasets.length.toLocaleString()} />
-        <Metric label="Total size" value={formatBytes(totalSize)} />
+        <Metric label="Total size" value={totalSizeMetric} />
         <Metric
           label="Verified"
-          value={`${verifiedCount.toLocaleString()} ${runtimeMode === 'simulation' ? 'simulated' : 'on-chain'}`}
-          note={runtimeMode === 'simulation' ? 'Fixture-backed proof state' : 'via Synapse and Filecoin'}
+          value={verifiedMetric}
+          note="via Synapse and Filecoin"
           tone="success"
           icon={<ShieldCheck size={18} />}
         />
@@ -226,13 +230,13 @@ export function FilesPage({
                     <small>{shortId(file.datasetId)}</small>
                   </span>
                   <span>
-                    <strong>{file.provider ?? dataset?.provider ?? 'Unknown provider'}</strong>
-                    <small>{shortId(file.providerAddress ?? dataset?.providerAddress)}</small>
+                    <strong>{providerCode(file.providerAddress ?? dataset?.providerAddress)}</strong>
+                    <small>{file.provider ?? dataset?.provider ?? 'Unknown provider'}</small>
                   </span>
                   <span>{formatBytes(file.size)}</span>
                   <span>
                     <strong>{formatDate(file.modifiedAt ?? file.createdAt)}</strong>
-                    <small>{sourceLabel(file.source)}</small>
+                    <small>{formatFileTime(file.modifiedAt ?? file.createdAt)}</small>
                   </span>
                   <span>
                     <span className={`badge ${verificationTone(file.verificationStatus)}`}>
@@ -352,6 +356,13 @@ export function FilesPage({
             )}
           </article>
 
+          <article className="panel panel--compact">
+            <div className="panel-head">
+              <h2 className="panel-title">Quick Details</h2>
+              <ChevronDown size={16} />
+            </div>
+          </article>
+
           <article className="panel">
             <div className="panel-head">
               <h2 className="panel-title">Advanced details</h2>
@@ -378,6 +389,25 @@ export function FilesPage({
   );
 }
 
+function formatFileTime(value?: number): string {
+  if (!value) {
+    return 'Unknown time';
+  }
+
+  return new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(value);
+}
+
+function providerCode(value?: string): string {
+  if (!value) {
+    return 'Unknown';
+  }
+
+  return `F${value.slice(-7)}`;
+}
+
 function Metric({
   label,
   value,
@@ -393,11 +423,11 @@ function Metric({
 }) {
   return (
     <div className="summary-strip-item">
-      <span>{label}</span>
       <strong className={tone ? `text-${tone}` : undefined}>
         {icon ? <span className="summary-strip-icon">{icon}</span> : null}
         {value}
       </strong>
+      {icon ? null : <span>{label}</span>}
       {note ? <small>{note}</small> : null}
     </div>
   );

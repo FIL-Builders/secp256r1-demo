@@ -69,6 +69,7 @@ export function TopNavbar({
   const UploadIcon = uploadAvailabilityIcon(passkeyUploadAvailability);
   const networkLabel = network === 'mainnet' ? 'Mainnet' : 'Calibration';
   const showPasskeyUploads = activeItemId === 'files';
+  const showPrecompileStatus = activeItemId !== 'files';
 
   return (
     <header className={classNames('shell-navbar', className)}>
@@ -94,13 +95,15 @@ export function TopNavbar({
             detail={passkeyUploadAvailability === 'simulation' ? undefined : uploadAvailabilityLabel(passkeyUploadAvailability)}
           />
         ) : null}
-        <StatusPill
-          className="shell-status-pill--precompile"
-          tone="neutral"
-          icon={ShieldCheck}
-          label="P256VERIFY"
-          detail="0x0100"
-        />
+        {showPrecompileStatus ? (
+          <StatusPill
+            className="shell-status-pill--precompile"
+            tone="neutral"
+            icon={ShieldCheck}
+            label="P256VERIFY"
+            detail="0x0100"
+          />
+        ) : null}
       </div>
 
       <div className="shell-navbar__secondary">

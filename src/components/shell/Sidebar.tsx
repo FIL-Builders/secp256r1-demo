@@ -3,7 +3,7 @@ import {
   CheckCircle2,
   ChevronRight,
   CircleDollarSign,
-  Cloud,
+  CloudUpload,
   Database,
   FileText,
   Fingerprint,
@@ -79,7 +79,7 @@ export function Sidebar({
     <aside className={classNames('shell-sidebar', className)}>
       <div className="shell-sidebar__brand">
         <span className="shell-sidebar__brand-mark">
-          <Cloud size={22} />
+          <CloudUpload size={28} />
         </span>
         <div>
           <div className="shell-sidebar__brand-title">Synapse</div>

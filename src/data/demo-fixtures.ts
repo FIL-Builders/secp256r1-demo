@@ -376,7 +376,6 @@ function mirrorFileToMainnet(file: FileSummary): FileSummary {
     chainId: 314,
     fileId: `file-demo-mainnet-${fileNumber}`,
     datasetId: `dataset-demo-mainnet-${datasetNumber}`,
-    provider: file.provider === 'GlacierEdge' ? 'Glif' : file.provider,
     providerAddress:
       file.providerAddress === '0x0000000000000000000000000000000000678901'
         ? '0x0000000000000000000000000000000000123456'
@@ -487,6 +486,37 @@ const CALIBRATION_ACTIVITY: ActivityEvent[] = [
     transactionHash: '0x5b9ac33e00000000000000000000000000000000000000000000000000000000',
     severity: 'warning',
   },
+  {
+    network: 'calibration',
+    chainId: 314159,
+    eventId: 'activity-demo-calibration-007',
+    kind: 'session-revoked',
+    title: 'Passkey session revoked',
+    detail: 'Demo data: presenter session was revoked after completing the upload run.',
+    simulated: true,
+    source: 'simulation',
+    createdAt: baseTime - 3 * hour,
+    actor: 'This device',
+    transactionHash: '0x4e223a5d00000000000000000000000000000000000000000000000000000000',
+    severity: 'info',
+  },
+  {
+    network: 'calibration',
+    chainId: 314159,
+    eventId: 'activity-demo-calibration-008',
+    kind: 'network-switched',
+    title: 'Network switched',
+    detail: 'Demo data: navigation switched from mainnet to calibration for verification testing.',
+    simulated: true,
+    source: 'simulation',
+    createdAt: baseTime - 4 * hour,
+    actor: 'Root Wallet',
+    severity: 'info',
+    metadata: {
+      from: 'mainnet',
+      to: 'calibration',
+    },
+  },
 ];
 
 function mirrorActivityToMainnet(event: ActivityEvent, index: number): ActivityEvent {
@@ -497,12 +527,15 @@ function mirrorActivityToMainnet(event: ActivityEvent, index: number): ActivityE
     network: 'mainnet',
     chainId: 314,
     eventId: `activity-demo-mainnet-${suffix}`,
-    detail: event.detail.replace('calibration', 'mainnet').replace('Calibration', 'Mainnet'),
+    detail:
+      event.kind === 'network-switched'
+        ? 'Demo data: navigation switched from calibration to mainnet for verification testing.'
+        : event.detail.replace('calibration', 'mainnet').replace('Calibration', 'Mainnet'),
     datasetId: event.datasetId?.replace('dataset-demo-calibration', 'dataset-demo-mainnet'),
     fileId: event.fileId?.replace('file-demo-calibration', 'file-demo-mainnet'),
-    provider: event.provider === 'GlacierEdge' ? 'Glif' : event.provider,
     metadata: {
       ...event.metadata,
+      ...(event.kind === 'network-switched' ? { from: 'calibration', to: 'mainnet' } : {}),
       network: 'mainnet',
     },
   };

@@ -822,6 +822,11 @@ export default function App() {
     }
   })();
 
+  const demoStorageBalance =
+    activeItemId === 'upload'
+      ? { value: '23.48 FIL', detail: '≈ $184.27 USD' }
+      : { value: '12.46 FIL', detail: '≈ $61.82 USD' };
+
   return (
     <div className="app-shell">
       <Sidebar
@@ -833,9 +838,9 @@ export default function App() {
         runtimeMode={runtimeMode}
         onRuntimeModeChange={handleRuntimeModeChange}
         storageBalance={{
-          value: simulationMode ? '12.46 FIL' : `${formatTokenAmount(storageReadiness?.payment.availableFunds)} USDFC`,
+          value: simulationMode ? demoStorageBalance.value : `${formatTokenAmount(storageReadiness?.payment.availableFunds)} USDFC`,
           detail: simulationMode
-            ? '≈ $61.82 USD'
+            ? demoStorageBalance.detail
             : storageReadiness?.summary ?? 'Connect a Root Wallet to check funds.',
         }}
         walletLabel={displayWalletConnected ? displayWalletLabel : 'Not connected'}

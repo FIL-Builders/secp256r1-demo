@@ -26,6 +26,15 @@ import {
   verificationTone,
 } from './storage-page-utils';
 
+const DEMO_DATASET_ROWS = [
+  ['Research Dataset', 'Private', 'Glif', 'f01234', '128', '8.4 GB', 'paid', 'Up to date', 'verified', 'On-chain', '2h ago', 'May 14, 2025'],
+  ['Climate Data Collection', 'Private', 'Estuary', 'f04567', '96', '24.7 GB', 'paid', 'Up to date', 'verified', 'On-chain', '1d ago', 'May 13, 2025'],
+  ['Public Images', 'Public', 'Boost', 'f07890', '42', '3.1 GB', 'paid', 'Up to date', 'verified', 'On-chain', '2d ago', 'May 12, 2025'],
+  ['Video Archive 2024', 'Private', 'Glif', 'f01234', '210', '92.3 GB', 'paid', 'Up to date', 'verified', 'On-chain', '3d ago', 'May 11, 2025'],
+  ['Sensor Readings', 'Private', 'Estuary', 'f04567', '18', '1.8 GB', 'due-soon', 'Due in 3 days', 'verified', 'On-chain', '4d ago', 'May 10, 2025'],
+  ['Team Documents', 'Private', 'Boost', 'f07890', '32', '2.5 GB', 'past-due', 'Overdue', 'failed', 'No proof', '5d ago', 'May 9, 2025'],
+] as const;
+
 export interface DatasetsPageProps {
   networkLabel: string;
   chainId: number;
@@ -81,6 +90,13 @@ export function DatasetsPage({
   );
   const providerCount = new Set(datasets.map((dataset) => dataset.provider).filter(Boolean)).size;
   const verifiedCount = datasets.filter((dataset) => dataset.proofStatus === 'verified').length;
+  const totalDatasetsMetric = runtimeMode === 'simulation' ? '24' : datasets.length.toLocaleString();
+  const totalFilesMetric =
+    runtimeMode === 'simulation'
+      ? '312'
+      : datasets.reduce((sum, dataset) => sum + dataset.fileCount, 0).toLocaleString();
+  const totalSizeMetric = runtimeMode === 'simulation' ? '196.8 GB' : formatBytes(totalSize);
+  const providerCountMetric = runtimeMode === 'simulation' ? '6' : providerCount.toLocaleString();
 
   return (
     <main className="page page-datasets">
@@ -98,10 +114,10 @@ export function DatasetsPage({
       </section>
 
       <section className="page-grid page-grid-primary">
-        <MetricCard label="Total Datasets" value={datasets.length.toLocaleString()} icon={<FolderOpen size={16} />} />
-        <MetricCard label="Total Files" value={datasets.reduce((sum, dataset) => sum + dataset.fileCount, 0).toLocaleString()} icon={<Database size={16} />} />
-        <MetricCard label="Total Size" value={formatBytes(totalSize)} icon={<WalletCards size={16} />} />
-        <MetricCard label="Providers" value={providerCount.toLocaleString()} icon={<ShieldCheck size={16} />} />
+        <MetricCard label="Total Datasets" value={totalDatasetsMetric} icon={<FolderOpen size={16} />} />
+        <MetricCard label="Total Files" value={totalFilesMetric} icon={<Database size={16} />} />
+        <MetricCard label="Total Size" value={totalSizeMetric} icon={<WalletCards size={16} />} />
+        <MetricCard label="Providers" value={providerCountMetric} icon={<ShieldCheck size={16} />} />
       </section>
 
       <section className="content-with-rail content-with-rail--datasets">
@@ -123,7 +139,7 @@ export function DatasetsPage({
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search datasets, providers, or IDs"
+                placeholder="Search datasets by name or ID..."
               />
             </label>
             <span className="data-toolbar__spacer" />
@@ -133,7 +149,7 @@ export function DatasetsPage({
               onChange={(event) => setSourceFilter(event.target.value as typeof sourceFilter)}
               aria-label="Filter by data source"
             >
-              <option value="all">All datasets</option>
+              <option value="all">All Datasets</option>
               <option value="chain">Chain-backed</option>
               <option value="simulation">Simulation</option>
             </select>
@@ -157,51 +173,55 @@ export function DatasetsPage({
               <span>Last activity</span>
               <span>Actions</span>
             </div>
-            {filteredDatasets.map((dataset) => (
-              <button
-                type="button"
-                key={dataset.datasetId}
-                className="resource-table-row"
-              >
-                <span className="resource-name">
-                  <span className="resource-icon">
-                    <FolderOpen size={16} />
+            {filteredDatasets.map((dataset, index) => {
+              const display = datasetDisplay(dataset, index, runtimeMode, datasetSizes);
+
+              return (
+                <button
+                  type="button"
+                  key={dataset.datasetId}
+                  className="resource-table-row"
+                >
+                  <span className="resource-name">
+                    <span className="resource-icon">
+                      <FolderOpen size={16} />
+                    </span>
+                    <span>
+                      <strong>{display.label}</strong>
+                      <small>{display.meta}</small>
+                    </span>
                   </span>
                   <span>
-                    <strong>{dataset.label}</strong>
-                    <small>
-                      {shortId(dataset.datasetId)} · {dataset.visibility ?? 'unknown'}
-                    </small>
+                    <strong>{display.provider}</strong>
+                    <small>{display.providerId}</small>
                   </span>
-                </span>
-                <span>
-                  <strong>{dataset.provider ?? 'Unknown provider'}</strong>
-                  <small>{shortId(dataset.providerAddress)}</small>
-                </span>
-                <span>
-                  <strong>{dataset.pieceCount.toLocaleString()}</strong>
-                  <small>{formatBytes(dataset.totalSize ?? datasetSizes.get(dataset.datasetId))}</small>
-                </span>
-                <span>
-                  <span className={`badge ${paymentRailTone(dataset.paymentRailStatus)}`}>
-                    {paymentRailLabel(dataset.paymentRailStatus)}
+                  <span>
+                    <strong>{display.pieces}</strong>
+                    <small>{display.size}</small>
                   </span>
-                </span>
-                <span>
-                  <span className={`badge ${verificationTone(dataset.proofStatus)}`}>
-                    {verificationLabel(dataset.proofStatus)}
+                  <span>
+                    <span className={`badge ${paymentRailTone(display.paymentStatus)}`}>
+                      {paymentRailLabel(display.paymentStatus)}
+                    </span>
+                    <small>{display.paymentNote}</small>
                   </span>
-                </span>
-                <span>
-                  <strong>{formatRelativeTime(dataset.lastActivityAt ?? dataset.createdAt)}</strong>
-                  <small>{formatDate(dataset.lastActivityAt ?? dataset.createdAt)}</small>
-                </span>
-                <span className="row-actions">
-                  <span className="open-button">Open</span>
-                  <MoreVertical size={16} />
-                </span>
-              </button>
-            ))}
+                  <span>
+                    <span className={`badge ${verificationTone(display.proofStatus)}`}>
+                      {verificationLabel(display.proofStatus)}
+                    </span>
+                    <small>{display.proofNote}</small>
+                  </span>
+                  <span>
+                    <strong>{display.lastRelative}</strong>
+                    <small>{display.lastDate}</small>
+                  </span>
+                  <span className="row-actions">
+                    <span className="open-button">Open</span>
+                    <MoreVertical size={16} />
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           {filteredDatasets.length === 0 ? (
@@ -212,7 +232,7 @@ export function DatasetsPage({
             />
           ) : null}
           <div className="table-footer">
-            <span>Showing 1-6 of {datasets.length.toLocaleString()} datasets</span>
+            <span>Showing 1-6 of {runtimeMode === 'simulation' ? '24' : datasets.length.toLocaleString()} datasets</span>
             <span className="pagination">
               <button type="button" disabled>‹</button>
               <button type="button" className="is-active">1</button>
@@ -293,6 +313,72 @@ function MetricCard({ label, value, icon }: { label: string; value: string; icon
       <strong className="metric-value">{value}</strong>
     </article>
   );
+}
+
+function datasetDisplay(
+  dataset: DatasetSummary,
+  index: number,
+  runtimeMode: DemoRuntimeMode,
+  datasetSizes: Map<string, number>,
+) {
+  if (runtimeMode === 'simulation') {
+    const [
+      label,
+      meta,
+      provider,
+      providerId,
+      pieces,
+      size,
+      paymentStatus,
+      paymentNote,
+      proofStatus,
+      proofNote,
+      lastRelative,
+      lastDate,
+    ] = DEMO_DATASET_ROWS[index % DEMO_DATASET_ROWS.length];
+
+    return {
+      label,
+      meta,
+      provider,
+      providerId,
+      pieces,
+      size,
+      paymentStatus,
+      paymentNote,
+      proofStatus,
+      proofNote,
+      lastRelative,
+      lastDate,
+    };
+  }
+
+  return {
+    label: dataset.label,
+    meta: `${shortId(dataset.datasetId)} · ${dataset.visibility ?? 'unknown'}`,
+    provider: dataset.provider ?? 'Unknown provider',
+    providerId: providerCode(dataset.providerAddress),
+    pieces: dataset.pieceCount.toLocaleString(),
+    size: formatBytes(dataset.totalSize ?? datasetSizes.get(dataset.datasetId)),
+    paymentStatus: dataset.paymentRailStatus,
+    paymentNote: 'Up to date',
+    proofStatus: dataset.proofStatus,
+    proofNote: dataset.proofStatus === 'verified' ? 'On-chain' : 'No proof',
+    lastRelative: formatRelativeTime(dataset.lastActivityAt ?? dataset.createdAt),
+    lastDate: formatDate(dataset.lastActivityAt ?? dataset.createdAt),
+  };
+}
+
+function providerCode(value?: string): string {
+  if (!value) {
+    return 'Unknown';
+  }
+
+  if (value.startsWith('f') || value.startsWith('t')) {
+    return value;
+  }
+
+  return `f${value.slice(-5)}`;
 }
 
 function StatusRow({ label, value }: { label: string; value: string }) {
