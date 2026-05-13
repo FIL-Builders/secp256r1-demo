@@ -82,6 +82,15 @@ Sprint 3 status:
 - raw credential IDs, authenticator data, client data, and signatures are
   developer-sensitive and must not be logged in production
 
+Sprint 4 status:
+
+- the app initializes Synapse readiness through the published `@filoz/synapse-sdk`
+- provider readiness reads active/total PDP provider counts
+- payment readiness reads the root wallet's Filecoin Pay account, wallet balances, representative upload cost, and FWSS approval state
+- live readiness is scoped by selected network and connected root wallet
+- a local `check:synapse` script can validate Calibration readiness using a private key from environment variables without printing the key
+- live upload remains blocked until the P-256 verifier path is available and the upload flow sprint wires submission behavior
+
 Do after activation:
 
 - re-run `pnpm check:p256`
@@ -126,7 +135,6 @@ Calibration can move from Pending Network Mode to Live Mode when:
 ## Next Spike Tasks
 
 1. Keep the browser/WebAuthn local probe available for credential creation and assertion shape checks.
-2. Add a Synapse SDK probe that initializes clients for Mainnet and Calibration and reports provider/payment readiness.
-3. Define the app capability object and adapter interfaces in code.
-4. Add a fixture-backed app mode that is explicitly labeled as Simulation Mode.
-5. Add a minimal upload/readback probe once Calibration has the required P-256 path.
+2. Keep the Synapse SDK readiness probe available for Mainnet and Calibration provider/payment checks.
+3. Add chain-backed piece/file listing for datasets with active pieces.
+4. Add a minimal upload/readback probe once Calibration has the required P-256 path.

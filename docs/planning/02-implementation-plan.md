@@ -128,6 +128,14 @@ Acceptance criteria:
 - Mainnet and Calibration clients cannot leak state into each other
 - fixture adapters can power clearly labeled demo data without changing page components
 
+Sprint 4 status:
+
+- `@filoz/synapse-sdk` is installed as the live SDK dependency.
+- non-simulation storage adapters now run read-only Synapse provider and payment readiness checks by selected network and connected root wallet.
+- the Payments page renders USDFC payment account, wallet balances, representative-upload cost, FWSS approval, provider counts, and blockers.
+- the live adapter can list chain-backed datasets for the connected wallet; file/piece rows remain scheduled for the Datasets/Files sprint.
+- `pnpm check:synapse -- --network calibration` can use a local private key env var for funded Calibration readiness testing without printing or committing the key.
+
 ## Milestone 4: Upload Flow
 
 Scope:

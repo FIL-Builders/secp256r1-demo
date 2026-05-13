@@ -138,6 +138,33 @@ export interface StorageReadiness {
   blockers: CapabilityBlocker[];
   checkedAt: number;
   summary: string;
+  provider: StorageProviderReadiness;
+  payment: StoragePaymentReadiness;
+  sampleUploadSizeBytes: number;
+}
+
+export interface StorageProviderReadiness {
+  state: CapabilityState;
+  activeProviderCount: number | null;
+  totalProviderCount: number | null;
+  error?: string;
+}
+
+export interface StoragePaymentReadiness {
+  state: CapabilityState;
+  ready: boolean;
+  accountFunds?: bigint;
+  availableFunds?: bigint;
+  lockupCurrent?: bigint;
+  lockupRate?: bigint;
+  walletFilBalance?: bigint;
+  walletUsdfcBalance?: bigint;
+  depositNeeded?: bigint;
+  ratePerEpoch?: bigint;
+  ratePerMonth?: bigint;
+  needsServiceApproval?: boolean;
+  serviceApproved?: boolean;
+  error?: string;
 }
 
 export interface StorageUploadFile {
@@ -173,7 +200,7 @@ export interface StorageUploadReceipt {
 }
 
 export interface StorageAdapter {
-  readiness(chainId: number, rootAddress: string): Promise<StorageReadiness>;
+  readiness(chainId: number, rootAddress?: Address): Promise<StorageReadiness>;
   upload(input: StorageUploadInput): Promise<StorageUploadReceipt>;
   listDatasets(input: ChainScopedQuery): Promise<DatasetSummary[]>;
   listFiles(input: ChainScopedQuery): Promise<FileSummary[]>;

@@ -7,6 +7,7 @@ import {
   HomePage,
   NetworkStatesPage,
   PasskeySessionPage,
+  PaymentsPage,
   SettingsPage,
   UploadPage,
   type ActivityItem,
@@ -39,6 +40,7 @@ import {
   type FileSummary,
   type PasskeyAuthorizationRecord,
   type PasskeyProbeResult,
+  type StorageReadiness,
   type StoredPasskeyCredential,
   writeStoredNetwork,
   writeStoredRuntimeMode,
@@ -57,6 +59,18 @@ function formatBytes(value: number): string {
   }
 
   return `${(value / 1_000_000_000).toFixed(2)} GB`;
+}
+
+function formatTokenAmount(value: bigint | undefined): string {
+  if (value == null) {
+    return 'Readiness pending';
+  }
+
+  const whole = value / 1_000000000000000000n;
+  const fraction = value % 1_000000000000000000n;
+  const fractionText = fraction.toString().padStart(18, '0').slice(0, 3).replace(/0+$/, '');
+
+  return fractionText ? `${whole.toLocaleString()}.${fractionText}` : whole.toLocaleString();
 }
 
 function formatShortTime(value: number): string {
@@ -169,11 +183,13 @@ function createFileSummaries(files: FileSummary[]): PageSummary[] {
 function createNetworkStateCards(input: {
   selectedNetwork: DemoNetwork;
   p256State: CapabilityState;
+  providerState: CapabilityState;
+  paymentState: CapabilityState;
   walletConnected: boolean;
   walletNetworkLabel: string;
   isWrongChain: boolean;
 }): NetworkStateCard[] {
-  const { selectedNetwork, p256State, walletConnected, walletNetworkLabel, isWrongChain } = input;
+  const { selectedNetwork, p256State, providerState, paymentState, walletConnected, walletNetworkLabel, isWrongChain } = input;
   const p256Unavailable = p256State !== 'available';
 
   return [
@@ -221,17 +237,23 @@ function createNetworkStateCards(input: {
     },
     {
       variant: 'provider-unavailable',
-      title: 'Storage providers unavailable',
-      detail: 'Provider readiness is represented separately so upload blocking remains actionable.',
-      status: 'Readiness pending',
+      title: providerState === 'available' ? 'Storage providers available' : 'Storage providers unavailable',
+      detail:
+        providerState === 'available'
+          ? 'Synapse provider readiness is available for the selected network.'
+          : 'Provider readiness is represented separately so upload blocking remains actionable.',
+      status: providerState === 'available' ? 'Available' : providerState === 'error' ? 'Probe failed' : 'Readiness pending',
       primaryLabel: 'Synapse SDK probe',
-      secondaryLabel: 'Sprint 4 live integration',
+      secondaryLabel: 'Network scoped',
     },
     {
       variant: 'insufficient-funds',
-      title: 'Insufficient payment balance',
-      detail: 'Payments and storage runway must block live uploads before the passkey prompt.',
-      status: 'Top-up required',
+      title: paymentState === 'available' ? 'Payment account ready' : 'Payment readiness blocked',
+      detail:
+        paymentState === 'available'
+          ? 'Payment deposit and Warm Storage approval checks passed for the selected root wallet.'
+          : 'Payments and storage runway must block live uploads before the passkey prompt.',
+      status: paymentState === 'available' ? 'Ready' : paymentState === 'error' ? 'Probe failed' : 'Top-up required',
       primaryLabel: 'Filecoin Pay readiness',
       secondaryLabel: 'Network scoped',
     },
@@ -267,6 +289,9 @@ export default function App() {
   const [datasets, setDatasets] = useState<DatasetSummary[]>([]);
   const [files, setFiles] = useState<FileSummary[]>([]);
   const [activity, setActivity] = useState<ActivityEvent[]>([]);
+  const [storageReadiness, setStorageReadiness] = useState<StorageReadiness | null>(null);
+  const [storageRefreshing, setStorageRefreshing] = useState(false);
+  const [storageRefreshNonce, setStorageRefreshNonce] = useState(0);
   const [passkeyCredential, setPasskeyCredential] = useState<StoredPasskeyCredential | null>(() =>
     readStoredPasskeyCredential(),
   );
@@ -412,6 +437,10 @@ export default function App() {
     setPasskeyTestResult(null);
   }
 
+  function handleRefreshStorageReadiness() {
+    setStorageRefreshNonce((value) => value + 1);
+  }
+
   const runtimeAdapters = useMemo(
     () =>
       createRuntimeAdapters({
@@ -462,53 +491,113 @@ export default function App() {
     const query = {
       network,
       chainId: networkConfig.chainId,
+      rootAddress: walletState.address,
     };
 
+    setStorageRefreshing(true);
     Promise.all([
+      runtimeAdapters.storage.readiness(networkConfig.chainId, walletState.address),
       runtimeAdapters.storage.listDatasets(query),
       runtimeAdapters.storage.listFiles(query),
       runtimeAdapters.activity.listActivity(query),
-    ]).then(([nextDatasets, nextFiles, nextActivity]) => {
-      if (cancelled) {
-        return;
-      }
+    ])
+      .then(([nextReadiness, nextDatasets, nextFiles, nextActivity]) => {
+        if (cancelled) {
+          return;
+        }
 
-      setDatasets(nextDatasets);
-      setFiles(nextFiles);
-      setActivity(nextActivity);
-    });
+        setStorageReadiness(nextReadiness);
+        setDatasets(nextDatasets);
+        setFiles(nextFiles);
+        setActivity(nextActivity);
+      })
+      .catch(() => {
+        if (cancelled) {
+          return;
+        }
+
+        setStorageReadiness({
+          network,
+          chainId: networkConfig.chainId,
+          state: 'error',
+          simulated: false,
+          blockers: [
+            {
+              code: 'synapse-readiness-refresh-failed',
+              scope: 'storage',
+              severity: 'warning',
+              title: 'Synapse readiness refresh failed',
+              message: 'The app could not refresh provider, payment, or dataset readiness for this network.',
+            },
+          ],
+          checkedAt: Date.now(),
+          summary: 'Synapse readiness refresh failed.',
+          provider: {
+            state: 'error',
+            activeProviderCount: null,
+            totalProviderCount: null,
+            error: 'Refresh failed',
+          },
+          payment: {
+            state: 'error',
+            ready: false,
+            error: 'Refresh failed',
+          },
+          sampleUploadSizeBytes: 1_048_576,
+        });
+        setDatasets([]);
+        setFiles([]);
+        setActivity([]);
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setStorageRefreshing(false);
+        }
+      });
 
     return () => {
       cancelled = true;
     };
-  }, [network, networkConfig.chainId, runtimeAdapters]);
+  }, [network, networkConfig.chainId, runtimeAdapters, storageRefreshNonce, walletState.address]);
 
   useEffect(() => {
     refreshPasskeyAuthorization(passkeyCredential);
   }, [network, passkeyCredential?.id, walletState.address]);
 
+  const simulationMode = runtimeMode === 'simulation';
+  const providerState = simulationMode ? 'available' : (storageReadiness?.provider.state ?? 'unknown');
+  const paymentState = simulationMode ? 'available' : (storageReadiness?.payment.state ?? 'unknown');
+  const storageState = simulationMode ? 'available' : (storageReadiness?.state ?? 'unknown');
   const capabilities = useMemo(
     () =>
       getCapabilitiesForNetworkAndMode(network, runtimeMode, {
         p256Precompile: runtimeMode === 'simulation' ? 'available' : p256State,
         fwssP256Verifier:
           runtimeMode === 'simulation' ? 'available' : p256State === 'available' ? 'unknown' : 'unavailable',
-        synapseStorage: runtimeMode === 'simulation' ? 'available' : 'unknown',
-        providers: runtimeMode === 'simulation' ? 'available' : 'unknown',
-        payments: runtimeMode === 'simulation' ? 'available' : 'unknown',
+        synapseStorage: storageState,
+        providers: providerState,
+        payments: paymentState,
+        blockers: storageReadiness?.blockers,
+        checkedAt: storageReadiness?.checkedAt,
       }),
-    [network, p256State, runtimeMode],
+    [network, p256State, providerState, paymentState, runtimeMode, storageReadiness?.blockers, storageReadiness?.checkedAt, storageState],
   );
 
   const p256Copy = p256StatusCopy(p256State);
   const p256Available = p256State === 'available';
-  const simulationMode = runtimeMode === 'simulation';
   const uploadP256Copy = p256UploadCopy({ runtimeMode, p256Available });
-  const providerAvailable = false;
+  const providerAvailable = providerState === 'available';
+  const liveUploadFlowReady = false;
   const uploadCtaState =
     simulationMode
       ? 'simulated'
-      : runtimeMode === 'live' && p256Available && providerAvailable && walletState.isConnected && !walletState.isWrongChain
+      : runtimeMode === 'live' &&
+          liveUploadFlowReady &&
+          p256Available &&
+          providerAvailable &&
+          paymentState === 'available' &&
+          walletState.isConnected &&
+          !walletState.isWrongChain
         ? 'live'
         : 'disabled';
   const passkeyAvailability = simulationMode ? 'simulation' : p256AvailabilityFromState(p256State);
@@ -540,10 +629,12 @@ export default function App() {
             networkLabel={networkConfig.label}
             walletNotice={walletNotice}
             storage={{
-              label: `${networkConfig.nativeTokenSymbol} storage balance`,
-              value: simulationMode ? '42.67 FIL' : 'Readiness pending',
-              tone: simulationMode ? 'positive' : 'warning',
-              hint: simulationMode ? 'Demo data: fixture balance.' : 'Live payment probe is scheduled for Sprint 4.',
+              label: 'USDFC storage balance',
+              value: simulationMode ? '42.67' : formatTokenAmount(storageReadiness?.payment.availableFunds),
+              tone: simulationMode || paymentState === 'available' ? 'positive' : 'warning',
+              hint: simulationMode
+                ? 'Demo data: fixture balance.'
+                : storageReadiness?.summary ?? 'Connect a root wallet to check live payment readiness.',
             }}
             passkeyUpload={{
               status: simulationMode ? 'Simulation available' : p256Copy.title,
@@ -575,7 +666,13 @@ export default function App() {
                 : p256Copy.detail
             }
             receiptLabel={simulationMode ? 'Simulation receipt' : 'No live receipt yet'}
-            receiptState={simulationMode ? 'Demo data only' : p256Available ? 'Ready for live cutover' : 'Blocked'}
+            receiptState={
+              simulationMode
+                ? 'Demo data only'
+                : p256Available && providerAvailable
+                  ? 'Readiness checks available'
+                  : 'Blocked'
+            }
             ctaState={uploadCtaState}
             onSwitchNetwork={walletState.isConnected ? handleSwitchNetwork : undefined}
             p256StatusTitle={uploadP256Copy.title}
@@ -588,6 +685,8 @@ export default function App() {
             states={createNetworkStateCards({
               selectedNetwork: network,
               p256State,
+              providerState,
+              paymentState,
               walletConnected: walletState.isConnected,
               walletNetworkLabel: walletState.connectedNetworkLabel,
               isWrongChain: walletState.isWrongChain,
@@ -617,9 +716,15 @@ export default function App() {
         );
       case 'payments':
         return (
-          <PlaceholderPage
-            title="Payments"
-            detail="Payment readiness is represented in the capability model and will be wired to Synapse SDK probes."
+          <PaymentsPage
+            networkLabel={networkConfig.label}
+            nativeTokenSymbol={networkConfig.nativeTokenSymbol}
+            runtimeMode={runtimeMode}
+            walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
+            walletConnected={walletState.isConnected}
+            readiness={storageReadiness}
+            refreshing={storageRefreshing}
+            onRefresh={handleRefreshStorageReadiness}
           />
         );
       case 'passkey-session':
@@ -664,7 +769,11 @@ export default function App() {
                   ? `Wallet is on ${walletState.connectedNetworkLabel}, but the app expects ${walletState.selectedNetworkLabel}.`
                   : `Wallet is connected to ${walletState.connectedNetworkLabel}.`
                 : 'No root wallet is connected. Simulation Mode does not imply wallet ownership.',
-              providerLabel: simulationMode ? 'Simulation only' : 'Live provider pending',
+              providerLabel: simulationMode
+                ? 'Simulation only'
+                : providerState === 'available'
+                  ? 'Live providers available'
+                  : 'Live provider pending',
               currentChainLabel: walletState.connectedNetworkLabel,
               expectedNetworkLabel: walletState.selectedNetworkLabel,
               p256StatusLabel: simulationMode ? 'Simulation label' : p256Copy.title,

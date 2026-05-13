@@ -18,6 +18,7 @@ import type {
   ActivityAdapter,
   P256VerifierAdapter,
 } from './types';
+import { listSynapseDatasets, listSynapseFiles, probeSynapseReadiness } from './synapse-readiness';
 import {
   createRpcP256VerifierAdapter,
   createSimulatedP256VerifierAdapter,
@@ -40,7 +41,7 @@ function capabilityBlocker(
 
 export function createSimulatedStorageAdapter(): StorageAdapter {
   return {
-    async readiness(chainId: number, rootAddress: string): Promise<StorageReadiness> {
+    async readiness(chainId: number, rootAddress?: string): Promise<StorageReadiness> {
       return {
         network: chainId === 314 ? 'mainnet' : 'calibration',
         chainId,
@@ -57,6 +58,26 @@ export function createSimulatedStorageAdapter(): StorageAdapter {
         ],
         checkedAt: Date.now(),
         summary: 'Demo data: simulated storage readiness returned successfully.',
+        provider: {
+          state: 'available',
+          activeProviderCount: 3,
+          totalProviderCount: 3,
+        },
+        payment: {
+          state: 'available',
+          ready: true,
+          accountFunds: 42_000000000000000000n,
+          availableFunds: 39_500000000000000000n,
+          lockupCurrent: 2_500000000000000000n,
+          lockupRate: 0n,
+          walletFilBalance: 12_000000000000000000n,
+          walletUsdfcBalance: 80_000000000000000000n,
+          depositNeeded: 0n,
+          ratePerEpoch: 0n,
+          ratePerMonth: 42_000000000000000n,
+          needsServiceApproval: false,
+        },
+        sampleUploadSizeBytes: 1_048_576,
       };
     },
 
@@ -109,42 +130,40 @@ export function createFixtureActivityAdapter(): ActivityAdapter {
   return createSimulatedActivityAdapter();
 }
 
-export function createUnavailableStorageAdapter(options: {
+export function createSynapseLiveStorageAdapter(options: {
   network: DemoNetwork;
   chainId: number;
-  summary?: string;
+  rpcUrl: string;
 }): StorageAdapter {
   return {
-    async readiness(): Promise<StorageReadiness> {
-      return {
+    async readiness(_chainId: number, rootAddress): Promise<StorageReadiness> {
+      return probeSynapseReadiness({
         network: options.network,
         chainId: options.chainId,
-        state: 'unknown',
-        simulated: false,
-        blockers: [
-          capabilityBlocker(
-            'storage-adapter-not-wired',
-            'storage',
-            'warning',
-            'Live storage adapter is not wired',
-            options.summary ?? 'Synapse SDK readiness is scheduled for a later sprint.',
-          ),
-        ],
-        checkedAt: Date.now(),
-        summary: options.summary ?? 'Live Synapse storage readiness has not been implemented yet.',
-      };
+        rpcUrl: options.rpcUrl,
+        rootAddress,
+      });
     },
 
     async upload(): Promise<StorageUploadReceipt> {
-      throw new Error('Live Synapse upload adapter is not wired yet.');
+      throw new Error('Live Synapse upload flow is gated until the passkey verifier path is available.');
     },
 
-    async listDatasets(): Promise<DatasetSummary[]> {
-      return [];
+    async listDatasets(input: ChainScopedQuery): Promise<DatasetSummary[]> {
+      try {
+        return await listSynapseDatasets({
+          network: options.network,
+          chainId: options.chainId,
+          rpcUrl: options.rpcUrl,
+          rootAddress: input.rootAddress,
+        });
+      } catch {
+        return [];
+      }
     },
 
     async listFiles(): Promise<FileSummary[]> {
-      return [];
+      return listSynapseFiles();
     },
   };
 }
@@ -191,10 +210,10 @@ export function createRuntimeAdapters(options: {
   const storage =
     options.mode === 'simulation'
       ? createFixtureStorageAdapter()
-      : createUnavailableStorageAdapter({
+      : createSynapseLiveStorageAdapter({
           network: options.network,
           chainId: options.chainId,
-          summary: 'Live Synapse SDK storage adapter is pending; fixture data is only shown in Simulation Mode.',
+          rpcUrl: options.rpcUrl ?? '',
         });
   const activity =
     options.mode === 'simulation' ? createFixtureActivityAdapter() : createUnavailableActivityAdapter();

@@ -9,11 +9,14 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "check:p256": "node scripts/check-p256-precompile.mjs",
+    "check:synapse": "node scripts/check-synapse-readiness.mjs",
     "lint:docs": "pnpm dlx markdownlint-cli2 'design/**/*.md' 'docs/**/*.md'",
     "typecheck": "tsc -b",
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
+    "@filoz/synapse-core": "0.5.2",
+    "@filoz/synapse-sdk": "0.41.0",
     "@tanstack/react-query": "^5.100.10",
     "@vitejs/plugin-react": "^5.1.1",
     "lucide-react": "^0.556.0",

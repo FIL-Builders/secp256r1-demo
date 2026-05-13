@@ -6,3 +6,4 @@ export * from './adapters';
 export * from './persistence';
 export * from './wallet';
 export * from './passkey';
+export * from './synapse-readiness';
