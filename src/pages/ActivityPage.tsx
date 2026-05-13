@@ -7,6 +7,7 @@ import {
   DollarSign,
   ExternalLink,
   Fingerprint,
+  FolderOpen,
   Globe2,
   RefreshCw,
   Search,
@@ -150,6 +151,7 @@ export function ActivityPage({
               const Icon = iconForKind(event.kind);
               const tone = eventTone(event);
               const display = activityDisplay(event, runtimeMode, networkLabel);
+              const inlineMeta = 'inlineMeta' in display ? display.inlineMeta : undefined;
 
               return (
                 <button
@@ -166,7 +168,15 @@ export function ActivityPage({
                       <strong>{display.title}</strong>
                       <small>{display.time}</small>
                     </span>
-                    <span>{display.detail}</span>
+                    <span className={inlineMeta ? 'activity-detail-line' : undefined}>
+                      <span>{display.detail}</span>
+                      {inlineMeta ? (
+                        <span className="activity-inline-meta">
+                          <FolderOpen size={15} />
+                          {inlineMeta}
+                        </span>
+                      ) : null}
+                    </span>
                     <span className="tag-row">
                       <span className="tag">{display.network}</span>
                       {runtimeMode === 'simulation' ? null : (
@@ -317,7 +327,8 @@ function activityDisplay(event: ActivityEvent, runtimeMode: DemoRuntimeMode, net
     case 'dataset-created':
       return {
         title: 'Dataset created',
-        detail: 'research-dataset  ·  Public',
+        detail: 'research-dataset',
+        inlineMeta: 'Public',
         time: '12m ago',
         network: demoNetwork,
         tags: [tx].filter(Boolean) as string[],
