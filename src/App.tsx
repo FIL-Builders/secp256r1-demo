@@ -843,6 +843,7 @@ export default function App() {
       />
       <div className="app-main">
         <TopNavbar
+          activeItemId={activeItemId}
           network={network}
           onNetworkChange={handleNetworkChange}
           runtimeMode={runtimeMode}

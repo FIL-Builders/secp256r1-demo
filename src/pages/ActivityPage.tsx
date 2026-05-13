@@ -5,6 +5,7 @@ import {
   CloudUpload,
   Database,
   DollarSign,
+  ExternalLink,
   Fingerprint,
   Globe2,
   RefreshCw,
@@ -17,15 +18,7 @@ import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 
 import type { ActivityEvent, ActivityKind, ChainDataSource, DemoRuntimeMode } from '../lib';
-import {
-  activityKindLabel,
-  createExplorerMessageUrl,
-  formatDate,
-  formatRelativeTime,
-  shortId,
-  sourceLabel,
-  sourceTone,
-} from './storage-page-utils';
+import { createExplorerMessageUrl, formatRelativeTime, shortId, sourceLabel, sourceTone } from './storage-page-utils';
 
 export interface ActivityPageProps {
   networkLabel: string;
@@ -52,7 +45,6 @@ const filterLabels: Record<ActivityFilter, string> = {
 
 export function ActivityPage({
   networkLabel,
-  chainId,
   activity,
   refreshing,
   explorerUrl,
@@ -204,60 +196,56 @@ export function ActivityPage({
             </dl>
           </article>
 
-          <article className="panel">
+          <article className="panel activity-highlights-panel">
             <div className="panel-head">
-              <h2 className="panel-title">Selected event</h2>
-              <span className={`badge ${selectedEvent ? sourceTone(selectedEvent.source) : 'warning'}`}>
-                {selectedEvent ? sourceLabel(selectedEvent.source) : 'None'}
-              </span>
+              <h2 className="panel-title">Recent Highlights</h2>
             </div>
-            {selectedEvent ? (
-              <>
-                <div className="detail-hero">
-                  <span className={`detail-hero-icon detail-hero-icon--${eventTone(selectedEvent)}`}>
-                    {renderKindIcon(selectedEvent.kind)}
-                  </span>
-                  <div>
-                    <strong>{selectedEvent.title}</strong>
-                    <p>{activityKindLabel(selectedEvent.kind)}</p>
-                  </div>
-                </div>
-                <dl className="status-list">
-                  <StatusRow label="Created" value={formatDate(selectedEvent.createdAt)} />
-                  <StatusRow label="Network" value={`${networkLabel} (${chainId})`} />
-                  <StatusRow label="Dataset" value={shortId(selectedEvent.datasetId)} />
-                  <StatusRow label="File" value={shortId(selectedEvent.fileId)} />
-                  <StatusRow label="Provider" value={selectedEvent.provider ?? 'Unknown'} />
-                  <StatusRow label="Amount" value={selectedEvent.amountLabel ?? 'Not applicable'} />
-                  <StatusRow label="Actor" value={selectedEvent.actor ?? 'Unknown'} />
-                </dl>
-                {selectedExplorerUrl ? (
-                  <a className="secondary-button" href={selectedExplorerUrl} target="_blank" rel="noreferrer">
-                    View on explorer
-                  </a>
-                ) : null}
-              </>
-            ) : (
-              <p className="panel-copy">Select an event to inspect references.</p>
-            )}
+            <div className="recent-activity-list">
+              <ActivityHighlight
+                icon={<CheckCircle2 size={15} />}
+                title="research-dataset.zip"
+                detail="Committed successfully"
+                time="20m ago"
+                tone="success"
+              />
+              <ActivityHighlight
+                icon={<DollarSign size={15} />}
+                title="Payment confirmed"
+                detail="2.12 FIL"
+                time="21m ago"
+                tone="success"
+              />
+              <ActivityHighlight
+                icon={<Fingerprint size={15} />}
+                title="Passkey session active"
+                detail="This device"
+                time="32m ago"
+                tone="info"
+              />
+            </div>
+            <a className="panel-link" href="#activity">
+              View all activity <ExternalLink size={13} />
+            </a>
           </article>
 
-          <article className="panel">
-            <div className="panel-head">
-              <h2 className="panel-title">Advanced references</h2>
-              <span className="panel-meta">One click away</span>
+          <article className="panel activity-verified-panel">
+            <div className="detail-hero">
+              <span className="detail-hero-icon">
+                <ShieldCheck size={24} />
+              </span>
+              <div>
+                <strong>On-Chain Verified</strong>
+                <p>All storage actions are verified on-chain via Synapse and Filecoin.</p>
+              </div>
             </div>
-            {selectedEvent ? (
-              <dl className="status-list">
-                <StatusRow label="Transaction" value={shortId(selectedEvent.transactionHash, 10, 8)} />
-                <StatusRow label="PieceCID" value={shortId(selectedEvent.pieceCid, 12, 10)} />
-                <StatusRow label="Provider address" value={shortId(selectedEvent.providerAddress, 10, 8)} />
-                {Object.entries(selectedEvent.metadata ?? {}).map(([key, value]) => (
-                  <StatusRow key={key} label={key} value={String(value)} />
-                ))}
-              </dl>
+            {selectedExplorerUrl ? (
+              <a className="secondary-button" href={selectedExplorerUrl} target="_blank" rel="noreferrer">
+                How verification works
+              </a>
             ) : (
-              <p className="panel-copy">No protocol references are selected.</p>
+              <button type="button" className="secondary-button">
+                How verification works
+              </button>
             )}
           </article>
         </aside>
@@ -274,6 +262,31 @@ function SummaryRow({ icon, label, value }: { icon: ReactNode; label: string; va
         {label}
       </dt>
       <dd>{value.toLocaleString()}</dd>
+    </div>
+  );
+}
+
+function ActivityHighlight({
+  icon,
+  title,
+  detail,
+  time,
+  tone,
+}: {
+  icon: ReactNode;
+  title: string;
+  detail: string;
+  time: string;
+  tone: string;
+}) {
+  return (
+    <div className="activity-mini">
+      <span className={`activity-mini-icon--${tone}`}>{icon}</span>
+      <div>
+        <strong>{title}</strong>
+        <small>{detail}</small>
+      </div>
+      <time>{time}</time>
     </div>
   );
 }

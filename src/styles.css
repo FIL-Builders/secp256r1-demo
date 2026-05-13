@@ -576,6 +576,51 @@ select {
   color: #6b21a8;
 }
 
+.shell-status-pill--precompile {
+  min-width: 140px;
+}
+
+.shell-status-pill--precompile .shell-status-pill__detail {
+  color: #64748b;
+}
+
+.shell-icon-control,
+.shell-avatar-control {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  cursor: pointer;
+}
+
+.shell-icon-control {
+  width: 42px;
+  border-color: transparent;
+}
+
+.shell-avatar-control {
+  gap: 6px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 820;
+}
+
+.shell-avatar-control::before {
+  content: '';
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 32% 30%, #22c55e 0 14%, transparent 15%),
+    radial-gradient(circle at 72% 36%, #7c3aed 0 18%, transparent 19%),
+    linear-gradient(135deg, #38bdf8, #7c3aed 55%, #f59e0b);
+}
+
 .shell-button {
   display: inline-flex;
   min-height: 36px;
@@ -1075,6 +1120,16 @@ select {
   color: #6d4aff;
 }
 
+.activity-mini > span.activity-mini-icon--success {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.activity-mini > span.activity-mini-icon--info {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
 .activity-mini div {
   display: grid;
   gap: 2px;
@@ -1091,6 +1146,21 @@ select {
   color: #64748b;
   font-size: 12px;
   padding-top: 12px;
+}
+
+.activity-highlights-panel .panel-link {
+  justify-self: center;
+  margin-top: 4px;
+}
+
+.activity-verified-panel {
+  border-color: #e9ddff;
+  background: #faf7ff;
+}
+
+.activity-verified-panel .detail-hero-icon {
+  background: #6d4aff;
+  color: #fff;
 }
 
 .page-grid {
@@ -1808,9 +1878,9 @@ select {
 .resource-table--files .resource-table-header,
 .resource-table--files .resource-table-row {
   grid-template-columns:
-    minmax(180px, 1.35fr) minmax(124px, 0.9fr) minmax(120px, 0.88fr)
-    minmax(76px, 0.55fr) minmax(110px, 0.78fr) minmax(86px, 0.62fr)
-    minmax(24px, 0.2fr);
+    minmax(210px, 1.6fr) minmax(112px, 0.72fr) minmax(108px, 0.72fr)
+    minmax(78px, 0.52fr) minmax(96px, 0.62fr) minmax(84px, 0.56fr)
+    minmax(22px, 0.15fr);
   min-width: 800px;
 }
 
