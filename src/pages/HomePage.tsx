@@ -44,6 +44,11 @@ export interface HomePageProps {
   recentActivity: ActivityItem[];
   datasets: FileSummary[];
   files: FileSummary[];
+  walletNotice?: {
+    title: string;
+    detail: string;
+    tone: 'warning' | 'success' | 'neutral';
+  };
 }
 
 const runtimeModeLabel: Record<RuntimeMode, string> = {
@@ -71,6 +76,7 @@ export function HomePage({
   recentActivity,
   datasets,
   files,
+  walletNotice,
 }: HomePageProps) {
   return (
     <main className="page page-home">
@@ -86,6 +92,15 @@ export function HomePage({
           and pending-network states without changing the layout.
         </p>
       </section>
+
+      {walletNotice ? (
+        <section className={`callout ${walletNotice.tone === 'warning' ? 'warning' : walletNotice.tone === 'success' ? 'success' : ''}`}>
+          <ShieldCheck size={18} />
+          <span>
+            <strong>{walletNotice.title}</strong> {walletNotice.detail}
+          </span>
+        </section>
+      ) : null}
 
       <section className="page-grid page-grid-primary">
         <article className={`info-card ${runtimeToneClass[runtimeMode]}`}>

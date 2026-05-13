@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, Database, FileText, ShieldCheck } from 'lucide-react';
+import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi';
 import { Sidebar, TopNavbar, type SidebarItemId } from './components/shell';
+import { WalletControls } from './components/wallet';
 import {
   HomePage,
   NetworkStatesPage,
+  SettingsPage,
   UploadPage,
   type ActivityItem,
   type FileSummary as PageSummary,
@@ -11,8 +14,13 @@ import {
 } from './pages';
 import {
   createRuntimeAdapters,
+  clearStoredPreferences,
+  createWalletViewState,
   getCapabilitiesForNetworkAndMode,
   getNetworkConfig,
+  readStoredNetwork,
+  readStoredRuntimeMode,
+  shortenAddress,
   summarizeCapabilityModel,
   type ActivityEvent,
   type CapabilityState,
@@ -20,6 +28,8 @@ import {
   type DemoNetwork,
   type DemoRuntimeMode,
   type FileSummary,
+  writeStoredNetwork,
+  writeStoredRuntimeMode,
 } from './lib';
 
 const INITIAL_NETWORK: DemoNetwork = 'calibration';
@@ -90,6 +100,34 @@ function p256StatusCopy(state: CapabilityState): {
   };
 }
 
+function p256UploadCopy(input: {
+  runtimeMode: DemoRuntimeMode;
+  p256Available: boolean;
+}): {
+  title: string;
+  detail: string;
+} {
+  if (input.runtimeMode === 'simulation') {
+    return {
+      title: 'Simulation verifier',
+      detail:
+        'Fixture verification is active for demo rehearsal only. This is not a live P256VERIFY result.',
+    };
+  }
+
+  if (input.p256Available) {
+    return {
+      title: 'P256VERIFY available',
+      detail: 'Verification can proceed as a live capability.',
+    };
+  }
+
+  return {
+    title: 'P256VERIFY unavailable',
+    detail: 'P256VERIFY is not active here, so this flow must remain pending-network or simulation only.',
+  };
+}
+
 function createRecentActivity(events: ActivityEvent[]): ActivityItem[] {
   return events.map((event) => ({
     id: event.eventId,
@@ -116,7 +154,14 @@ function createFileSummaries(files: FileSummary[]): PageSummary[] {
   }));
 }
 
-function createNetworkStateCards(selectedNetwork: DemoNetwork, p256State: CapabilityState): NetworkStateCard[] {
+function createNetworkStateCards(input: {
+  selectedNetwork: DemoNetwork;
+  p256State: CapabilityState;
+  walletConnected: boolean;
+  walletNetworkLabel: string;
+  isWrongChain: boolean;
+}): NetworkStateCard[] {
+  const { selectedNetwork, p256State, walletConnected, walletNetworkLabel, isWrongChain } = input;
   const p256Unavailable = p256State !== 'available';
 
   return [
@@ -145,8 +190,10 @@ function createNetworkStateCards(selectedNetwork: DemoNetwork, p256State: Capabi
     {
       variant: 'wrong-chain',
       title: 'Wallet connected to wrong chain',
-      detail: 'Storage actions must stay disabled when the wallet chain and selected app network disagree.',
-      status: 'Blocked until switched',
+      detail: walletConnected
+        ? `Wallet network: ${walletNetworkLabel}. Storage actions must stay disabled when the wallet chain and selected app network disagree.`
+        : 'No wallet is connected. Live storage actions stay disabled until a root wallet is connected.',
+      status: walletConnected ? (isWrongChain ? 'Blocked until switched' : 'Wallet matches app') : 'Wallet not connected',
       primaryLabel: 'Switch wallet network',
       secondaryLabel: 'Do not submit storage actions',
     },
@@ -199,15 +246,64 @@ function PlaceholderPage({ title, detail }: { title: string; detail: string }) {
 }
 
 export default function App() {
-  const [network, setNetwork] = useState<DemoNetwork>(INITIAL_NETWORK);
-  const [runtimeMode, setRuntimeMode] = useState<DemoRuntimeMode>(INITIAL_MODE);
+  const [network, setNetworkState] = useState<DemoNetwork>(() => readStoredNetwork(INITIAL_NETWORK));
+  const [runtimeMode, setRuntimeModeState] = useState<DemoRuntimeMode>(() =>
+    readStoredRuntimeMode(INITIAL_MODE),
+  );
   const [activeItemId, setActiveItemId] = useState<SidebarItemId>('home');
   const [p256State, setP256State] = useState<CapabilityState>('unknown');
   const [datasets, setDatasets] = useState<DatasetSummary[]>([]);
   const [files, setFiles] = useState<FileSummary[]>([]);
   const [activity, setActivity] = useState<ActivityEvent[]>([]);
+  const account = useAccount();
+  const { connect, connectors, error: connectError, isPending: connectPending } = useConnect();
+  const { disconnect } = useDisconnect();
+  const { switchChain, error: switchError, isPending: switchPending } = useSwitchChain();
 
   const networkConfig = getNetworkConfig(network);
+  const walletState = createWalletViewState({
+    address: account.address,
+    chainId: account.chainId,
+    status: account.status,
+    selectedNetwork: network,
+  });
+  const walletError = connectError?.message ?? switchError?.message ?? null;
+  const walletShortAddress = shortenAddress(account.address);
+  const primaryConnector = connectors[0];
+
+  function handleNetworkChange(value: DemoNetwork) {
+    setNetworkState(value);
+    writeStoredNetwork(value);
+  }
+
+  function handleRuntimeModeChange(value: DemoRuntimeMode) {
+    setRuntimeModeState(value);
+    writeStoredRuntimeMode(value);
+  }
+
+  function handleClearLocalPreferences() {
+    clearStoredPreferences();
+    setNetworkState(INITIAL_NETWORK);
+    setRuntimeModeState(INITIAL_MODE);
+  }
+
+  function handleConnectWallet() {
+    if (!primaryConnector) {
+      return;
+    }
+
+    connect({
+      connector: primaryConnector,
+      chainId: networkConfig.chainId,
+    });
+  }
+
+  function handleSwitchNetwork() {
+    switchChain({
+      chainId: networkConfig.chainId,
+    });
+  }
+
   const runtimeAdapters = useMemo(
     () =>
       createRuntimeAdapters({
@@ -221,6 +317,13 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false;
+
+    if (runtimeMode === 'simulation') {
+      setP256State('available');
+      return () => {
+        cancelled = true;
+      };
+    }
 
     setP256State('unknown');
 
@@ -244,7 +347,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [networkConfig.chainId, runtimeAdapters.verifier]);
+  }, [networkConfig.chainId, runtimeAdapters.verifier, runtimeMode]);
 
   useEffect(() => {
     let cancelled = false;
@@ -288,11 +391,33 @@ export default function App() {
   const p256Copy = p256StatusCopy(p256State);
   const p256Available = p256State === 'available';
   const simulationMode = runtimeMode === 'simulation';
+  const uploadP256Copy = p256UploadCopy({ runtimeMode, p256Available });
   const providerAvailable = false;
   const uploadCtaState =
-    simulationMode ? 'simulated' : runtimeMode === 'live' && p256Available && providerAvailable ? 'live' : 'disabled';
+    simulationMode
+      ? 'simulated'
+      : runtimeMode === 'live' && p256Available && providerAvailable && walletState.isConnected && !walletState.isWrongChain
+        ? 'live'
+        : 'disabled';
   const passkeyAvailability = simulationMode ? 'simulation' : p256AvailabilityFromState(p256State);
   const showVerificationChecks = runtimeMode === 'simulation';
+  const walletNotice = walletState.isConnected
+    ? walletState.isWrongChain
+      ? {
+          title: 'Wallet chain mismatch.',
+          detail: `Switch the wallet from ${walletState.connectedNetworkLabel} to ${walletState.selectedNetworkLabel} before live storage actions.`,
+          tone: 'warning' as const,
+        }
+      : {
+          title: 'Wallet network matches.',
+          detail: `${walletShortAddress} is connected to ${walletState.connectedNetworkLabel}.`,
+          tone: 'success' as const,
+        }
+    : {
+        title: 'Wallet not connected.',
+        detail: 'Live storage actions require a connected root wallet. Simulation Mode can still be explored.',
+        tone: 'neutral' as const,
+      };
 
   const page = (() => {
     switch (activeItemId) {
@@ -301,6 +426,7 @@ export default function App() {
           <HomePage
             runtimeMode={runtimeMode}
             networkLabel={networkConfig.label}
+            walletNotice={walletNotice}
             storage={{
               label: `${networkConfig.nativeTokenSymbol} storage balance`,
               value: simulationMode ? '42.67 FIL' : 'Readiness pending',
@@ -325,7 +451,10 @@ export default function App() {
             runtimeMode={runtimeMode}
             p256Available={p256Available}
             providerAvailable={providerAvailable}
-            currentChainLabel={networkConfig.label}
+            walletConnected={walletState.isConnected}
+            chainMismatch={walletState.isWrongChain}
+            switchNetworkPending={switchPending}
+            currentChainLabel={walletState.connectedNetworkLabel}
             expectedNetworkLabel={networkConfig.label}
             statusTitle={simulationMode ? 'Simulation flow ready' : p256Copy.title}
             statusDetail={
@@ -336,10 +465,23 @@ export default function App() {
             receiptLabel={simulationMode ? 'Simulation receipt' : 'No live receipt yet'}
             receiptState={simulationMode ? 'Demo data only' : p256Available ? 'Ready for live cutover' : 'Blocked'}
             ctaState={uploadCtaState}
+            onSwitchNetwork={walletState.isConnected ? handleSwitchNetwork : undefined}
+            p256StatusTitle={uploadP256Copy.title}
+            p256StatusDetail={uploadP256Copy.detail}
           />
         );
       case 'network-states':
-        return <NetworkStatesPage states={createNetworkStateCards(network, p256State)} />;
+        return (
+          <NetworkStatesPage
+            states={createNetworkStateCards({
+              selectedNetwork: network,
+              p256State,
+              walletConnected: walletState.isConnected,
+              walletNetworkLabel: walletState.connectedNetworkLabel,
+              isWrongChain: walletState.isWrongChain,
+            })}
+          />
+        );
       case 'datasets':
         return (
           <PlaceholderPage
@@ -377,9 +519,24 @@ export default function App() {
         );
       case 'settings':
         return (
-          <PlaceholderPage
-            title="Settings"
-            detail="Settings will manage default network, runtime mode, local labels, and cache controls."
+          <SettingsPage
+            defaultNetwork={network}
+            runtimeMode={runtimeMode}
+            walletNetworkSummary={{
+              walletLabel: walletState.isConnected ? walletShortAddress : 'Not connected',
+              walletDetail: walletState.isConnected
+                ? walletState.isWrongChain
+                  ? `Wallet is on ${walletState.connectedNetworkLabel}, but the app expects ${walletState.selectedNetworkLabel}.`
+                  : `Wallet is connected to ${walletState.connectedNetworkLabel}.`
+                : 'No root wallet is connected. Simulation Mode does not imply wallet ownership.',
+              providerLabel: simulationMode ? 'Simulation only' : 'Live provider pending',
+              currentChainLabel: walletState.connectedNetworkLabel,
+              expectedNetworkLabel: walletState.selectedNetworkLabel,
+              p256StatusLabel: simulationMode ? 'Simulation label' : p256Copy.title,
+            }}
+            onDefaultNetworkChange={handleNetworkChange}
+            onRuntimeModeChange={handleRuntimeModeChange}
+            onClearLocalPreferences={handleClearLocalPreferences}
           />
         );
       case 'verification-checks':
@@ -402,13 +559,28 @@ export default function App() {
       <div className="app-main">
         <TopNavbar
           network={network}
-          onNetworkChange={setNetwork}
+          onNetworkChange={handleNetworkChange}
           runtimeMode={runtimeMode}
-          onRuntimeModeChange={setRuntimeMode}
+          onRuntimeModeChange={handleRuntimeModeChange}
           passkeyUploadAvailability={passkeyAvailability}
-          walletLabel={simulationMode ? 'Demo wallet' : 'Wallet pending'}
+          walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
           passkeySessionLabel={simulationMode ? 'Simulation active' : 'Pending'}
           showVerificationChecks={showVerificationChecks}
+          walletControls={
+            <WalletControls
+              isConnected={walletState.isConnected}
+              isConnecting={walletState.isConnecting || connectPending}
+              isSwitchingNetwork={switchPending}
+              shortAddress={walletShortAddress}
+              selectedNetworkLabel={walletState.selectedNetworkLabel}
+              walletNetworkLabel={walletState.connectedNetworkLabel}
+              hasChainMismatch={walletState.isWrongChain}
+              error={walletError}
+              onConnect={handleConnectWallet}
+              onDisconnect={() => disconnect()}
+              onSwitchNetwork={handleSwitchNetwork}
+            />
+          }
         />
         {page}
       </div>

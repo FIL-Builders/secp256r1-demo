@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { CreditCard, Fingerprint, FlaskConical, Globe, Clock3, ShieldCheck } from 'lucide-react';
 import { classNames } from './utils';
 import type { NetworkMode, RuntimeMode, UploadAvailability } from './types';
@@ -13,6 +14,7 @@ export interface TopNavbarProps {
   passkeyUploadAvailability: UploadAvailability;
   walletLabel: string;
   passkeySessionLabel: string;
+  walletControls?: ReactNode;
   className?: string;
   showVerificationChecks?: boolean;
 }
@@ -72,6 +74,7 @@ export function TopNavbar({
   passkeyUploadAvailability,
   walletLabel,
   passkeySessionLabel,
+  walletControls,
   className,
   showVerificationChecks = false,
 }: TopNavbarProps) {
@@ -124,6 +127,7 @@ export function TopNavbar({
         {showVerificationChecks ? (
           <StatusPill tone="info" icon={ShieldCheck} label="Verification checks enabled" detail="Developer mode" />
         ) : null}
+        {walletControls}
       </div>
     </header>
   );

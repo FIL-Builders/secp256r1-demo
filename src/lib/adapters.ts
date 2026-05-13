@@ -177,7 +177,9 @@ export function createRuntimeAdapters(options: {
   activity: ActivityAdapter;
 } {
   const verifier =
-    options.rpcUrl
+    options.mode === 'simulation'
+      ? createSimulatedVerifierAdapter()
+      : options.rpcUrl
       ? createLiveVerifierAdapter({
           network: options.network,
           chainId: options.chainId,

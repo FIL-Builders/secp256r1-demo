@@ -16,6 +16,9 @@ export interface UploadPageProps {
   runtimeMode: RuntimeMode;
   p256Available: boolean;
   providerAvailable: boolean;
+  walletConnected: boolean;
+  chainMismatch: boolean;
+  switchNetworkPending?: boolean;
   currentChainLabel: string;
   expectedNetworkLabel: string;
   statusTitle: string;
@@ -23,6 +26,9 @@ export interface UploadPageProps {
   receiptLabel: string;
   receiptState: string;
   ctaState: UploadCtaState;
+  onSwitchNetwork?: () => void;
+  p256StatusTitle?: string;
+  p256StatusDetail?: string;
 }
 
 const ctaMeta: Record<
@@ -46,6 +52,9 @@ export function UploadPage({
   runtimeMode,
   p256Available,
   providerAvailable,
+  walletConnected,
+  chainMismatch,
+  switchNetworkPending = false,
   currentChainLabel,
   expectedNetworkLabel,
   statusTitle,
@@ -53,6 +62,9 @@ export function UploadPage({
   receiptLabel,
   receiptState,
   ctaState,
+  onSwitchNetwork,
+  p256StatusTitle,
+  p256StatusDetail,
 }: UploadPageProps) {
   const cta = ctaMeta[ctaState];
   const CtaIcon = cta.icon;
@@ -96,12 +108,13 @@ export function UploadPage({
               <ShieldAlert size={16} />
               P256VERIFY
             </span>
-            <strong>{p256Available ? 'Available' : 'Unavailable'}</strong>
+            <strong>{p256StatusTitle ?? (p256Available ? 'Available' : 'Unavailable')}</strong>
           </div>
           <p className="info-card-copy">
-            {p256Available
-              ? 'Verification can proceed as a live capability.'
-              : 'P256VERIFY is not active here, so this flow must remain pending-network or simulation only.'}
+            {p256StatusDetail ??
+              (p256Available
+                ? 'Verification can proceed as a live capability.'
+                : 'P256VERIFY is not active here, so this flow must remain pending-network or simulation only.')}
           </p>
         </article>
 
@@ -116,6 +129,31 @@ export function UploadPage({
           <p className="info-card-copy">{providerCopy}</p>
         </article>
       </section>
+
+      {!walletConnected ? (
+        <section className="callout warning">
+          <AlertTriangle size={18} />
+          <span>
+            <strong>Wallet required for live uploads.</strong> Connect a root wallet before passkey-backed
+            storage actions can run outside Simulation Mode.
+          </span>
+        </section>
+      ) : null}
+
+      {chainMismatch ? (
+        <section className="callout warning">
+          <AlertTriangle size={18} />
+          <span>
+            <strong>Wallet chain mismatch.</strong> The app is set to {expectedNetworkLabel}, but the wallet is on{' '}
+            {currentChainLabel}. Storage actions remain disabled until they match.
+          </span>
+          {onSwitchNetwork ? (
+            <button type="button" className="secondary-button" onClick={onSwitchNetwork} disabled={switchNetworkPending}>
+              {switchNetworkPending ? 'Switching network' : `Switch to ${expectedNetworkLabel}`}
+            </button>
+          ) : null}
+        </section>
+      ) : null}
 
       <section className="page-grid page-grid-secondary">
         <article className="panel">

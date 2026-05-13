@@ -354,6 +354,62 @@ select {
   color: #6b21a8;
 }
 
+.shell-button {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
+  background: #fff;
+  color: #334155;
+  cursor: pointer;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.shell-button:hover {
+  border-color: #c4b5fd;
+  background: #f5f3ff;
+  color: #5534e8;
+}
+
+.shell-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.shell-button--primary {
+  border-color: #6d4aff;
+  background: #6d4aff;
+  color: #fff;
+}
+
+.shell-button--primary:hover {
+  background: #5736df;
+  color: #fff;
+}
+
+.shell-button--ghost {
+  border-color: transparent;
+  background: transparent;
+}
+
+.shell-button__icon {
+  width: 15px;
+  height: 15px;
+}
+
+.wallet-controls,
+.wallet-status {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
 .nav-left,
 .nav-right,
 .navbar-left,
@@ -714,6 +770,12 @@ select {
   cursor: not-allowed;
 }
 
+.primary-action.is-warning {
+  border-color: #f59e0b;
+  background: #f59e0b;
+  color: #111827;
+}
+
 .grid {
   display: grid;
   gap: 16px;
@@ -845,6 +907,7 @@ select {
 
 .callout {
   display: flex;
+  align-items: center;
   gap: 12px;
   border: 1px solid #d8b4fe;
   border-radius: 8px;
@@ -869,6 +932,11 @@ select {
   border-color: #b7e7ca;
   background: #ecfdf3;
   color: #087443;
+}
+
+.callout .secondary-button {
+  margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .drop-zone {
@@ -953,7 +1021,9 @@ select {
 
   .shell-navbar,
   .shell-navbar__primary,
-  .shell-navbar__secondary {
+  .shell-navbar__secondary,
+  .wallet-controls,
+  .wallet-status {
     align-items: stretch;
     flex-direction: column;
   }
