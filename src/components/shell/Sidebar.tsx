@@ -12,6 +12,7 @@ import {
   HelpCircle,
   Home,
   CreditCard,
+  RefreshCw,
   Settings,
   ShieldCheck,
   Upload,
@@ -74,8 +75,11 @@ export function Sidebar({
   const secondaryItems = visibleItems.filter((item) => item.secondary);
   const selectedNetworkLabel = network === 'mainnet' ? 'Mainnet' : 'Calibration';
   const selectedNetworkDetail = network === 'mainnet' ? 'Filecoin mainnet · 314' : 'Filecoin testnet · 314159';
+  const isFilesPage = activeItemId === 'files';
+  const isActivityPage = activeItemId === 'activity';
+  const isUploadPage = activeItemId === 'upload';
   const networkCard = (
-    <section key="network" className="shell-sidebar__card">
+    <section key="network" className={classNames('shell-sidebar__card', isActivityPage && 'shell-sidebar__network-card--activity')}>
       <div className="shell-sidebar__card-head">
         <span className="shell-sidebar__card-label">Network</span>
         <Globe2 size={14} />
@@ -103,31 +107,49 @@ export function Sidebar({
           );
         })}
       </div>
+      {isActivityPage ? (
+        <button type="button" className="shell-sidebar__switch-button" onClick={() => onNetworkChange?.(network === 'mainnet' ? 'calibration' : 'mainnet')}>
+          <RefreshCw size={14} />
+          <span>Switch Network</span>
+        </button>
+      ) : null}
     </section>
   );
   const walletCard = (
-    <section key="wallet" className={classNames('shell-sidebar__card', activeItemId === 'files' && 'shell-sidebar__wallet-card--files')}>
+    <section
+      key="wallet"
+      className={classNames(
+        'shell-sidebar__card',
+        isUploadPage && 'shell-sidebar__wallet-card--upload',
+        isFilesPage && 'shell-sidebar__wallet-card--files',
+        isActivityPage && 'shell-sidebar__wallet-card--activity',
+      )}
+    >
       <div className="shell-sidebar__card-head">
         <span className="shell-sidebar__card-label">Connected Wallet</span>
-        {activeItemId === 'files' ? null : <ChevronRight size={15} />}
+        {isFilesPage || isUploadPage ? null : <ChevronRight size={15} />}
       </div>
       <div className="shell-sidebar__wallet">
         <span
           className={classNames(
-            activeItemId === 'files' ? 'shell-sidebar__wallet-avatar' : 'shell-sidebar__wallet-dot',
-            activeItemId !== 'files' && walletConnected && 'shell-sidebar__wallet-dot--connected',
+            isFilesPage || isActivityPage ? 'shell-sidebar__wallet-avatar' : 'shell-sidebar__wallet-dot',
+            !isFilesPage && !isActivityPage && walletConnected && 'shell-sidebar__wallet-dot--connected',
           )}
         />
         <div>
           <strong>{walletLabel}</strong>
-          {activeItemId === 'files' ? null : <small>{walletConnected ? 'Root Wallet connected' : 'Wallet not connected'}</small>}
+          {isFilesPage || isUploadPage ? null : <small>{walletConnected ? 'Root Wallet' : 'Wallet not connected'}</small>}
         </div>
-        {activeItemId === 'files' ? <Copy className="shell-sidebar__wallet-copy" size={14} /> : null}
+        {isFilesPage || isActivityPage || isUploadPage ? <Copy className="shell-sidebar__wallet-copy" size={14} /> : null}
       </div>
-      {activeItemId === 'files' ? (
+      {isFilesPage ? (
         <a className="shell-sidebar__wallet-link" href="https://filfox.info/" target="_blank" rel="noreferrer">
           View on Explorer
         </a>
+      ) : isUploadPage ? (
+        <span className="shell-sidebar__connected-pill">Connected</span>
+      ) : isActivityPage ? (
+        <span className="shell-sidebar__connected-pill">Connected</span>
       ) : (
         <small>{selectedNetworkLabel} scope · {selectedNetworkDetail}</small>
       )}
@@ -185,15 +207,22 @@ export function Sidebar({
 
       </div>
 
-      <section className="shell-sidebar__card shell-sidebar__help-card">
-        <div className="shell-sidebar__card-head">
-          <span className="shell-sidebar__card-label">Need help?</span>
-          <HelpCircle size={14} />
+      {isActivityPage ? (
+        <div className="shell-sidebar__version-footer">
+          <span><SynapseBrandMark /> Synapse v0.9.0</span>
+          <a href="https://docs.filecoin.io/" target="_blank" rel="noreferrer"><HelpCircle size={14} /> Help &amp; Docs</a>
         </div>
-        <small>Read docs or contact support.</small>
-        <a href="https://docs.filecoin.io/" target="_blank" rel="noreferrer">Documentation</a>
-        <a href="https://github.com/FilOzone/synapse-sdk" target="_blank" rel="noreferrer">Support</a>
-      </section>
+      ) : (
+        <section className="shell-sidebar__card shell-sidebar__help-card">
+          <div className="shell-sidebar__card-head">
+            <span className="shell-sidebar__card-label">Need help?</span>
+            <HelpCircle size={14} />
+          </div>
+          <small>Read docs or contact support.</small>
+          <a href="https://docs.filecoin.io/" target="_blank" rel="noreferrer">Documentation</a>
+          <a href="https://github.com/FilOzone/synapse-sdk" target="_blank" rel="noreferrer">Support</a>
+        </section>
+      )}
 
       <nav className="shell-sidebar__nav shell-sidebar__secondary-nav" aria-label="Secondary">
         {secondaryItems.map((item) => {

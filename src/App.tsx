@@ -874,6 +874,15 @@ export default function App() {
               onConnect={handleConnectWallet}
               onDisconnect={walletState.isConnected ? () => disconnect() : undefined}
               onSwitchNetwork={handleSwitchNetwork}
+              displayMode={
+                activeItemId === 'upload'
+                  ? 'upload'
+                  : activeItemId === 'datasets'
+                    ? 'wallet-avatar'
+                    : activeItemId === 'files' || activeItemId === 'activity'
+                      ? 'avatar'
+                      : 'default'
+              }
             />
           }
         />

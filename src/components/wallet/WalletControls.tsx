@@ -3,6 +3,7 @@ import {
   AlertTriangle,
   ChevronDown,
   CheckCircle2,
+  Copy,
   Link2,
   RefreshCw,
   Wallet,
@@ -17,6 +18,7 @@ export interface WalletConnectionButtonProps {
   onConnect: () => void;
   onDisconnect?: () => void;
   className?: string;
+  displayMode?: 'default' | 'upload' | 'avatar' | 'wallet-avatar';
   buttonProps?: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'disabled' | 'onClick' | 'type'>;
 }
 
@@ -27,9 +29,45 @@ export function WalletConnectionButton({
   onConnect,
   onDisconnect,
   className,
+  displayMode = 'default',
   buttonProps,
 }: WalletConnectionButtonProps) {
   if (isConnected) {
+    if (displayMode === 'upload') {
+      return (
+        <button
+          {...buttonProps}
+          type="button"
+          className={classNames('wallet-address-button wallet-address-button--upload', className)}
+          onClick={onDisconnect}
+        >
+          <span className="wallet-address-button__main">
+            {shortAddress ? shortAddress : 'Wallet'}
+            <Copy size={14} aria-hidden="true" />
+          </span>
+          <span className="wallet-address-button__detail">Connected</span>
+        </button>
+      );
+    }
+
+    if (displayMode === 'avatar' || displayMode === 'wallet-avatar') {
+      return (
+        <button
+          {...buttonProps}
+          type="button"
+          className={classNames('wallet-address-button wallet-address-button--avatar', displayMode === 'wallet-avatar' && 'wallet-address-button--wallet-avatar', className)}
+          onClick={onDisconnect}
+        >
+          <span className="wallet-address-button__avatar" aria-hidden="true" />
+          <span className="wallet-address-button__copy">
+            <strong>{displayMode === 'wallet-avatar' ? 'Wallet' : shortAddress ? shortAddress : 'Wallet'}</strong>
+            {displayMode === 'wallet-avatar' ? <small>{shortAddress ? shortAddress : 'Connected'}</small> : null}
+          </span>
+          <ChevronDown size={14} aria-hidden="true" />
+        </button>
+      );
+    }
+
     return (
       <ShellButton
         {...buttonProps}
@@ -160,6 +198,7 @@ export interface WalletControlsProps extends HTMLAttributes<HTMLDivElement> {
   onConnect: () => void;
   onDisconnect?: () => void;
   onSwitchNetwork?: () => void;
+  displayMode?: 'default' | 'upload' | 'avatar' | 'wallet-avatar';
 }
 
 export function WalletControls({
@@ -174,6 +213,7 @@ export function WalletControls({
   onConnect,
   onDisconnect,
   onSwitchNetwork,
+  displayMode = 'default',
   className,
   ...rest
 }: WalletControlsProps) {
@@ -202,6 +242,7 @@ export function WalletControls({
         shortAddress={shortAddress}
         onConnect={onConnect}
         onDisconnect={onDisconnect}
+        displayMode={displayMode}
       />
     </div>
   );

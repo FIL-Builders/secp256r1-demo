@@ -35,7 +35,7 @@ export interface ActivityPageProps {
 type ActivityFilter = 'all' | 'storage' | 'payments' | 'passkey' | 'verification' | 'network';
 
 const filterLabels: Record<ActivityFilter, string> = {
-  all: 'All events',
+  all: 'All Events',
   storage: 'Storage',
   payments: 'Payments',
   passkey: 'Passkey',
@@ -97,7 +97,7 @@ export function ActivityPage({
           </div>
           <h1 className="page-title">Activity</h1>
           <p className="page-copy">
-            Timeline for storage, payments, Passkey Session, verification, and network events on {networkLabel}.
+            A timeline of your storage activity, payments, passkey events, and verification.
           </p>
         </div>
         <button type="button" className="secondary-button" onClick={onRefresh} disabled={refreshing}>
@@ -125,7 +125,7 @@ export function ActivityPage({
           onChange={(event) => setSourceFilter(event.target.value as typeof sourceFilter)}
           aria-label="Filter activity by source"
         >
-          <option value="all">All sources</option>
+          <option value="all">All Networks</option>
           <option value="chain">Chain-backed</option>
           <option value="simulation">Simulation</option>
         </select>
@@ -138,7 +138,7 @@ export function ActivityPage({
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search events"
+            placeholder="Search events..."
           />
         </label>
       </section>

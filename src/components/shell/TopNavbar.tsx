@@ -69,11 +69,14 @@ export function TopNavbar({
   const UploadIcon = uploadAvailabilityIcon(passkeyUploadAvailability);
   const networkLabel = network === 'mainnet' ? 'Mainnet' : 'Calibration';
   const networkDetail = network === 'mainnet' ? 'Filecoin Mainnet · 314' : 'Filecoin Testnet · 314159';
+  const networkChainId = network === 'mainnet' ? '314' : '314159';
   const showPasskeyUploads = activeItemId === 'files';
   const showPrecompileStatus = activeItemId !== 'files';
-  const showNetworkDetail = activeItemId === 'upload' || activeItemId === 'activity';
+  const showNetworkDetail = activeItemId === 'upload';
+  const showNetworkInline = activeItemId === 'activity';
   const walletFirst = activeItemId === 'upload' || activeItemId === 'datasets';
-  const showBell = activeItemId !== 'files';
+  const showBell = activeItemId !== 'files' && activeItemId !== 'activity';
+  const showAvatar = activeItemId !== 'activity';
   const precompileLabel = activeItemId === 'upload' ? 'P-256 Precompile' : 'P256VERIFY';
   const precompileDetail = activeItemId === 'upload' ? 'Detected at 0x0100' : '0x0100';
   const passkeySessionPill = <StatusPill tone="neutral" icon={Fingerprint} label="Passkey Session" detail={passkeySessionLabel} />;
@@ -81,11 +84,12 @@ export function TopNavbar({
   return (
     <header className={classNames('shell-navbar', className)}>
       <div className="shell-navbar__primary">
-        <label className={classNames('shell-network-select', showNetworkDetail && 'shell-network-select--detailed')}>
+        <label className={classNames('shell-network-select', showNetworkDetail && 'shell-network-select--detailed', showNetworkInline && 'shell-network-select--inline')}>
           <Circle className="shell-network-select__dot" aria-hidden="true" />
           <span className="shell-network-select__copy">
             <span>{networkLabel}</span>
             {showNetworkDetail ? <small>{networkDetail}</small> : null}
+            {showNetworkInline ? <small>{networkChainId}</small> : null}
           </span>
           <ChevronDown size={15} aria-hidden="true" />
           <select
@@ -124,10 +128,12 @@ export function TopNavbar({
             <Bell size={17} />
           </button>
         ) : null}
-        <button type="button" className={classNames('shell-avatar-control', activeItemId === 'files' && 'shell-avatar-control--icon')} aria-label="Account menu">
-          {activeItemId === 'files' ? <UserRound size={18} /> : 'MS'}
-          {activeItemId === 'files' ? null : <ChevronDown size={14} aria-hidden="true" />}
-        </button>
+        {showAvatar ? (
+          <button type="button" className={classNames('shell-avatar-control', activeItemId === 'files' && 'shell-avatar-control--icon')} aria-label="Account menu">
+            {activeItemId === 'files' ? <UserRound size={18} /> : 'MS'}
+            {activeItemId === 'files' ? null : <ChevronDown size={14} aria-hidden="true" />}
+          </button>
+        ) : null}
       </div>
     </header>
   );
