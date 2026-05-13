@@ -742,6 +742,7 @@ select {
   color: #111827;
   font-weight: 760;
   text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .primary-action {

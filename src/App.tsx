@@ -6,6 +6,7 @@ import { WalletControls } from './components/wallet';
 import {
   HomePage,
   NetworkStatesPage,
+  PasskeySessionPage,
   SettingsPage,
   UploadPage,
   type ActivityItem,
@@ -16,18 +17,29 @@ import {
   createRuntimeAdapters,
   clearStoredPreferences,
   createWalletViewState,
+  createPasskeyCredential,
   getCapabilitiesForNetworkAndMode,
   getNetworkConfig,
   readStoredNetwork,
   readStoredRuntimeMode,
+  readStoredPasskeyCredential,
+  removeStoredPasskeyCredential,
+  revokePasskeyAuthorization,
+  getPasskeyAuthorization,
+  isPasskeySupported,
   shortenAddress,
+  simulatePasskeyAuthorization,
   summarizeCapabilityModel,
+  testPasskeyCredential,
   type ActivityEvent,
   type CapabilityState,
   type DatasetSummary,
   type DemoNetwork,
   type DemoRuntimeMode,
   type FileSummary,
+  type PasskeyAuthorizationRecord,
+  type PasskeyProbeResult,
+  type StoredPasskeyCredential,
   writeStoredNetwork,
   writeStoredRuntimeMode,
 } from './lib';
@@ -255,6 +267,13 @@ export default function App() {
   const [datasets, setDatasets] = useState<DatasetSummary[]>([]);
   const [files, setFiles] = useState<FileSummary[]>([]);
   const [activity, setActivity] = useState<ActivityEvent[]>([]);
+  const [passkeyCredential, setPasskeyCredential] = useState<StoredPasskeyCredential | null>(() =>
+    readStoredPasskeyCredential(),
+  );
+  const [passkeyAuthorization, setPasskeyAuthorization] = useState<PasskeyAuthorizationRecord | null>(null);
+  const [passkeyTestResult, setPasskeyTestResult] = useState<PasskeyProbeResult | null>(null);
+  const [passkeyBusyLabel, setPasskeyBusyLabel] = useState<string | undefined>();
+  const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const account = useAccount();
   const { connect, connectors, error: connectError, isPending: connectPending } = useConnect();
   const { disconnect } = useDisconnect();
@@ -302,6 +321,95 @@ export default function App() {
     switchChain({
       chainId: networkConfig.chainId,
     });
+  }
+
+  function refreshPasskeyAuthorization(credential = passkeyCredential) {
+    setPasskeyAuthorization(
+      getPasskeyAuthorization({
+        credentialId: credential?.id,
+        network,
+        rootAddress: walletState.address,
+      }),
+    );
+  }
+
+  async function handleCreatePasskey() {
+    setPasskeyBusyLabel('Creating passkey');
+    setPasskeyError(null);
+    try {
+      const credential = await createPasskeyCredential({
+        rootAddress: walletState.address,
+        label: 'This device passkey',
+      });
+      setPasskeyCredential(credential);
+      setPasskeyTestResult(null);
+      refreshPasskeyAuthorization(credential);
+    } catch (error) {
+      setPasskeyError(error instanceof Error ? error.message : 'Unable to create passkey.');
+    } finally {
+      setPasskeyBusyLabel(undefined);
+    }
+  }
+
+  async function handleTestPasskey() {
+    if (!passkeyCredential) {
+      return;
+    }
+
+    setPasskeyBusyLabel('Testing assertion');
+    setPasskeyError(null);
+    try {
+      const result = await testPasskeyCredential({ credential: passkeyCredential });
+      setPasskeyTestResult(result);
+    } catch (error) {
+      setPasskeyError(error instanceof Error ? error.message : 'Unable to test passkey assertion.');
+    } finally {
+      setPasskeyBusyLabel(undefined);
+    }
+  }
+
+  function handleSimulatePasskeyAuthorization() {
+    if (!passkeyCredential) {
+      return;
+    }
+
+    if (!walletState.address) {
+      setPasskeyError('Connect a root wallet before simulating passkey authorization.');
+      return;
+    }
+
+    if (walletState.isWrongChain) {
+      setPasskeyError(`Switch the wallet to ${networkConfig.label} before simulating passkey authorization.`);
+      return;
+    }
+
+    setPasskeyError(null);
+    const record = simulatePasskeyAuthorization({
+      credential: passkeyCredential,
+      network,
+      rootAddress: walletState.address,
+    });
+    setPasskeyAuthorization(record);
+  }
+
+  function handleRevokePasskeyAuthorization() {
+    if (!passkeyCredential || !walletState.address) {
+      return;
+    }
+
+    const record = revokePasskeyAuthorization({
+      credentialId: passkeyCredential.id,
+      network,
+      rootAddress: walletState.address,
+    });
+    setPasskeyAuthorization(record);
+  }
+
+  function handleRemovePasskey() {
+    removeStoredPasskeyCredential();
+    setPasskeyCredential(null);
+    setPasskeyAuthorization(null);
+    setPasskeyTestResult(null);
   }
 
   const runtimeAdapters = useMemo(
@@ -374,6 +482,10 @@ export default function App() {
       cancelled = true;
     };
   }, [network, networkConfig.chainId, runtimeAdapters]);
+
+  useEffect(() => {
+    refreshPasskeyAuthorization(passkeyCredential);
+  }, [network, passkeyCredential?.id, walletState.address]);
 
   const capabilities = useMemo(
     () =>
@@ -512,9 +624,32 @@ export default function App() {
         );
       case 'passkey-session':
         return (
-          <PlaceholderPage
-            title="Passkey Session"
-            detail="Browser WebAuthn session creation is the next Milestone 0 probe."
+          <PasskeySessionPage
+            runtimeMode={runtimeMode}
+            network={network}
+            networkLabel={networkConfig.label}
+            walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
+            walletConnected={walletState.isConnected}
+            walletReady={walletState.isConnected && !walletState.isWrongChain && Boolean(walletState.address)}
+            walletRequirementDetail={
+              walletState.isConnected
+                ? walletState.isWrongChain
+                  ? `Switch the wallet to ${networkConfig.label} before authorizing this device.`
+                  : 'Root wallet is connected and scoped to this network.'
+                : 'Connect a root wallet before authorizing this device.'
+            }
+            p256Available={p256Available}
+            passkeySupported={isPasskeySupported()}
+            credential={passkeyCredential}
+            authorization={passkeyAuthorization}
+            testResult={passkeyTestResult}
+            busyLabel={passkeyBusyLabel}
+            error={passkeyError}
+            onCreatePasskey={handleCreatePasskey}
+            onTestPasskey={handleTestPasskey}
+            onSimulateAuthorize={handleSimulatePasskeyAuthorization}
+            onRevokeAuthorization={handleRevokePasskeyAuthorization}
+            onRemovePasskey={handleRemovePasskey}
           />
         );
       case 'settings':

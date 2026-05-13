@@ -45,8 +45,8 @@ Scope:
 - connect a wallet on Calibration
 - check `P256VERIFY` activation on Calibration and Mainnet
 - initialize Synapse SDK client for the selected network
-- create or load a browser passkey credential
-- produce a P-256 signature over a storage authorization payload
+- create or load a browser passkey credential with the local WebAuthn probe
+- produce a local WebAuthn assertion over a storage authorization payload
 - verify the signature through the intended P-256 verifier path
 - upload one small file through Synapse
 - retrieve enough chain-backed state to identify dataset, PieceCID, provider, and transaction/result
@@ -58,6 +58,7 @@ Acceptance criteria:
 - if activation is blocked, the script clearly reports the blocker and the app can enter Pending Network Mode
 - output includes network, wallet, passkey credential label or ID, dataset, PieceCID, provider, and verifier result
 - any unknowns in Synapse SDK, verifier contract, or WebAuthn payload shape are documented
+- until `P256VERIFY` and the verifier path land, chain authorization remains simulated or unavailable
 
 Exit decision:
 
@@ -95,14 +96,16 @@ Scope:
 - passkey credential creation/loading
 - passkey session authorization state per chain
 - session expiry, extension, revoke, and test actions
-- local cache for preferences and labels only
+- local cache for preferences, labels, and passkey credential metadata only
 
 Acceptance criteria:
 
 - Mainnet and Calibration passkey authorization states are independent
+- passkey authorization lookup is scoped by credential, selected network, and connected root wallet, with no walletless wildcard state
 - clearing local cache does not remove chain-backed datasets, pieces, payments, or authorizations
 - session status survives page navigation and refresh where feasible
 - session details expose root wallet, synthetic signer, credential fingerprint, expiry, permissions, network, and verifier details
+- production logs must not include raw credential IDs, authenticator data, client data, or signatures
 
 ## Milestone 3: Synapse SDK Integration
 

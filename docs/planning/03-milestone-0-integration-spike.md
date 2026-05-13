@@ -73,6 +73,15 @@ Do now:
 - route verifier, storage, and activity behavior through adapters so live implementations can replace fixtures without rewriting pages
 - continue non-chain-blocked parts of the spike: wallet connection, WebAuthn payload generation, Synapse SDK client initialization, and payment/provider readiness reads
 
+Sprint 3 status:
+
+- browser WebAuthn `create` and `get` are implemented as a local probe
+- the probe stores local credential metadata only, not chain authorization
+- assertion capture records verifier-facing payload shape metadata for integration work
+- simulated authorization requires a connected root wallet and is scoped by credential, wallet, and selected network
+- raw credential IDs, authenticator data, client data, and signatures are
+  developer-sensitive and must not be logged in production
+
 Do after activation:
 
 - re-run `pnpm check:p256`
@@ -116,7 +125,7 @@ Calibration can move from Pending Network Mode to Live Mode when:
 
 ## Next Spike Tasks
 
-1. Add a browser/WebAuthn probe that creates a passkey credential and records the exact authenticator output shape needed by the verifier.
+1. Keep the browser/WebAuthn local probe available for credential creation and assertion shape checks.
 2. Add a Synapse SDK probe that initializes clients for Mainnet and Calibration and reports provider/payment readiness.
 3. Define the app capability object and adapter interfaces in code.
 4. Add a fixture-backed app mode that is explicitly labeled as Simulation Mode.

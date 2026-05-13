@@ -5,3 +5,4 @@ export * from './p256-detection';
 export * from './adapters';
 export * from './persistence';
 export * from './wallet';
+export * from './passkey';
