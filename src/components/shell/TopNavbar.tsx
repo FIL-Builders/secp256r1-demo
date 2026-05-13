@@ -53,7 +53,7 @@ function uploadAvailabilityIcon(value: UploadAvailability) {
     case 'unavailable':
       return FlaskConical;
     case 'simulation':
-      return FlaskConical;
+      return CheckCircle2;
   }
 }
 
