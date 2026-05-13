@@ -1,9 +1,11 @@
 import {
   CheckCircle2,
+  ChevronDown,
   CloudUpload,
   Database,
   ExternalLink,
   FileArchive,
+  FileUp,
   Fingerprint,
   LockKeyhole,
   Settings,
@@ -66,7 +68,7 @@ export function UploadPage({ ctaState }: UploadPageProps) {
 
         <section className="upload-file-row">
           <span className="resource-icon resource-icon--archive">
-            <FileArchive size={20} />
+            <FileUp size={20} />
           </span>
           <div>
             <strong>research-dataset.zip</strong>
@@ -88,11 +90,17 @@ export function UploadPage({ ctaState }: UploadPageProps) {
             </div>
             <div>
               <span>Visibility</span>
-              <strong><LockKeyhole size={15} /> Private</strong>
+              <strong className="upload-detail-select">
+                <span><LockKeyhole size={15} /> Private</span>
+                <ChevronDown size={14} />
+              </strong>
             </div>
             <div>
               <span>Storage Provider</span>
-              <strong><span className="green-dot" /> Glif Storage</strong>
+              <strong className="upload-detail-select">
+                <span><span className="green-dot" /> Glif Storage</span>
+                <ChevronDown size={14} />
+              </strong>
             </div>
             <div>
               <span>Estimated Cost</span>

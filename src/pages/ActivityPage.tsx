@@ -317,10 +317,10 @@ function activityDisplay(event: ActivityEvent, runtimeMode: DemoRuntimeMode, net
     case 'dataset-created':
       return {
         title: 'Dataset created',
-        detail: 'research-dataset',
+        detail: 'research-dataset  ·  Public',
         time: '12m ago',
         network: demoNetwork,
-        tags: ['Public', tx].filter(Boolean) as string[],
+        tags: [tx].filter(Boolean) as string[],
       };
     case 'upload':
       return {
