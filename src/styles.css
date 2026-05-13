@@ -3211,6 +3211,10 @@ select {
   font-size: 16px;
 }
 
+.page-files .detail-rail > .panel:nth-child(3) {
+  margin-top: -10px;
+}
+
 .callout--file-bytes {
   border-color: #ddd6fe;
   background: #fbfaff;
