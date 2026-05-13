@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Bell, ChevronDown, Circle, Fingerprint, FlaskConical, Clock3, ShieldCheck, UserRound } from 'lucide-react';
+import { Bell, CheckCircle2, ChevronDown, Circle, Fingerprint, FlaskConical, Clock3, ShieldCheck, UserRound } from 'lucide-react';
 import { classNames } from './utils';
 import type { NetworkMode, RuntimeMode, SidebarItemId, UploadAvailability } from './types';
 import { StatusPill } from './StatusPill';
@@ -77,8 +77,9 @@ export function TopNavbar({
   const walletFirst = activeItemId === 'upload' || activeItemId === 'datasets';
   const showBell = activeItemId !== 'files' && activeItemId !== 'activity';
   const showAvatar = activeItemId !== 'activity';
-  const precompileLabel = activeItemId === 'upload' ? 'P-256 Precompile' : 'P256VERIFY';
-  const precompileDetail = activeItemId === 'upload' ? 'Detected at 0x0100' : '0x0100';
+  const precompileLabel = activeItemId === 'activity' ? 'P-256 Precompile' : activeItemId === 'upload' ? 'P-256 Precompile' : 'P256VERIFY';
+  const precompileDetail = activeItemId === 'activity' ? 'Available' : activeItemId === 'datasets' ? '0x0100' : activeItemId === 'upload' ? 'Detected at 0x0100' : '0x0100';
+  const PrecompileIcon = activeItemId === 'datasets' ? undefined : activeItemId === 'upload' ? CheckCircle2 : activeItemId === 'activity' ? CheckCircle2 : ShieldCheck;
   const passkeySessionPill = <StatusPill tone="neutral" icon={Fingerprint} label="Passkey Session" detail={passkeySessionLabel} />;
 
   return (
@@ -111,9 +112,13 @@ export function TopNavbar({
         ) : null}
         {showPrecompileStatus ? (
           <StatusPill
-            className="shell-status-pill--precompile"
-            tone="neutral"
-            icon={ShieldCheck}
+            className={classNames(
+              'shell-status-pill--precompile',
+              (activeItemId === 'activity' || activeItemId === 'datasets') && 'shell-status-pill--precompile-available',
+              activeItemId === 'datasets' && 'shell-status-pill--precompile-dataset',
+            )}
+            tone={activeItemId === 'upload' || activeItemId === 'activity' || activeItemId === 'datasets' ? 'success' : 'neutral'}
+            icon={PrecompileIcon}
             label={precompileLabel}
             detail={precompileDetail}
           />

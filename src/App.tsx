@@ -288,6 +288,7 @@ export default function App() {
     readStoredRuntimeMode(INITIAL_MODE),
   );
   const [activeItemId, setActiveItemId] = useState<SidebarItemId>('home');
+  const [networkTouched, setNetworkTouched] = useState(false);
   const [p256State, setP256State] = useState<CapabilityState>('unknown');
   const [datasets, setDatasets] = useState<DatasetSummary[]>([]);
   const [files, setFiles] = useState<FileSummary[]>([]);
@@ -319,8 +320,21 @@ export default function App() {
   const primaryConnector = connectors[0];
 
   function handleNetworkChange(value: DemoNetwork) {
+    setNetworkTouched(true);
     setNetworkState(value);
     writeStoredNetwork(value);
+  }
+
+  function handleNavigate(itemId: SidebarItemId) {
+    setActiveItemId(itemId);
+
+    if (!networkTouched && runtimeMode === 'simulation') {
+      const demoDefaultNetwork = itemId === 'activity' ? 'calibration' : 'mainnet';
+
+      if (network !== demoDefaultNetwork) {
+        setNetworkState(demoDefaultNetwork);
+      }
+    }
   }
 
   function handleRuntimeModeChange(value: DemoRuntimeMode) {
@@ -330,6 +344,7 @@ export default function App() {
 
   function handleClearLocalPreferences() {
     clearStoredPreferences();
+    setNetworkTouched(false);
     setNetworkState(INITIAL_NETWORK);
     setRuntimeModeState(INITIAL_MODE);
   }
@@ -568,8 +583,16 @@ export default function App() {
   }, [network, passkeyCredential?.id, walletState.address]);
 
   const simulationMode = runtimeMode === 'simulation';
+  const demoWalletLabel =
+    activeItemId === 'upload'
+      ? '0x8f3a...7c1d'
+      : activeItemId === 'datasets'
+        ? 'f012...8a7F'
+        : activeItemId === 'activity'
+          ? 'f1q7...3k2m'
+          : '0x8Fa3...7bC9';
   const displayWalletConnected = simulationMode || walletState.isConnected;
-  const displayWalletLabel = simulationMode && !walletState.isConnected ? '0x8Fa3...7bC9' : walletShortAddress;
+  const displayWalletLabel = simulationMode && !walletState.isConnected ? demoWalletLabel : walletShortAddress;
   const providerState = simulationMode ? 'available' : (storageReadiness?.provider.state ?? 'unknown');
   const paymentState = simulationMode ? 'available' : (storageReadiness?.payment.state ?? 'unknown');
   const storageState = simulationMode ? 'available' : (storageReadiness?.state ?? 'unknown');
@@ -835,7 +858,7 @@ export default function App() {
     <div className={`app-shell app-shell--${activeItemId}`}>
       <Sidebar
         activeItemId={activeItemId}
-        onNavigate={setActiveItemId}
+        onNavigate={handleNavigate}
         showVerificationChecks={showVerificationChecks}
         network={network}
         onNetworkChange={handleNetworkChange}
