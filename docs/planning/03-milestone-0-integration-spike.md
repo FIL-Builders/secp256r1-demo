@@ -68,6 +68,9 @@ Do now:
 - keep the `check:p256` script as the activation gate
 - build app readiness around a `P256VERIFY unavailable` state
 - keep Calibration as the first target network once activation lands
+- build the UI in Pending Network Mode so look and feel, navigation, wallet state, payments, datasets, files, and activity can progress before activation
+- add explicit Demo Simulation Mode for rehearsals, unsupported-state previews, and developer verification checks
+- route verifier, storage, and activity behavior through adapters so live implementations can replace fixtures without rewriting pages
 - continue non-chain-blocked parts of the spike: wallet connection, WebAuthn payload generation, Synapse SDK client initialization, and payment/provider readiness reads
 
 Do after activation:
@@ -77,9 +80,44 @@ Do after activation:
 - run the full passkey authorization proof through the deployed verifier path
 - proceed to live Synapse upload and chain-backed readback
 
+## Build-Now Strategy While Blocked
+
+The blocker only prevents the final live claim that a passkey-backed storage authorization was verified on-chain by `P256VERIFY`. It does not block the rest of the app.
+
+Build now:
+
+- app shell and page routing
+- Mainnet/Calibration toggle
+- wallet connection and wrong-chain state
+- passkey credential creation/signing probe
+- `P256VERIFY` availability checks
+- Synapse SDK client/readiness probes
+- payments/provider readiness UI
+- fixture-backed Datasets, Files, Activity, and receipts
+- disabled passkey upload state for Pending Network Mode
+- developer verification checks in Simulation Mode
+
+Do not fake:
+
+- `On-chain verified` status for the main happy path
+- real `P256VERIFY` activation
+- real Synapse upload/readback
+- real explorer links for simulated receipts
+
+## Switch-On Criteria
+
+Calibration can move from Pending Network Mode to Live Mode when:
+
+1. `pnpm check:p256 -- --network calibration` classifies the network as `available`.
+2. The deployed FWSS P-256 verifier path is available for the Calibration deployment.
+3. A browser-generated passkey proof verifies through the deployed verifier path.
+4. A small Synapse upload can be committed and read back from chain-backed state.
+5. Files, Datasets, Dataset Detail, and Activity render the uploaded result without relying on fixture data.
+
 ## Next Spike Tasks
 
 1. Add a browser/WebAuthn probe that creates a passkey credential and records the exact authenticator output shape needed by the verifier.
 2. Add a Synapse SDK probe that initializes clients for Mainnet and Calibration and reports provider/payment readiness.
-3. Add a minimal upload/readback probe once Calibration has the required P-256 path.
-4. Decide whether developer verification checks use simulation until `P256VERIFY` is activated.
+3. Define the app capability object and adapter interfaces in code.
+4. Add a fixture-backed app mode that is explicitly labeled as Simulation Mode.
+5. Add a minimal upload/readback probe once Calibration has the required P-256 path.

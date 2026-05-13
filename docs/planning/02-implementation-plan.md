@@ -13,6 +13,29 @@ Use simulation only where it makes the demo more reliable without weakening the 
 - unsupported-state previews
 - fallback presenter mode
 
+## Capability-First Strategy
+
+The current blocker is that `P256VERIFY` is not active yet on public GLIF Mainnet or Calibration RPC at the checked blocks. The project should still build most of the app now by separating product UI from live network capabilities.
+
+Required runtime modes:
+
+- **Live Mode**: real wallet, passkey, Synapse SDK, on-chain P-256 verification, and chain-backed readback.
+- **Pending Network Mode**: real wallet/network/passkey/readiness surfaces, but passkey storage actions are disabled because the selected network lacks the P-256 verification path.
+- **Demo Simulation Mode**: explicit fixture mode for UI buildout, rehearsals, unsupported-state previews, and developer verification checks.
+
+Required adapter seams:
+
+- `P256VerifierAdapter`: real precompile verifier and simulated verifier.
+- `StorageAdapter`: real Synapse storage adapter and fixture storage adapter.
+- `ActivityAdapter`: chain-backed activity adapter and fixture activity adapter.
+
+Build pages against capability state and adapter interfaces, not directly against hard-coded activation assumptions. When Calibration activates `P256VERIFY`, the switch should be:
+
+1. `pnpm check:p256 -- --network calibration` returns `available`.
+2. Calibration capability state flips from `pending-network` to `live`.
+3. real verifier/storage/activity adapters replace simulated or disabled behavior.
+4. receipts and page state move from `Simulation` or `Unavailable` to `On-chain verified`.
+
 ## Milestone 0: Integration Spike
 
 Goal: prove the high-risk path before investing heavily in UI.
@@ -20,16 +43,19 @@ Goal: prove the high-risk path before investing heavily in UI.
 Scope:
 
 - connect a wallet on Calibration
+- check `P256VERIFY` activation on Calibration and Mainnet
 - initialize Synapse SDK client for the selected network
 - create or load a browser passkey credential
 - produce a P-256 signature over a storage authorization payload
 - verify the signature through the intended P-256 verifier path
 - upload one small file through Synapse
 - retrieve enough chain-backed state to identify dataset, PieceCID, provider, and transaction/result
+- define the capability model and adapter boundaries needed to continue while activation is blocked
 
 Acceptance criteria:
 
 - a developer can run one command or local script and complete a real upload on Calibration
+- if activation is blocked, the script clearly reports the blocker and the app can enter Pending Network Mode
 - output includes network, wallet, passkey credential label or ID, dataset, PieceCID, provider, and verifier result
 - any unknowns in Synapse SDK, verifier contract, or WebAuthn payload shape are documented
 
@@ -50,6 +76,7 @@ Scope:
 - wallet connect surface
 - passkey session status surface
 - passkey upload availability surface
+- mode/status surface for live, pending-network, and simulation behavior
 
 Acceptance criteria:
 
@@ -96,6 +123,7 @@ Acceptance criteria:
 - SDK errors are mapped to product states instead of raw stack traces
 - provider and payment readiness can be checked before upload
 - Mainnet and Calibration clients cannot leak state into each other
+- fixture adapters can power clearly labeled demo data without changing page components
 
 ## Milestone 4: Upload Flow
 
@@ -116,6 +144,7 @@ Acceptance criteria:
 - receipt includes dataset, PieceCID, provider, network, transaction/explorer link, passkey authorization status, and `P256VERIFY` details
 - failed passkey prompts, wrong chain, insufficient funds, missing providers, and unavailable verifier states are actionable
 - upload result appears in Files, Datasets, Dataset Detail, and Activity from chain-backed state
+- while `P256VERIFY` is unavailable, the same UI shows a disabled/pending passkey path and can show clearly labeled simulation receipts
 
 ## Milestone 5: Datasets, Files, And Activity Views
 
@@ -223,6 +252,7 @@ This order intentionally validates the highest-risk integrations before polishin
 | --- | --- |
 | WebAuthn payload does not map cleanly to verifier input | Prove in Milestone 0; document exact payload, hash, and signature encoding. |
 | Synapse SDK does not expose enough chain-backed listing state | Identify missing reads in Milestone 0 and add adapter/indexing layer if needed. |
+| P256VERIFY is not active on Calibration yet | Build Pending Network Mode and simulation adapters now; switch to live adapters when `check:p256` passes and the verifier deployment is ready. |
 | Mainnet readiness is unstable | Make Calibration the primary live path while keeping Mainnet fully represented and tested. |
 | Provider or payment state blocks live upload | Add readiness checks, top-up path, seeded data, and presenter preflight. |
 | Protocol details overwhelm product UX | Keep consumer labels primary and move internals into receipts/drawers/developer mode. |

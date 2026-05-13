@@ -56,9 +56,31 @@ The final version must include:
 - SDK support in `@filoz/synapse-core`, `@filoz/synapse-sdk`, and `@filoz/synapse-react`.
 - Contract support for P-256/WebAuthn session-key verification.
 - Feature detection for chains where `P256VERIFY` is available.
+- Capability-driven live, pending-network, and simulation modes so most of the product can be built before `P256VERIFY` lands on Calibration.
 - Clear UI states for unsupported, unregistered, expired, revoked, ready, signing, verifying, uploading, committed, and failed states.
 - Full failure demonstrations that prove tampering and replay are rejected.
 - Tests across crypto utilities, SDK encoding, contract verification, React hooks, and browser WebAuthn behavior.
+
+## Delivery Modes And Activation Strategy
+
+The app must be built so the live product experience can be developed before `P256VERIFY` is active on Calibration. The blocked feature should be isolated behind capability checks and adapters, not scattered through page components.
+
+Required modes:
+
+- **Live Mode**: real wallet, real passkey signing, real Synapse SDK operations, real on-chain P-256 verification, and real chain-backed dataset/file/activity readback.
+- **Pending Network Mode**: real wallet/network detection, real passkey/WebAuthn probes where possible, real SDK readiness checks where possible, but passkey-backed storage actions are blocked because the selected network does not yet expose the required P-256 verification path.
+- **Demo Simulation Mode**: explicitly labeled fixture flow for look and feel, rehearsals, unsupported-state previews, and developer verification checks. It must never be presented as the live happy path.
+
+The default behavior while Calibration lacks `P256VERIFY` is Pending Network Mode, not a fake success path. The UI may still show the full upload, files, datasets, payments, and verification surfaces, but any simulated receipt or verification result must be labeled as simulated.
+
+Switch-on criteria for Calibration:
+
+1. `pnpm check:p256 -- --network calibration` returns `available`.
+2. The deployed FWSS P-256 verifier path is reachable for the selected Calibration deployment.
+3. A browser-generated passkey proof verifies through the deployed path.
+4. A Synapse upload can be committed and read back from chain-backed state.
+
+When those criteria pass, the app should switch by configuration/capability detection from Pending Network Mode to Live Mode without redesigning the UI.
 
 ## Non-Goals
 
@@ -219,6 +241,8 @@ If the active chain does not expose the `P256VERIFY` precompile, the passkey pan
 ```text
 Passkey sessions require P256VERIFY at 0x0100 on this network.
 ```
+
+This is the Pending Network Mode state. The app should still allow the user to inspect wallet state, payment readiness, provider readiness, existing chain-backed datasets/files where available, and simulated demo flows if demo mode is explicitly enabled. Passkey-backed storage actions must remain disabled until the capability check passes.
 
 The rest of the playground must continue to work in wallet-signing mode.
 
@@ -688,6 +712,68 @@ The UI must disable passkey sessions if the call does not return 32-byte `1`.
 Contracts should not assume every devnet, calibration, or mainnet environment has FIP-0113 active until the chain configuration says so.
 
 Feature detection must run independently per selected chain. The app should cache the result by `chainId`, but a cached Mainnet result must not be reused for Calibration or vice versa.
+
+### Capability Model And Adapter Boundaries
+
+Pages must consume a network capability model instead of directly branching on hard-coded environment flags.
+
+Suggested shape:
+
+```ts
+type DemoRuntimeMode = 'live' | 'pending-network' | 'simulation'
+type CapabilityState = 'unknown' | 'available' | 'unavailable' | 'error'
+
+interface NetworkCapabilities {
+  chainId: number
+  network: 'mainnet' | 'calibration'
+  mode: DemoRuntimeMode
+  p256Precompile: CapabilityState
+  fwssP256Verifier: CapabilityState
+  synapseStorage: CapabilityState
+  providers: CapabilityState
+  payments: CapabilityState
+  blockers: string[]
+  checkedAt: number
+}
+```
+
+The implementation should isolate unfinished or network-gated behavior behind adapters:
+
+```ts
+interface P256VerifierAdapter {
+  detect(chainId: number): Promise<CapabilityState>
+  verify(input: P256VerifyInput): Promise<P256VerifyResult>
+}
+
+interface StorageAdapter {
+  readiness(chainId: number, rootAddress: Address): Promise<StorageReadiness>
+  upload(input: StorageUploadInput): Promise<StorageUploadReceipt>
+  listDatasets(input: ChainScopedQuery): Promise<DatasetSummary[]>
+  listFiles(input: ChainScopedQuery): Promise<FileSummary[]>
+}
+
+interface ActivityAdapter {
+  listActivity(input: ChainScopedQuery): Promise<ActivityEvent[]>
+}
+```
+
+Required adapter implementations:
+
+- `PrecompileVerifierAdapter`: calls the real `P256VERIFY` path.
+- `SimulatedVerifierAdapter`: returns fixture verification results and marks every result as simulated.
+- `SynapseLiveStorageAdapter`: uses real Synapse SDK and chain/provider reads.
+- `FixtureStorageAdapter`: powers demo-mode look and feel with clearly labeled fixture data.
+- `ChainBackedActivityAdapter`: reconstructs activity from chain-backed state.
+- `FixtureActivityAdapter`: powers demo-mode activity with clearly labeled fixture data.
+
+Consumer page components must render from capabilities and adapter results. They should not need to know whether Calibration activation has landed beyond the mode/status they receive.
+
+Simulation rules:
+
+- simulated receipts must show `Simulation` or `Demo data`
+- simulated verification must not use `On-chain verified` as the primary status
+- developer verification checks may default to simulation until live verifier support exists
+- the main happy path must switch to live adapters as soon as capability checks and deployed verifier support pass
 
 ## SDK Requirements
 

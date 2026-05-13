@@ -83,6 +83,18 @@ Simulation or fixtures are acceptable for:
 
 Simulation must be clearly labeled and should not replace the main happy path.
 
+## Capability-Gated Delivery
+
+Because `P256VERIFY` is in the release queue, the app should support three explicit modes:
+
+- **Live Mode**: real wallet, passkey, Synapse SDK, on-chain P-256 verification, and chain-backed readback.
+- **Pending Network Mode**: real wallet/network/passkey/readiness surfaces, but passkey-backed storage actions are disabled because the selected network does not yet expose the required P-256 verification path.
+- **Demo Simulation Mode**: explicitly labeled fixture behavior for visual buildout, rehearsals, unsupported states, and developer verification checks.
+
+This lets the team build the product shell, look and feel, wallet/network state, Synapse readiness, chain-backed views, and placeholder receipts now. When Calibration activates `P256VERIFY`, the app should switch to live behavior through capability detection and adapter configuration rather than a redesign.
+
+Simulation must never be represented as the live FIP-0113 proof. The live claim is reserved for a real passkey proof verified through `P256VERIFY` and connected to a real Synapse upload/readback.
+
 ## Success Criteria
 
 The demo is successful when a presenter can reliably show:
