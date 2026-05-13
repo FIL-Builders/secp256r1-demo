@@ -828,7 +828,7 @@ export default function App() {
       : { value: '12.46 FIL', detail: '≈ $61.82 USD' };
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell app-shell--${activeItemId}`}>
       <Sidebar
         activeItemId={activeItemId}
         onNavigate={setActiveItemId}

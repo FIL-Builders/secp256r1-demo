@@ -68,15 +68,24 @@ export function TopNavbar({
 }: TopNavbarProps) {
   const UploadIcon = uploadAvailabilityIcon(passkeyUploadAvailability);
   const networkLabel = network === 'mainnet' ? 'Mainnet' : 'Calibration';
+  const networkDetail = network === 'mainnet' ? 'Filecoin Mainnet · 314' : 'Filecoin Testnet · 314159';
   const showPasskeyUploads = activeItemId === 'files';
   const showPrecompileStatus = activeItemId !== 'files';
+  const showNetworkDetail = activeItemId === 'upload' || activeItemId === 'activity';
+  const walletFirst = activeItemId === 'upload' || activeItemId === 'datasets';
+  const precompileLabel = activeItemId === 'upload' ? 'P-256 Precompile' : 'P256VERIFY';
+  const precompileDetail = activeItemId === 'upload' ? 'Detected at 0x0100' : '0x0100';
+  const passkeySessionPill = <StatusPill tone="neutral" icon={Fingerprint} label="Passkey Session" detail={passkeySessionLabel} />;
 
   return (
     <header className={classNames('shell-navbar', className)}>
       <div className="shell-navbar__primary">
-        <label className="shell-network-select">
+        <label className={classNames('shell-network-select', showNetworkDetail && 'shell-network-select--detailed')}>
           <Circle className="shell-network-select__dot" aria-hidden="true" />
-          <span>{networkLabel}</span>
+          <span className="shell-network-select__copy">
+            <span>{networkLabel}</span>
+            {showNetworkDetail ? <small>{networkDetail}</small> : null}
+          </span>
           <ChevronDown size={15} aria-hidden="true" />
           <select
             value={network}
@@ -100,15 +109,15 @@ export function TopNavbar({
             className="shell-status-pill--precompile"
             tone="neutral"
             icon={ShieldCheck}
-            label="P256VERIFY"
-            detail="0x0100"
+            label={precompileLabel}
+            detail={precompileDetail}
           />
         ) : null}
       </div>
 
       <div className="shell-navbar__secondary">
-        <StatusPill tone="neutral" icon={Fingerprint} label="Passkey Session" detail={passkeySessionLabel} />
-        {walletControls}
+        {walletFirst ? walletControls : passkeySessionPill}
+        {walletFirst ? passkeySessionPill : walletControls}
         <button type="button" className="shell-icon-control" aria-label="Notifications">
           <Bell size={17} />
         </button>

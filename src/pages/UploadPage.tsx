@@ -118,7 +118,8 @@ export function UploadPage({ ctaState }: UploadPageProps) {
         </button>
 
         <p className="upload-help-text">
-          <LockKeyhole size={15} /> You will be asked to confirm with your device.
+          <span><LockKeyhole size={15} /> You will be asked to confirm with your device.</span>
+          <span>Use Face ID, Touch ID, Windows Hello, Android unlock, or a security key.</span>
         </p>
 
         <section className="upload-bottom-note">

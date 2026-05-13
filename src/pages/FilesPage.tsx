@@ -124,7 +124,7 @@ export function FilesPage({
           </button>
           <button type="button" className="primary-button" onClick={onUpload}>
             <Upload size={16} />
-            <span>Upload files</span>
+            <span>Upload Files</span>
           </button>
         </div>
       </section>

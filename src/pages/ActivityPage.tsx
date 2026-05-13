@@ -168,7 +168,9 @@ export function ActivityPage({
                     <span>{event.detail}</span>
                     <span className="tag-row">
                       <span className="tag">{networkLabel}</span>
-                      <span className={`tag tag--${sourceTone(event.source)}`}>{sourceLabel(event.source)}</span>
+                      {runtimeMode === 'simulation' ? null : (
+                        <span className={`tag tag--${sourceTone(event.source)}`}>{sourceLabel(event.source)}</span>
+                      )}
                       {event.transactionHash ? <span className="tag">Tx: {shortId(event.transactionHash, 8, 6)}</span> : null}
                       {event.provider ? <span className="tag">Provider: {event.provider}</span> : null}
                       {event.pieceCid ? <span className="tag">PieceCID: {shortId(event.pieceCid, 8, 6)}</span> : null}
