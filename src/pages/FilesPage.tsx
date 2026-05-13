@@ -7,6 +7,7 @@ import {
   FileText,
   Filter,
   FolderOpen,
+  MoreVertical,
   RefreshCw,
   Search,
   ShieldCheck,
@@ -109,8 +110,7 @@ export function FilesPage({
           </div>
           <h1 className="page-title">Files</h1>
           <p className="page-copy">
-            Browse {runtimeMode === 'simulation' ? 'simulation files and pieces' : 'committed files and pieces'} for{' '}
-            {walletConnected ? walletLabel : 'the selected Root Wallet'} on {networkLabel}.
+            Browse your committed files and pieces. History comes from on-chain datasets and piece state.
           </p>
         </div>
         <div className="button-row">
@@ -199,6 +199,7 @@ export function FilesPage({
               <span>Size</span>
               <span>Modified</span>
               <span>Verified</span>
+              <span />
             </div>
             {filteredFiles.map((file) => {
               const Icon = iconForMime(file.mimeType);
@@ -238,6 +239,9 @@ export function FilesPage({
                       {verificationLabel(file.verificationStatus)}
                     </span>
                   </span>
+                  <span className="row-actions">
+                    <MoreVertical size={16} />
+                  </span>
                 </button>
               );
             })}
@@ -253,6 +257,20 @@ export function FilesPage({
                     ? 'The selected network returned no committed file rows for this source.'
                     : 'Connect a Root Wallet to reconstruct files from chain-backed Synapse state.'}
               </p>
+            </div>
+          ) : null}
+          {filteredFiles.length > 0 ? (
+            <div className="table-footer">
+              <span>Showing 1 to {filteredFiles.length} of {runtimeMode === 'simulation' ? '42' : files.length.toLocaleString()} files</span>
+              <span className="pagination">
+                <button type="button" disabled>‹</button>
+                <button type="button" className="is-active">1</button>
+                <button type="button">2</button>
+                <button type="button">3</button>
+                <button type="button">…</button>
+                <button type="button">6</button>
+                <button type="button">›</button>
+              </span>
             </div>
           ) : null}
         </article>
@@ -306,6 +324,11 @@ export function FilesPage({
                       <Download size={16} />
                       <span>Retrieve file</span>
                     </a>
+                  ) : runtimeMode === 'simulation' ? (
+                    <button type="button" className="primary-action">
+                      <Download size={16} />
+                      <span>Retrieve file</span>
+                    </button>
                   ) : (
                     <button type="button" className="primary-action is-disabled" disabled>
                       <Download size={16} />

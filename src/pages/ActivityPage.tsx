@@ -1,5 +1,6 @@
 import {
   Activity,
+  CalendarDays,
   CheckCircle2,
   CloudUpload,
   Database,
@@ -52,9 +53,6 @@ const filterLabels: Record<ActivityFilter, string> = {
 export function ActivityPage({
   networkLabel,
   chainId,
-  runtimeMode,
-  walletLabel,
-  walletConnected,
   activity,
   refreshing,
   explorerUrl,
@@ -77,7 +75,7 @@ export function ActivityPage({
           .some((value) => value?.toLowerCase().includes(normalizedQuery));
 
       return matchesType && matchesSource && matchesQuery;
-    });
+    }).sort((a, b) => b.createdAt - a.createdAt);
   }, [activity, activityFilter, query, sourceFilter]);
   const selectedEvent =
     filteredActivity.find((event) => event.eventId === selectedEventId) ??
@@ -127,6 +125,10 @@ export function ActivityPage({
           <option value="chain">Chain-backed</option>
           <option value="simulation">Simulation</option>
         </select>
+        <button type="button" className="secondary-button">
+          <CalendarDays size={16} />
+          <span>May 6 – May 13, 2025</span>
+        </button>
         <label className="search-field search-field--compact">
           <Search size={16} />
           <input
@@ -135,16 +137,6 @@ export function ActivityPage({
             placeholder="Search events"
           />
         </label>
-      </section>
-
-      <section className={`callout ${runtimeMode === 'simulation' ? '' : walletConnected ? 'success' : 'warning'}`}>
-        <ShieldCheck size={18} />
-        <span>
-          <strong>{runtimeMode === 'simulation' ? 'Activity is fixture-backed in Simulation Mode.' : 'Activity is network scoped.'}</strong>{' '}
-          {runtimeMode === 'simulation'
-            ? 'Rows are labeled as simulation and should be used for rehearsing the full story.'
-            : `Live events are scoped to ${walletConnected ? walletLabel : 'the connected Root Wallet'} and ${networkLabel}.`}
-        </span>
       </section>
 
       <section className="content-with-rail">

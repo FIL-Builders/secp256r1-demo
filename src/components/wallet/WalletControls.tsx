@@ -1,10 +1,10 @@
 import type { ButtonHTMLAttributes, HTMLAttributes } from 'react';
 import {
   AlertTriangle,
+  ChevronDown,
   CheckCircle2,
   Link2,
   RefreshCw,
-  Unplug,
   Wallet,
   WifiOff,
 } from 'lucide-react';
@@ -35,12 +35,12 @@ export function WalletConnectionButton({
         {...buttonProps}
         type="button"
         variant="secondary"
-        leadingIcon={Unplug}
-        className={className}
+        leadingIcon={Wallet}
+        className={classNames('wallet-address-button', className)}
         onClick={onDisconnect}
-        disabled={!onDisconnect}
       >
-        Disconnect {shortAddress ? shortAddress : 'wallet'}
+        {shortAddress ? shortAddress : 'Wallet'}
+        <ChevronDown className="shell-button__icon" aria-hidden="true" />
       </ShellButton>
     );
   }

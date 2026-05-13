@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
-import { Fingerprint, FlaskConical, Clock3, ShieldCheck } from 'lucide-react';
+import { ChevronDown, Circle, Fingerprint, FlaskConical, Clock3, ShieldCheck } from 'lucide-react';
 import { classNames } from './utils';
 import type { NetworkMode, RuntimeMode, UploadAvailability } from './types';
-import { NetworkToggle } from './NetworkToggle';
 import { StatusPill } from './StatusPill';
 
 export interface TopNavbarProps {
@@ -66,21 +65,34 @@ export function TopNavbar({
   className,
 }: TopNavbarProps) {
   const UploadIcon = uploadAvailabilityIcon(passkeyUploadAvailability);
+  const networkLabel = network === 'mainnet' ? 'Mainnet' : 'Calibration';
 
   return (
     <header className={classNames('shell-navbar', className)}>
       <div className="shell-navbar__primary">
-        <NetworkToggle value={network} onChange={onNetworkChange} />
+        <label className="shell-network-select">
+          <Circle className="shell-network-select__dot" aria-hidden="true" />
+          <span>{networkLabel}</span>
+          <ChevronDown size={15} aria-hidden="true" />
+          <select
+            value={network}
+            onChange={(event) => onNetworkChange(event.target.value as NetworkMode)}
+            aria-label="Network selection"
+          >
+            <option value="mainnet">Mainnet</option>
+            <option value="calibration">Calibration</option>
+          </select>
+        </label>
         <StatusPill
           tone={uploadAvailabilityTone(passkeyUploadAvailability)}
           icon={UploadIcon}
           label="Passkey uploads available"
-          detail={uploadAvailabilityLabel(passkeyUploadAvailability)}
+          detail={passkeyUploadAvailability === 'simulation' ? undefined : uploadAvailabilityLabel(passkeyUploadAvailability)}
         />
       </div>
 
       <div className="shell-navbar__secondary">
-        <StatusPill tone="neutral" icon={Fingerprint} label={passkeySessionLabel} detail="Passkey Session" />
+        <StatusPill tone="neutral" icon={Fingerprint} label="Passkey Session" detail={passkeySessionLabel} />
         {walletControls}
       </div>
     </header>

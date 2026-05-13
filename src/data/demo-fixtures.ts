@@ -264,9 +264,10 @@ const CALIBRATION_FILES: FileSummary[] = [
     providerAddress: '0x0000000000000000000000000000000000890123',
     pieceCid: 'bafybeibvwtki7td6e5s6gxqf74kyspnzjc5ufx4jvv6cdx7w3aktqf36ry',
     transactionHash: '0x3f2cb21a00000000000000000000000000000000000000000000000000000000',
-    verificationStatus: 'pending',
+    verificationStatus: 'verified',
     authorizationStatus: 'passkey-protected',
     proofDeadline: baseTime + 3 * day,
+    verifiedAt: baseTime - 3 * hour,
     metadata: {
       type: 'MP4',
       label: 'Presenter rehearsal',

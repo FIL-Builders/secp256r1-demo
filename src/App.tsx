@@ -568,6 +568,8 @@ export default function App() {
   }, [network, passkeyCredential?.id, walletState.address]);
 
   const simulationMode = runtimeMode === 'simulation';
+  const displayWalletConnected = simulationMode || walletState.isConnected;
+  const displayWalletLabel = simulationMode && !walletState.isConnected ? '0x8Fa3...7bC9' : walletShortAddress;
   const providerState = simulationMode ? 'available' : (storageReadiness?.provider.state ?? 'unknown');
   const paymentState = simulationMode ? 'available' : (storageReadiness?.payment.state ?? 'unknown');
   const storageState = simulationMode ? 'available' : (storageReadiness?.state ?? 'unknown');
@@ -702,8 +704,8 @@ export default function App() {
             networkLabel={networkConfig.label}
             chainId={networkConfig.chainId}
             runtimeMode={runtimeMode}
-            walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
-            walletConnected={walletState.isConnected}
+            walletLabel={displayWalletConnected ? displayWalletLabel : 'Not connected'}
+            walletConnected={displayWalletConnected}
             datasets={datasets}
             files={files}
             refreshing={storageRefreshing}
@@ -717,8 +719,8 @@ export default function App() {
             networkLabel={networkConfig.label}
             chainId={networkConfig.chainId}
             runtimeMode={runtimeMode}
-            walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
-            walletConnected={walletState.isConnected}
+            walletLabel={displayWalletConnected ? displayWalletLabel : 'Not connected'}
+            walletConnected={displayWalletConnected}
             datasets={datasets}
             files={files}
             refreshing={storageRefreshing}
@@ -733,8 +735,8 @@ export default function App() {
             networkLabel={networkConfig.label}
             chainId={networkConfig.chainId}
             runtimeMode={runtimeMode}
-            walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
-            walletConnected={walletState.isConnected}
+            walletLabel={displayWalletConnected ? displayWalletLabel : 'Not connected'}
+            walletConnected={displayWalletConnected}
             activity={activity}
             refreshing={storageRefreshing}
             explorerUrl={networkConfig.explorerUrl}
@@ -747,8 +749,8 @@ export default function App() {
             networkLabel={networkConfig.label}
             nativeTokenSymbol={networkConfig.nativeTokenSymbol}
             runtimeMode={runtimeMode}
-            walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
-            walletConnected={walletState.isConnected}
+            walletLabel={displayWalletConnected ? displayWalletLabel : 'Not connected'}
+            walletConnected={displayWalletConnected}
             readiness={storageReadiness}
             refreshing={storageRefreshing}
             onRefresh={handleRefreshStorageReadiness}
@@ -760,8 +762,8 @@ export default function App() {
             runtimeMode={runtimeMode}
             network={network}
             networkLabel={networkConfig.label}
-            walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
-            walletConnected={walletState.isConnected}
+            walletLabel={displayWalletConnected ? displayWalletLabel : 'Not connected'}
+            walletConnected={displayWalletConnected}
             walletReady={walletState.isConnected && !walletState.isWrongChain && Boolean(walletState.address)}
             walletRequirementDetail={
               walletState.isConnected
@@ -790,7 +792,7 @@ export default function App() {
             defaultNetwork={network}
             runtimeMode={runtimeMode}
             walletNetworkSummary={{
-              walletLabel: walletState.isConnected ? walletShortAddress : 'Not connected',
+              walletLabel: displayWalletConnected ? displayWalletLabel : 'Not connected',
               walletDetail: walletState.isConnected
                 ? walletState.isWrongChain
                   ? `Wallet is on ${walletState.connectedNetworkLabel}, but the app expects ${walletState.selectedNetworkLabel}.`
@@ -831,13 +833,13 @@ export default function App() {
         runtimeMode={runtimeMode}
         onRuntimeModeChange={handleRuntimeModeChange}
         storageBalance={{
-          value: simulationMode ? '42.67 USDFC' : `${formatTokenAmount(storageReadiness?.payment.availableFunds)} USDFC`,
+          value: simulationMode ? '12.46 FIL' : `${formatTokenAmount(storageReadiness?.payment.availableFunds)} USDFC`,
           detail: simulationMode
-            ? 'Demo data: fixture storage funds.'
+            ? '≈ $61.82 USD'
             : storageReadiness?.summary ?? 'Connect a Root Wallet to check funds.',
         }}
-        walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
-        walletConnected={walletState.isConnected}
+        walletLabel={displayWalletConnected ? displayWalletLabel : 'Not connected'}
+        walletConnected={displayWalletConnected}
       />
       <div className="app-main">
         <TopNavbar
@@ -846,21 +848,21 @@ export default function App() {
           runtimeMode={runtimeMode}
           onRuntimeModeChange={handleRuntimeModeChange}
           passkeyUploadAvailability={passkeyAvailability}
-          walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
-          passkeySessionLabel={simulationMode ? 'Simulation active' : 'Pending'}
+          walletLabel={displayWalletConnected ? displayWalletLabel : 'Not connected'}
+          passkeySessionLabel={simulationMode ? 'Active' : 'Pending'}
           showVerificationChecks={showVerificationChecks}
           walletControls={
             <WalletControls
-              isConnected={walletState.isConnected}
+              isConnected={displayWalletConnected}
               isConnecting={walletState.isConnecting || connectPending}
               isSwitchingNetwork={switchPending}
-              shortAddress={walletShortAddress}
+              shortAddress={displayWalletLabel}
               selectedNetworkLabel={walletState.selectedNetworkLabel}
               walletNetworkLabel={walletState.connectedNetworkLabel}
-              hasChainMismatch={walletState.isWrongChain}
-              error={walletError}
+              hasChainMismatch={!simulationMode && walletState.isWrongChain}
+              error={simulationMode ? null : walletError}
               onConnect={handleConnectWallet}
-              onDisconnect={() => disconnect()}
+              onDisconnect={walletState.isConnected ? () => disconnect() : undefined}
               onSwitchNetwork={handleSwitchNetwork}
             />
           }
