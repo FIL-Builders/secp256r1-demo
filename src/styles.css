@@ -3145,12 +3145,12 @@ select {
 }
 
 .page-files .detail-rail > .panel:first-child {
-  gap: 11px;
-  padding: 0 20px 16px;
+  gap: 10px;
+  padding: 18px 20px 0;
 }
 
 .page-files .detail-close-button {
-  top: 6px;
+  top: 18px;
   right: 14px;
 }
 
@@ -3406,7 +3406,37 @@ select {
 }
 
 .page-activity .detail-rail {
+  gap: 20px;
   margin-top: -75px;
+}
+
+.page-activity .detail-rail > .panel:nth-child(1) {
+  height: 296px;
+}
+
+.page-activity .detail-rail > .panel:nth-child(2) {
+  height: 252px;
+}
+
+.page-activity .detail-rail > .activity-verified-panel {
+  height: 176px;
+  gap: 10px;
+  padding: 18px 20px;
+}
+
+.page-activity .activity-verified-panel .detail-hero {
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.page-activity .activity-verified-panel .detail-hero strong {
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.page-activity .activity-verified-panel .detail-hero p {
+  font-size: 13px;
+  line-height: 1.35;
 }
 
 .page-activity .activity-highlights-panel {
