@@ -233,7 +233,10 @@ export function FilesPage({
                     <small>{shortId(file.datasetId)}</small>
                   </span>
                   <span>
-                    <strong>{providerCode(file.providerAddress ?? dataset?.providerAddress)}</strong>
+                    <strong className="file-provider-code">
+                      {providerCode(file.providerAddress ?? dataset?.providerAddress)}
+                      <ShieldCheck size={13} />
+                    </strong>
                     <small>{file.provider ?? dataset?.provider ?? 'Unknown provider'}</small>
                   </span>
                   <span>{formatBytes(file.size)}</span>

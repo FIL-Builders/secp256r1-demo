@@ -323,7 +323,10 @@ function MetricCard({ label, value, icon }: { label: string; value: string; icon
 }
 
 function ProviderMark({ provider }: { provider: string }) {
-  return <span className={`provider-mark provider-mark--${provider.toLowerCase().replace(/\s+/g, '-')}`}>{provider.slice(0, 1)}</span>;
+  const normalizedProvider = provider.toLowerCase().replace(/\s+/g, '-');
+  const label = provider === 'Glif' ? 'f' : provider === 'Estuary' ? '' : provider.slice(0, 1);
+
+  return <span className={`provider-mark provider-mark--${normalizedProvider}`}>{label}</span>;
 }
 
 function datasetIdentifierDisplay(dataset: DatasetSummary, index: number, runtimeMode: DemoRuntimeMode): string {

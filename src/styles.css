@@ -1475,6 +1475,7 @@ select {
 .page-files > .content-with-rail > .detail-rail {
   grid-column: 2;
   grid-row: 1 / span 5;
+  margin-top: -24px;
 }
 
 .page-files .detail-rail > .panel:first-child .panel-head {
@@ -2028,12 +2029,31 @@ select {
   font-weight: 820;
 }
 
+.provider-mark--glif {
+  background: #18a8c6;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 780;
+}
+
 .provider-mark--estuary {
-  background: #2563eb;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #eaf3ff 0 18%, #2563eb 18% 36%, #eaf3ff 36% 48%, #60a5fa 48% 66%, #eaf3ff 66% 100%);
 }
 
 .provider-mark--boost {
   background: #22c55e;
+}
+
+.file-provider-code {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+
+.file-provider-code svg {
+  color: #16a34a;
 }
 
 .info-card-head,
