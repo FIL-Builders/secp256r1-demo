@@ -52,7 +52,7 @@ select {
 }
 
 .app-shell--datasets {
-  grid-template-columns: 232px minmax(0, 1fr);
+  grid-template-columns: 156px minmax(0, 1fr);
 }
 
 .sidebar {
@@ -161,6 +161,104 @@ select {
 .app-shell--datasets .shell-sidebar__footer,
 .app-shell--activity .shell-sidebar__footer {
   margin-top: 21px;
+}
+
+.app-shell--datasets .shell-sidebar {
+  gap: 10px;
+  padding: 18px 14px 16px;
+}
+
+.app-shell--datasets .shell-sidebar__brand {
+  gap: 6px;
+  padding: 0 2px 16px;
+}
+
+.app-shell--datasets .shell-sidebar__brand-mark {
+  width: 28px;
+  height: 28px;
+}
+
+.app-shell--datasets .shell-sidebar__brand-mark svg {
+  width: 30px;
+  height: 22px;
+}
+
+.app-shell--datasets .shell-sidebar__brand-title {
+  font-size: 19px;
+}
+
+.app-shell--datasets .shell-sidebar__nav {
+  gap: 5px;
+}
+
+.app-shell--datasets .shell-sidebar__item {
+  min-height: 36px;
+  gap: 7px;
+  border-radius: 6px;
+  padding: 0 8px;
+  font-size: 13px;
+}
+
+.app-shell--datasets .shell-sidebar__item-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.app-shell--datasets .shell-sidebar__footer {
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.app-shell--datasets .shell-sidebar__card {
+  gap: 7px;
+  padding: 9px;
+}
+
+.app-shell--datasets .shell-sidebar__card-label {
+  font-size: 10px;
+}
+
+.app-shell--datasets .shell-sidebar__balance strong {
+  font-size: 19px;
+}
+
+.app-shell--datasets .shell-sidebar__card small {
+  font-size: 10px;
+}
+
+.app-shell--datasets .shell-sidebar__card-action {
+  min-height: 30px;
+  gap: 5px;
+  font-size: 11px;
+}
+
+.app-shell--datasets .shell-sidebar__wallet {
+  gap: 7px;
+}
+
+.app-shell--datasets .shell-sidebar__wallet strong {
+  font-size: 13px;
+}
+
+.app-shell--datasets .shell-sidebar__wallet small {
+  font-size: 10px;
+}
+
+.app-shell--datasets .shell-sidebar__connected-pill {
+  min-height: 20px;
+  padding: 0 6px;
+  font-size: 10px;
+}
+
+.app-shell--datasets .shell-sidebar__choice {
+  min-height: 44px;
+  gap: 7px;
+  padding: 6px 7px;
+  font-size: 12px;
+}
+
+.app-shell--datasets .shell-sidebar__help-card {
+  font-size: 11px;
 }
 
 .shell-sidebar__secondary-nav {
