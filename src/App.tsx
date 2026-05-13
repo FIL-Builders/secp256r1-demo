@@ -826,6 +826,18 @@ export default function App() {
         activeItemId={activeItemId}
         onNavigate={setActiveItemId}
         showVerificationChecks={showVerificationChecks}
+        network={network}
+        onNetworkChange={handleNetworkChange}
+        runtimeMode={runtimeMode}
+        onRuntimeModeChange={handleRuntimeModeChange}
+        storageBalance={{
+          value: simulationMode ? '42.67 USDFC' : `${formatTokenAmount(storageReadiness?.payment.availableFunds)} USDFC`,
+          detail: simulationMode
+            ? 'Demo data: fixture storage funds.'
+            : storageReadiness?.summary ?? 'Connect a Root Wallet to check funds.',
+        }}
+        walletLabel={walletState.isConnected ? walletShortAddress : 'Not connected'}
+        walletConnected={walletState.isConnected}
       />
       <div className="app-main">
         <TopNavbar

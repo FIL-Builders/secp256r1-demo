@@ -38,8 +38,8 @@ select {
 .app-shell {
   display: grid;
   min-height: 100vh;
-  grid-template-columns: 260px minmax(0, 1fr);
-  background: #f7f8fb;
+  grid-template-columns: 280px minmax(0, 1fr);
+  background: #f6f8fb;
 }
 
 .sidebar {
@@ -60,33 +60,47 @@ select {
   display: flex;
   height: 100vh;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   border-right: 1px solid #e5e7eb;
-  background: rgba(255, 255, 255, 0.94);
-  padding: 24px 16px;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 28px 18px 20px;
+  overflow-y: auto;
 }
 
 .shell-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 20px;
+}
+
+.shell-sidebar__brand-mark {
   display: grid;
-  gap: 2px;
-  padding: 4px 8px 10px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 10px;
+  background: #ece8ff;
+  color: #5b3df5;
 }
 
 .shell-sidebar__brand-kicker {
-  color: #6d4aff;
-  font-size: 13px;
-  font-weight: 850;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 760;
+  text-transform: uppercase;
 }
 
 .shell-sidebar__brand-title {
   color: #111827;
-  font-size: 22px;
-  font-weight: 820;
+  font-size: 24px;
+  font-weight: 840;
+  line-height: 1.05;
 }
 
 .shell-sidebar__nav {
   display: grid;
-  gap: 6px;
+  gap: 7px;
 }
 
 .shell-sidebar__item {
@@ -97,16 +111,16 @@ select {
   border: 0;
   border-radius: 8px;
   background: transparent;
-  color: #475569;
+  color: #52637a;
   cursor: pointer;
-  padding: 0 12px;
+  padding: 0 14px;
   text-align: left;
 }
 
 .shell-sidebar__item:hover,
 .shell-sidebar__item--active {
-  background: #ece8ff;
-  color: #5534e8;
+  background: #eee9ff;
+  color: #5834ee;
 }
 
 .shell-sidebar__item-icon {
@@ -116,6 +130,146 @@ select {
 
 .shell-sidebar__item-label {
   font-weight: 720;
+}
+
+.shell-sidebar__footer {
+  display: grid;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.shell-sidebar__secondary-nav {
+  border-top: 1px solid #edf1f5;
+  margin-top: 4px;
+  padding-top: 10px;
+}
+
+.shell-sidebar__card {
+  display: grid;
+  gap: 12px;
+  border: 1px solid #e1e7ef;
+  border-radius: 8px;
+  background: #fff;
+  padding: 16px;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.035);
+}
+
+.shell-sidebar__card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #64748b;
+}
+
+.shell-sidebar__card-label {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.shell-sidebar__balance strong {
+  color: #111827;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.shell-sidebar__card small {
+  color: #64748b;
+}
+
+.shell-sidebar__card-action {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #b8a8ff;
+  border-radius: 8px;
+  background: #fff;
+  color: #5b3df5;
+  cursor: pointer;
+  font-weight: 760;
+}
+
+.shell-sidebar__choices {
+  display: grid;
+  gap: 8px;
+}
+
+.shell-sidebar__choice {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 54px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #e1e7ef;
+  border-radius: 8px;
+  background: #fff;
+  color: #111827;
+  cursor: pointer;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.shell-sidebar__choice--selected {
+  border-color: #b8a8ff;
+  background: #fbfaff;
+}
+
+.shell-sidebar__choice span {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.shell-sidebar__choice small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shell-sidebar__wallet {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.shell-sidebar__wallet > div {
+  display: grid;
+  min-width: 0;
+}
+
+.shell-sidebar__wallet strong,
+.shell-sidebar__wallet small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shell-sidebar__wallet-dot {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #cbd5e1;
+}
+
+.shell-sidebar__wallet-dot--connected {
+  background: #22c55e;
+}
+
+.shell-sidebar__mode-card {
+  gap: 10px;
+}
+
+.shell-sidebar__runtime-toggle {
+  justify-content: stretch;
+}
+
+.shell-sidebar__runtime-toggle .shell-toggle__option {
+  flex: 1 1 0;
+  padding: 0 6px;
 }
 
 .brand {
@@ -227,12 +381,12 @@ select {
   top: 0;
   z-index: 10;
   display: flex;
-  min-height: 72px;
+  min-height: 68px;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   border-bottom: 1px solid #e5e7eb;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   padding: 12px 28px;
   backdrop-filter: blur(18px);
 }
@@ -242,9 +396,23 @@ select {
 .shell-navbar__network,
 .shell-navbar__runtime {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+.shell-navbar__primary {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.shell-navbar__secondary {
+  flex: 0 0 auto;
+  justify-content: flex-end;
+}
+
+.shell-navbar .wallet-status {
+  display: none;
 }
 
 .shell-navbar__title-group {
@@ -310,12 +478,12 @@ select {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 34px;
+  min-height: 38px;
   border: 1px solid #dbe2ea;
   border-radius: 999px;
   background: #fff;
   color: #475569;
-  padding: 5px 10px;
+  padding: 6px 12px;
   white-space: nowrap;
 }
 
@@ -1144,17 +1312,17 @@ select {
 .resource-table--datasets .resource-table-header,
 .resource-table--datasets .resource-table-row {
   grid-template-columns:
-    minmax(190px, 1.45fr) minmax(130px, 1fr) minmax(96px, 0.7fr)
-    minmax(110px, 0.82fr) minmax(96px, 0.7fr) minmax(122px, 0.9fr);
-  min-width: 850px;
+    minmax(170px, 1.35fr) minmax(118px, 0.9fr) minmax(72px, 0.52fr)
+    minmax(104px, 0.78fr) minmax(88px, 0.66fr) minmax(116px, 0.82fr);
+  min-width: 760px;
 }
 
 .resource-table--files .resource-table-header,
 .resource-table--files .resource-table-row {
   grid-template-columns:
-    minmax(210px, 1.5fr) minmax(140px, 1fr) minmax(130px, 1fr)
-    minmax(86px, 0.65fr) minmax(120px, 0.88fr) minmax(96px, 0.72fr);
-  min-width: 880px;
+    minmax(180px, 1.35fr) minmax(124px, 0.9fr) minmax(120px, 0.88fr)
+    minmax(76px, 0.55fr) minmax(110px, 0.78fr) minmax(86px, 0.62fr);
+  min-width: 790px;
 }
 
 .resource-name {
