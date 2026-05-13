@@ -76,6 +76,7 @@ export function Sidebar({
   const selectedNetworkLabel = network === 'mainnet' ? 'Mainnet' : 'Calibration';
   const selectedNetworkDetail = network === 'mainnet' ? 'Filecoin mainnet · 314' : 'Filecoin testnet · 314159';
   const isFilesPage = activeItemId === 'files';
+  const isDatasetsPage = activeItemId === 'datasets';
   const isActivityPage = activeItemId === 'activity';
   const isUploadPage = activeItemId === 'upload';
   const networkCard = (
@@ -120,6 +121,7 @@ export function Sidebar({
       key="wallet"
       className={classNames(
         'shell-sidebar__card',
+        isDatasetsPage && 'shell-sidebar__wallet-card--datasets',
         isUploadPage && 'shell-sidebar__wallet-card--upload',
         isFilesPage && 'shell-sidebar__wallet-card--files',
         isActivityPage && 'shell-sidebar__wallet-card--activity',
@@ -127,20 +129,20 @@ export function Sidebar({
     >
       <div className="shell-sidebar__card-head">
         <span className="shell-sidebar__card-label">Connected Wallet</span>
-        {isFilesPage || isUploadPage ? null : <ChevronRight size={15} />}
+        {isFilesPage || isUploadPage || isDatasetsPage ? null : <ChevronRight size={15} />}
       </div>
       <div className="shell-sidebar__wallet">
         <span
           className={classNames(
-            isFilesPage || isActivityPage ? 'shell-sidebar__wallet-avatar' : 'shell-sidebar__wallet-dot',
-            !isFilesPage && !isActivityPage && walletConnected && 'shell-sidebar__wallet-dot--connected',
+            isFilesPage || isActivityPage || isDatasetsPage ? 'shell-sidebar__wallet-avatar' : 'shell-sidebar__wallet-dot',
+            !isFilesPage && !isActivityPage && !isDatasetsPage && walletConnected && 'shell-sidebar__wallet-dot--connected',
           )}
         />
         <div>
           <strong>{walletLabel}</strong>
           {isFilesPage || isUploadPage ? null : <small>{walletConnected ? 'Root Wallet' : 'Wallet not connected'}</small>}
         </div>
-        {isFilesPage || isActivityPage || isUploadPage ? <Copy className="shell-sidebar__wallet-copy" size={14} /> : null}
+        {isFilesPage || isActivityPage || isUploadPage || isDatasetsPage ? <Copy className="shell-sidebar__wallet-copy" size={14} /> : null}
       </div>
       {isFilesPage ? (
         <a className="shell-sidebar__wallet-link" href="https://filfox.info/" target="_blank" rel="noreferrer">
@@ -148,7 +150,7 @@ export function Sidebar({
         </a>
       ) : isUploadPage ? (
         <span className="shell-sidebar__connected-pill">Connected</span>
-      ) : isActivityPage ? (
+      ) : isActivityPage || isDatasetsPage ? (
         <span className="shell-sidebar__connected-pill">Connected</span>
       ) : (
         <small>{selectedNetworkLabel} scope · {selectedNetworkDetail}</small>

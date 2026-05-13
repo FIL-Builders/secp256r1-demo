@@ -347,7 +347,6 @@ export function FilesPage({
                     detail="via Synapse and Filecoin"
                     accent
                   />
-                  <StatusRow label="Network" value={`${networkLabel} (${chainId})`} />
                 </dl>
 
                 <div className="button-stack">
@@ -410,6 +409,7 @@ export function FilesPage({
                 <StatusRow label="Provider address" value={shortId(selectedFile.providerAddress, 10, 8)} />
                 <StatusRow label="Proof deadline" value={formatDate(selectedFile.proofDeadline)} />
                 <StatusRow label="Verified" value={formatDate(selectedFile.verifiedAt)} />
+                <StatusRow label="Chain" value={`${networkLabel} (${chainId})`} />
                 {Object.entries(selectedFile.metadata ?? {}).map(([key, value]) => (
                   <StatusRow key={key} label={key} value={String(value)} />
                 ))}

@@ -142,7 +142,10 @@ export function UploadPage({ ctaState }: UploadPageProps) {
           <dl className="status-list">
             <div className="status-row">
               <dt>Expires</dt>
-              <dd>May 18, 2025</dd>
+              <dd className="upload-session-expiry">
+                <span>May 18, 2025 at 10:24 AM</span>
+                <span className="badge success">7 days left</span>
+              </dd>
             </div>
           </dl>
           <button type="button" className="secondary-button"><Settings size={16} /> Manage Session</button>
