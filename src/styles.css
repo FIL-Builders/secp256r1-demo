@@ -211,9 +211,13 @@ select {
 }
 
 .app-shell--home .shell-sidebar__item {
-  min-height: 42px;
+  min-height: 38px;
   gap: 10px;
   padding: 0 12px;
+}
+
+.app-shell--home .shell-sidebar__nav {
+  gap: 5px;
 }
 
 .app-shell--home .shell-sidebar__item-label {
@@ -223,7 +227,7 @@ select {
 
 .app-shell--home .shell-sidebar__footer {
   gap: 10px;
-  margin-top: 4px;
+  margin-top: -13px;
 }
 
 .app-shell--home .shell-sidebar__card {
@@ -233,6 +237,43 @@ select {
 
 .app-shell--home .shell-sidebar__balance strong {
   font-size: 25px;
+}
+
+.app-shell--home .shell-sidebar__balance {
+  min-height: 223px;
+  gap: 6px;
+}
+
+.shell-sidebar__balance-extra {
+  display: grid;
+  gap: 3px;
+}
+
+.shell-sidebar__balance-meter {
+  display: block;
+  overflow: hidden;
+  height: 4px;
+  border-radius: 999px;
+  background: #e5e7eb;
+}
+
+.shell-sidebar__balance-meter span {
+  display: block;
+  width: 76%;
+  height: 100%;
+  border-radius: inherit;
+  background: #0f9f58;
+}
+
+.app-shell--home .shell-sidebar__balance .shell-sidebar__balance-extra strong {
+  color: #111827;
+  font-size: 14px;
+  line-height: 1.1;
+}
+
+.shell-sidebar__balance-extra small {
+  font-size: 11px;
+  line-height: 1.15;
 }
 
 .app-shell--home .shell-sidebar__card-action {
@@ -261,9 +302,28 @@ select {
 }
 
 .app-shell--home .shell-sidebar__network-card--home .shell-sidebar__choice {
-  min-height: 40px;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  min-height: 44px;
+  border-color: transparent;
+  background: transparent;
+  padding: 0;
+}
+
+.app-shell--home .shell-sidebar__network-card--home .shell-sidebar__choice--selected {
+  border-color: transparent;
+  background: transparent;
+}
+
+.app-shell--home .shell-sidebar__network-card--home .shell-sidebar__choice-dot {
+  width: 17px;
+  height: 17px;
+}
+
+.app-shell--home .shell-sidebar__network-card--home .shell-sidebar__choice strong {
+  font-size: 14px;
+}
+
+.app-shell--home .shell-sidebar__network-card--home .shell-sidebar__choice small {
+  font-size: 11px;
 }
 
 .app-shell--files .shell-sidebar__footer {

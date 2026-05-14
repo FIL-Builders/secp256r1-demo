@@ -1,6 +1,7 @@
 import {
   Activity,
   CheckCircle2,
+  ChevronDown,
   ChevronRight,
   CircleDollarSign,
   Copy,
@@ -107,12 +108,12 @@ export function Sidebar({
               aria-pressed={selected}
               onClick={() => onNetworkChange?.(option)}
             >
-              {isFilesPage && selected ? <span className="shell-sidebar__choice-dot" /> : <Icon size={16} />}
+              {(isFilesPage || isHomePage) && selected ? <span className="shell-sidebar__choice-dot" /> : <Icon size={16} />}
               <span>
                 <strong>{option === 'mainnet' ? 'Mainnet' : 'Calibration'}</strong>
                 <small>{option === 'mainnet' ? 'Filecoin mainnet · 314' : 'Filecoin testnet · 314159'}</small>
               </span>
-              {selected ? <CheckCircle2 size={15} /> : null}
+              {selected ? (isHomePage ? <ChevronDown size={15} /> : <CheckCircle2 size={15} />) : null}
             </button>
           );
         })}
@@ -233,6 +234,14 @@ export function Sidebar({
           <span className="shell-sidebar__card-label">Storage Balance</span>
           <strong>{storageBalance?.value ?? 'Readiness pending'}</strong>
           <small>{storageBalance?.detail ?? 'Connect a Root Wallet to check funds.'}</small>
+          {isHomePage ? (
+            <div className="shell-sidebar__balance-extra">
+              <span className="shell-sidebar__balance-meter"><span /></span>
+              <small>Staked &amp; Available</small>
+              <strong>32.1 FIL</strong>
+              <small>Total Locked</small>
+            </div>
+          ) : null}
           <button type="button" className="shell-sidebar__card-action">
             <CircleDollarSign size={16} />
             <span>Add Funds</span>
