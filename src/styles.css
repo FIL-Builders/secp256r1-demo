@@ -2766,6 +2766,12 @@ select {
   min-height: 34px;
 }
 
+.home-session-card .detail-hero p {
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
 .home-session-foot {
   border-top: 1px solid #edf1f5;
   padding-top: 9px;
