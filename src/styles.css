@@ -1974,11 +1974,11 @@ select {
 }
 
 .page-files {
-  grid-template-columns: minmax(0, 1fr) 375px;
+  grid-template-columns: minmax(0, 1fr) 385px;
   align-items: start;
-  column-gap: 16px;
+  column-gap: 12px;
   row-gap: 18px;
-  padding: 24px 21px 28px 28px;
+  padding: 24px 14px 28px 28px;
 }
 
 .page-files > .page-header,
@@ -2077,11 +2077,11 @@ select {
 }
 
 .page-upload-passkey {
-  grid-template-columns: minmax(0, 1fr) 304px;
+  grid-template-columns: minmax(0, 1fr) 312px;
   align-items: start;
   border: 1px solid #e1e7ef;
   border-radius: 16px;
-  gap: 38px;
+  gap: 30px;
   padding: 24px 36px 20px 48px;
 }
 
@@ -2619,7 +2619,7 @@ select {
 .home-main-column {
   display: grid;
   min-width: 0;
-  gap: 36px;
+  gap: 34px;
 }
 
 .home-header-row {
@@ -2751,7 +2751,7 @@ select {
 
 .home-action-card {
   display: grid;
-  height: 216px;
+  height: 220px;
   justify-items: center;
   align-content: center;
   gap: 8px;
