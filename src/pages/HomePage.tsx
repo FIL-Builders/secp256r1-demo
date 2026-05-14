@@ -1,6 +1,6 @@
 import {
-  Activity,
   Archive,
+  CheckCircle2,
   CircleDollarSign,
   CloudUpload,
   Database,
@@ -54,11 +54,21 @@ export interface HomePageProps {
   };
 }
 
-export function HomePage({
-  recentActivity,
-  datasets,
-  files,
-}: HomePageProps) {
+export function HomePage(_props: HomePageProps) {
+  const uploadRows = [
+    ['research-dataset.zip', 'Research Data', '2.45 GB', 'Stored', '2m ago'],
+    ['market-data.csv', 'Market Analysis', '512.3 MB', 'Verifying', '18m ago'],
+    ['Q2-report.pdf', 'Q2 Financial Reports', '18.7 MB', 'Stored', '1h ago'],
+    ['customer-exports.zip', 'Customer Exports', '1.12 GB', 'Stored', '2h ago'],
+  ] as const;
+  const railActivity = [
+    ['File Committed', 'research-dataset.zip', '2m ago', <CheckCircle2 size={15} />],
+    ['Upload Initiated', 'market-data.csv', '18m ago', <CloudUpload size={15} />],
+    ['Payment Confirmed', '-2.40 FIL', '32m ago', <CheckCircle2 size={15} />],
+    ['Dataset Created', 'Q2 Financial Reports', '1h ago', <Layers3 size={15} />],
+    ['Passkey Session Active', 'MacBook Pro', '1h ago', <Fingerprint size={15} />],
+  ] as const;
+
   return (
     <main className="page page-home page-home-dashboard">
       <section className="home-main-column">
@@ -81,7 +91,7 @@ export function HomePage({
           <HomeMetric icon={<Database size={18} />} label="Storage Balance" value="23.48 FIL" note="≈ $132.45 USD" trend="+ 4.2% vs last 7 days" />
           <HomeMetric icon={<WalletCards size={18} />} label="Payment Account" value="Healthy" note="Approved 500 FIL" tone="success" />
           <HomeMetric icon={<Layers3 size={18} />} label="Datasets" value="12" note="+2 this week" tone="success" />
-          <HomeMetric icon={<Archive size={18} />} label="Pieces" value={files.length ? String(files.length * 7) : '56'} note="18.7 GiB stored" />
+          <HomeMetric icon={<Archive size={18} />} label="Pieces" value="56" note="18.7 GiB stored" />
         </section>
 
         <section className="home-action-grid">
@@ -103,8 +113,8 @@ export function HomePage({
               <span>Size</span>
               <span>Status</span>
               <span>Time</span>
-              {files.slice(0, 4).map((summary, index) => (
-                <HomeUploadRow key={`${summary.label}-${index}`} file={summary.label} dataset={datasets[index % Math.max(datasets.length, 1)]?.label ?? 'Research Data'} size={summary.value} status={index === 1 ? 'Verifying' : 'Stored'} time={index === 0 ? '2m ago' : index === 1 ? '18m ago' : index === 2 ? '1h ago' : '2h ago'} />
+              {uploadRows.map(([file, dataset, size, status, time]) => (
+                <HomeUploadRow key={file} file={file} dataset={dataset} size={size} status={status} time={time} />
               ))}
             </div>
           </article>
@@ -166,14 +176,14 @@ export function HomePage({
             <a className="panel-link" href="#activity">View all</a>
           </div>
           <div className="recent-activity-list">
-            {recentActivity.slice(0, 5).map((item) => (
-              <div key={item.id} className="activity-mini">
-                <span className="activity-mini-icon--success">{item.icon ?? <ClockFallbackIcon />}</span>
+            {railActivity.map(([title, detail, time, icon], index) => (
+              <div key={title} className="activity-mini">
+                <span className={index === 1 ? 'activity-mini-icon--info' : 'activity-mini-icon--success'}>{icon}</span>
                 <div>
-                  <strong>{item.title}</strong>
-                  <small>{item.detail}</small>
+                  <strong>{title}</strong>
+                  <small>{detail}</small>
                 </div>
-                <time>{item.timestamp}</time>
+                <time>{time}</time>
               </div>
             ))}
           </div>
@@ -265,8 +275,4 @@ function HomeUploadRow({
       <span>{time}</span>
     </>
   );
-}
-
-function ClockFallbackIcon() {
-  return <Activity size={14} />;
 }
