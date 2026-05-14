@@ -3805,6 +3805,7 @@ select {
 
 .resource-table--files .resource-table-header,
 .resource-table--files .resource-table-row {
+  gap: 16px;
   grid-template-columns:
     minmax(190px, 1.46fr) minmax(108px, 0.72fr) minmax(102px, 0.68fr)
     minmax(76px, 0.5fr) minmax(120px, 0.82fr) minmax(84px, 0.56fr)
