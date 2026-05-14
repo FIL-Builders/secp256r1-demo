@@ -946,7 +946,8 @@ select {
   width: 176px;
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-rows: auto auto;
-  column-gap: 10px;
+  column-gap: 8px;
+  padding-inline: 10px;
 }
 
 .shell-home-precompile > span {
@@ -958,6 +959,16 @@ select {
   border: 2px solid #0f9f58;
   border-radius: 999px;
   color: #0f9f58;
+}
+
+.shell-home-precompile > strong {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.shell-home-precompile > small {
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .shell-home-precompile > svg {
