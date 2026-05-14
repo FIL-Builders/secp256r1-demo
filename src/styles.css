@@ -940,7 +940,7 @@ select {
   cursor: pointer;
   padding: 0 18px;
   font-size: 14px;
-  font-weight: 560;
+  font-weight: 500;
 }
 
 .shell-home-network-toggle button.is-active {
@@ -2078,6 +2078,10 @@ select {
   gap: 24px;
 }
 
+.page-upload-passkey .page-title {
+  font-size: 35px;
+}
+
 .passkey-illustration {
   position: relative;
   display: grid;
@@ -2119,7 +2123,7 @@ select {
   color: #111827;
   padding: 0 12px;
   font-size: 13px;
-  font-weight: 760;
+  font-weight: 650;
   white-space: nowrap;
 }
 
@@ -2201,6 +2205,10 @@ select {
   color: #64748b;
 }
 
+.page-upload-passkey .upload-file-row strong {
+  font-weight: 500;
+}
+
 .upload-file-row button {
   display: grid;
   width: 36px;
@@ -2249,6 +2257,7 @@ select {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  font-weight: 500;
 }
 
 .upload-detail-select {
@@ -2639,6 +2648,7 @@ select {
 .home-metric-card strong {
   color: #111827;
   font-size: 24px;
+  font-weight: 560;
   line-height: 1.05;
   white-space: nowrap;
 }
@@ -2684,6 +2694,7 @@ select {
 .home-action-card strong {
   color: #111827;
   font-size: 15px;
+  font-weight: 500;
 }
 
 .home-action-card p {
@@ -2721,7 +2732,7 @@ select {
 }
 
 .home-upload-table > span:nth-child(-n + 5) {
-  font-weight: 640;
+  font-weight: 560;
 }
 
 .home-upload-table > *:nth-child(n + 6) {
@@ -2732,7 +2743,7 @@ select {
 .home-upload-table strong {
   color: #111827;
   font-size: 12px;
-  font-weight: 640;
+  font-weight: 520;
 }
 
 .home-provider-list {
@@ -2751,7 +2762,7 @@ select {
 
 .home-provider-row strong {
   color: #111827;
-  font-weight: 640;
+  font-weight: 520;
 }
 
 .home-security-callout {
@@ -2833,6 +2844,7 @@ select {
 
 .home-activity-card .activity-mini strong {
   font-size: 14px;
+  font-weight: 560;
   line-height: 1.2;
   white-space: nowrap;
 }
@@ -4217,7 +4229,7 @@ select {
 
 .page-activity .detail-rail {
   gap: 20px;
-  margin-top: -75px;
+  margin-top: -80px;
 }
 
 .page-activity .detail-rail > .panel:nth-child(1) {
@@ -4272,8 +4284,9 @@ select {
 .page-activity .data-toolbar {
   display: grid;
   grid-template-columns: 160px 188px 230px 208px;
+  min-height: 44px;
   gap: 12px;
-  align-items: center;
+  align-items: end;
 }
 
 .page-activity .page-header .secondary-button {
@@ -4285,6 +4298,7 @@ select {
 }
 
 .page-activity .data-toolbar > * {
+  min-height: 36px;
   min-width: 0;
 }
 
@@ -4295,6 +4309,10 @@ select {
 .page-activity .activity-timeline-row {
   min-height: 70px;
   padding: 8px 38px 8px 18px;
+}
+
+.page-activity .activity-timeline-row--selected {
+  background: #fff;
 }
 
 .page-activity .activity-timeline-row--expanded {
@@ -4354,6 +4372,7 @@ select {
 .page-activity .activity-timeline-body {
   grid-template-columns: 300px minmax(0, 1fr);
   gap: 2px 16px;
+  font-size: 14px;
 }
 
 .page-activity .detail-rail .panel-title {
@@ -4370,6 +4389,16 @@ select {
 
 .page-activity .activity-title-line {
   grid-column: 1 / -1;
+}
+
+.page-activity .activity-title-line strong {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.page-activity .activity-title-line small {
+  color: #334155;
+  font-size: 12px;
 }
 
 .page-activity .activity-timeline-body > span:not(.activity-title-line):not(.tag-row):not(.activity-detail-line) {
@@ -4415,7 +4444,10 @@ select {
 }
 
 .page-activity .tag {
-  min-height: 26px;
+  min-height: 24px;
+  border-radius: 7px;
+  padding: 2px 7px;
+  font-weight: 560;
   white-space: nowrap;
 }
 
