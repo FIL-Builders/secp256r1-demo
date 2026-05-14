@@ -2793,7 +2793,13 @@ select {
 
 .home-activity-card .activity-mini {
   grid-template-columns: auto minmax(0, 1fr) 42px;
-  padding: 9px 0;
+  padding: 5px 0;
+}
+
+.home-activity-card .activity-mini strong {
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .home-verified-card {
