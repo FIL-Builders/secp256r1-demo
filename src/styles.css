@@ -327,7 +327,19 @@ select {
 }
 
 .app-shell--files .shell-sidebar__footer {
-  margin-top: -7px;
+  margin-top: 11px;
+}
+
+.app-shell--files .shell-sidebar__brand {
+  padding-bottom: 8px;
+}
+
+.app-shell--files .shell-sidebar__nav:not(.shell-sidebar__secondary-nav) {
+  gap: 0;
+}
+
+.app-shell--files .shell-sidebar__item {
+  min-height: 46px;
 }
 
 .app-shell--datasets .shell-sidebar__footer,
@@ -1931,6 +1943,8 @@ select {
 .page-files .data-toolbar {
   display: grid;
   grid-template-columns: minmax(280px, 306px) 104px 108px 108px 126px;
+  min-height: 42px;
+  align-items: end;
   gap: 16px;
 }
 
@@ -1944,8 +1958,13 @@ select {
 
 .page-files .data-toolbar .secondary-button,
 .page-files .data-toolbar .select-field {
+  min-height: 36px;
   min-width: 0;
   white-space: nowrap;
+}
+
+.page-files .data-toolbar .search-field {
+  min-height: 36px;
 }
 
 .page-files .data-toolbar .secondary-button:disabled {
@@ -1969,6 +1988,7 @@ select {
 
 .page-files .page-header .button-row {
   gap: 12px;
+  margin-top: 9px;
 }
 
 .page-files .page-header .secondary-button,
@@ -3716,7 +3736,7 @@ select {
 
 .page-files .resource-table-row strong {
   font-size: 14px;
-  font-weight: 640;
+  font-weight: 500;
 }
 
 .page-files .resource-table-row--selected {
@@ -3974,6 +3994,8 @@ select {
 
 .page-files .status-list {
   gap: 9px;
+  margin-right: 14px;
+  margin-left: 14px;
 }
 
 .page-files .status-row {
@@ -3992,6 +4014,8 @@ select {
 
 .page-files .button-stack {
   gap: 8px;
+  margin-right: 14px;
+  margin-left: 14px;
 }
 
 .page-files .primary-action,
@@ -4000,6 +4024,7 @@ select {
 }
 
 .page-files .detail-rail > .panel.panel--compact {
+  margin-left: 20px;
   min-height: 42px;
   padding: 10px 16px;
 }
@@ -4010,6 +4035,7 @@ select {
 
 .page-files .detail-rail > .panel:nth-child(3) {
   margin-top: -10px;
+  margin-left: 20px;
   gap: 8px;
   padding: 18px 16px 12px;
 }
@@ -4034,6 +4060,8 @@ select {
 }
 
 .callout--file-bytes {
+  margin-right: 14px;
+  margin-left: 14px;
   border-color: #ddd6fe;
   background: #fbfaff;
   color: #334155;
