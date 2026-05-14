@@ -240,7 +240,7 @@ select {
 }
 
 .app-shell--home .shell-sidebar__footer {
-  gap: 10px;
+  gap: 16px;
   margin-top: -24px;
 }
 
@@ -4293,7 +4293,7 @@ select {
 }
 
 .page-activity .activity-timeline {
-  gap: 11px;
+  gap: 9px;
   padding-left: 54px;
 }
 
@@ -4393,7 +4393,7 @@ select {
 }
 
 .page-activity .activity-timeline-row {
-  min-height: 77px;
+  min-height: 79px;
   padding: 8px 38px 8px 18px;
 }
 
