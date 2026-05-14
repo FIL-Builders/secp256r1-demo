@@ -2149,6 +2149,7 @@ select {
 
 .page-upload-passkey .page-title {
   font-size: 35px;
+  margin-top: 8px;
 }
 
 .passkey-illustration {
@@ -2618,7 +2619,7 @@ select {
 .home-main-column {
   display: grid;
   min-width: 0;
-  gap: 24px;
+  gap: 36px;
 }
 
 .home-header-row {
@@ -2750,7 +2751,7 @@ select {
 
 .home-action-card {
   display: grid;
-  height: 212px;
+  height: 216px;
   justify-items: center;
   align-content: center;
   gap: 8px;
