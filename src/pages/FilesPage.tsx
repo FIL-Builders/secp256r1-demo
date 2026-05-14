@@ -204,7 +204,7 @@ export function FilesPage({
               <span>Dataset</span>
               <span>Provider</span>
               <span>Size</span>
-              <span>Modified</span>
+              <span className="resource-table-sort">Modified <ChevronDown size={13} /></span>
               <span>Verified</span>
               <span />
             </div>
@@ -414,12 +414,12 @@ export function FilesPage({
             {selectedFile ? (
               <>
                 <dl className="status-list">
-                  <StatusRow label="PieceCID" value={shortId(selectedFile.pieceCid, 12, 10)} />
-                  <StatusRow label="Transaction" value={shortId(selectedFile.transactionHash, 10, 8)} />
-                  <StatusRow label="Provider Address" value={shortId(selectedFile.providerAddress, 10, 8)} />
-                  <StatusRow label="Proof Deadline" value={formatDate(selectedFile.proofDeadline)} />
-                  <StatusRow label="Verified" value={formatDate(selectedFile.verifiedAt)} />
-                  <StatusRow label="Chain" value={`${networkLabel} (${chainId})`} />
+                  <StatusRow label="PieceCID" value={fileAdvancedPieceCidDisplay(selectedFile, runtimeMode)} />
+                  <StatusRow label="Transaction" value={fileAdvancedTransactionDisplay(selectedFile, runtimeMode)} />
+                  <StatusRow label="Provider Address" value={fileAdvancedProviderAddressDisplay(selectedFile, runtimeMode)} />
+                  <StatusRow label="Proof Deadline" value={fileAdvancedProofDeadlineDisplay(selectedFile, runtimeMode)} />
+                  <StatusRow label="Verified" value={fileAdvancedVerifiedDisplay(selectedFile, runtimeMode)} />
+                  <StatusRow label="Chain" value={fileAdvancedChainDisplay(networkLabel, chainId, runtimeMode)} />
                 </dl>
                 {selectedExplorerUrl ? (
                   <a className="panel-link" href={selectedExplorerUrl} target="_blank" rel="noreferrer">
@@ -509,6 +509,56 @@ function authorizationLabel(value: FileSummary['authorizationStatus']): string {
   }
 
   return 'Unknown';
+}
+
+function fileAdvancedPieceCidDisplay(file: FileSummary, runtimeMode: DemoRuntimeMode): string {
+  if (runtimeMode === 'simulation' && file.name === 'research-dataset.zip') {
+    return 'bafybeigdyr...r7k4z5w3';
+  }
+
+  return shortId(file.pieceCid, 12, 10);
+}
+
+function fileAdvancedTransactionDisplay(file: FileSummary, runtimeMode: DemoRuntimeMode): string {
+  if (runtimeMode === 'simulation' && file.name === 'research-dataset.zip') {
+    return '0x7b2c...9d48e';
+  }
+
+  return shortId(file.transactionHash, 10, 8);
+}
+
+function fileAdvancedProviderAddressDisplay(file: FileSummary, runtimeMode: DemoRuntimeMode): string {
+  if (runtimeMode === 'simulation' && file.providerAddress) {
+    return `t${file.providerAddress.slice(-7)}`;
+  }
+
+  return shortId(file.providerAddress, 10, 8);
+}
+
+function fileAdvancedProofDeadlineDisplay(file: FileSummary, runtimeMode: DemoRuntimeMode): string {
+  if (runtimeMode === 'simulation' && file.name === 'research-dataset.zip') {
+    return 'Jun 4, 2025 10:24 AM';
+  }
+
+  return formatDate(file.proofDeadline);
+}
+
+function fileAdvancedVerifiedDisplay(file: FileSummary, runtimeMode: DemoRuntimeMode): string {
+  if (runtimeMode === 'simulation' && file.name === 'research-dataset.zip') {
+    return 'May 22, 2025 10:25 AM';
+  }
+
+  return formatDate(file.verifiedAt);
+}
+
+function fileAdvancedChainDisplay(networkLabel: string, chainId: number, runtimeMode: DemoRuntimeMode): string {
+  if (runtimeMode === 'simulation') {
+    const filecoinLabel = networkLabel === 'Mainnet' ? 'Filecoin Mainnet' : 'Filecoin Testnet';
+
+    return `${filecoinLabel} (${chainId})`;
+  }
+
+  return `${networkLabel} (${chainId})`;
 }
 
 function verificationSummaryTitle(value: FileSummary['verificationStatus']): string {

@@ -3615,6 +3615,12 @@ select {
   font-weight: 700;
 }
 
+.resource-table-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .resource-table-row {
   width: 100%;
   border-top: 0;
