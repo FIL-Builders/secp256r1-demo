@@ -247,6 +247,14 @@ select {
   padding-top: 8px;
 }
 
+.app-shell--home .shell-sidebar__choice:not(.shell-sidebar__choice--selected) {
+  display: none;
+}
+
+.app-shell--home .shell-sidebar__choice {
+  min-height: 52px;
+}
+
 .app-shell--files .shell-sidebar__footer {
   margin-top: -7px;
 }
@@ -2466,7 +2474,8 @@ select {
 .home-metric-card {
   display: grid;
   height: 168px;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: 36px minmax(0, 1fr);
+  grid-template-rows: auto auto auto 1fr auto;
   align-content: start;
   gap: 4px 10px;
   padding: 14px 16px;
@@ -2502,6 +2511,8 @@ select {
 }
 
 .home-metric-card em {
+  grid-column: 1 / -1;
+  grid-row: 5;
   width: fit-content;
   border-radius: 999px;
   background: #dcfce7;

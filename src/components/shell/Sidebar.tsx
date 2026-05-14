@@ -159,13 +159,13 @@ export function Sidebar({
       )}
     </section>
   );
-  const footerCards = activeItemId === 'files' ? [networkCard, walletCard] : [walletCard, networkCard];
+  const footerCards = activeItemId === 'files' || isHomePage ? [networkCard, walletCard] : [walletCard, networkCard];
 
   return (
     <aside className={classNames('shell-sidebar', className)}>
       <div className="shell-sidebar__brand">
         <span className="shell-sidebar__brand-mark">
-          <SynapseBrandMark />
+          <SynapseBrandMark variant={isHomePage ? 'hex' : 'cloud'} />
         </span>
         <div>
           <div className="shell-sidebar__brand-title">Synapse</div>
@@ -238,7 +238,7 @@ export function Sidebar({
 
       {isActivityPage ? (
         <div className="shell-sidebar__version-footer">
-          <span><SynapseBrandMark /> Synapse v0.9.0</span>
+          <span><SynapseBrandMark variant="cloud" /> Synapse v0.9.0</span>
           <a href="https://docs.filecoin.io/" target="_blank" rel="noreferrer"><HelpCircle size={14} /> Help &amp; Docs</a>
         </div>
       ) : isDatasetsPage ? (
@@ -293,7 +293,29 @@ export function Sidebar({
   );
 }
 
-function SynapseBrandMark() {
+function SynapseBrandMark({ variant = 'cloud' }: { variant?: 'cloud' | 'hex' }) {
+  if (variant === 'hex') {
+    return (
+      <svg viewBox="0 0 40 40" role="img" aria-label="Synapse">
+        <path
+          d="M20 3.5 34.4 11.8v16.4L20 36.5 5.6 28.2V11.8L20 3.5Z"
+          fill="none"
+          stroke="currentColor"
+          strokeLinejoin="round"
+          strokeWidth="3"
+        />
+        <path
+          d="M27.3 13.6H17.8c-3.2 0-5.1 1.5-5.1 3.9 0 2 1.3 3.1 3.9 3.6l6.5 1.2c2.7.5 4.2 1.8 4.2 3.8 0 2.5-2 4-5.4 4h-9.2M12.7 17.4l14.5 8.5M27.3 13.6 12.7 22"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2.7"
+        />
+      </svg>
+    );
+  }
+
   return (
     <svg viewBox="0 0 44 32" role="img" aria-label="Synapse">
       <path

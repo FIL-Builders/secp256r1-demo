@@ -74,7 +74,7 @@ export function HomePage(_props: HomePageProps) {
       <section className="home-main-column">
         <section className="home-header-row">
           <div>
-            <h1 className="page-title">Welcome back</h1>
+            <h1 className="page-title">Welcome back 👋</h1>
             <p className="page-copy">Here's what's happening with your storage on Synapse.</p>
           </div>
           <div className="home-chain-badge">
