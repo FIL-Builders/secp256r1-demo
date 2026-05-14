@@ -13,6 +13,7 @@ import {
   HelpCircle,
   Home,
   CreditCard,
+  Plus,
   RefreshCw,
   Settings,
   ShieldCheck,
@@ -243,7 +244,7 @@ export function Sidebar({
             </div>
           ) : null}
           <button type="button" className="shell-sidebar__card-action">
-            <CircleDollarSign size={16} />
+            {isActivityPage ? <Plus size={16} /> : <CircleDollarSign size={16} />}
             <span>Add Funds</span>
           </button>
         </section>
