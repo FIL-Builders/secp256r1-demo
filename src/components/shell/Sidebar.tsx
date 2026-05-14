@@ -98,7 +98,7 @@ export function Sidebar({
               aria-pressed={selected}
               onClick={() => onNetworkChange?.(option)}
             >
-              <Icon size={16} />
+              {isFilesPage && selected ? <span className="shell-sidebar__choice-dot" /> : <Icon size={16} />}
               <span>
                 <strong>{option === 'mainnet' ? 'Mainnet' : 'Calibration'}</strong>
                 <small>{option === 'mainnet' ? 'Filecoin mainnet · 314' : 'Filecoin testnet · 314159'}</small>
@@ -213,6 +213,11 @@ export function Sidebar({
         <div className="shell-sidebar__version-footer">
           <span><SynapseBrandMark /> Synapse v0.9.0</span>
           <a href="https://docs.filecoin.io/" target="_blank" rel="noreferrer"><HelpCircle size={14} /> Help &amp; Docs</a>
+        </div>
+      ) : isDatasetsPage ? (
+        <div className="shell-sidebar__datasets-help">
+          <span><HelpCircle size={16} /> Need help?</span>
+          <ChevronRight size={15} />
         </div>
       ) : (
         <section className="shell-sidebar__card shell-sidebar__help-card">

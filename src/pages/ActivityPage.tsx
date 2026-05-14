@@ -152,12 +152,13 @@ export function ActivityPage({
               const tone = eventTone(event);
               const display = activityDisplay(event, runtimeMode, networkLabel);
               const inlineMeta = 'inlineMeta' in display ? display.inlineMeta : undefined;
+              const secondaryTags = 'secondaryTags' in display ? display.secondaryTags : undefined;
 
               return (
                 <button
                   type="button"
                   key={event.eventId}
-                  className={`activity-timeline-row ${selectedEvent?.eventId === event.eventId ? 'activity-timeline-row--selected' : ''}`}
+                  className={`activity-timeline-row ${secondaryTags?.length ? 'activity-timeline-row--expanded' : ''} ${selectedEvent?.eventId === event.eventId ? 'activity-timeline-row--selected' : ''}`}
                   onClick={() => setSelectedEventId(event.eventId)}
                 >
                   <span className={`activity-timeline-icon activity-timeline-icon--${tone}`}>
@@ -186,6 +187,13 @@ export function ActivityPage({
                         <span key={tag} className="tag">{tag}</span>
                       ))}
                     </span>
+                    {secondaryTags?.length ? (
+                      <span className="tag-row tag-row--secondary">
+                        {secondaryTags.map((tag) => (
+                          <span key={tag} className="tag">{tag}</span>
+                        ))}
+                      </span>
+                    ) : null}
                   </span>
                 </button>
               );
@@ -347,7 +355,8 @@ function activityDisplay(event: ActivityEvent, runtimeMode: DemoRuntimeMode, net
         detail: 'research-dataset.zip (2.45 GB)',
         time: '20m ago',
         network: demoNetwork,
-        tags: ['Provider: f01234', 'PieceCID: bafy...z3kj', tx, 'View on Explorer'].filter(Boolean) as string[],
+        tags: ['Provider: f01234', 'PieceCID: bafy...z3kj'],
+        secondaryTags: [tx, 'View on Explorer'].filter(Boolean) as string[],
       };
     case 'payment-approved':
       return {

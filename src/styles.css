@@ -148,7 +148,8 @@ select {
 }
 
 .shell-sidebar__item-label {
-  font-weight: 720;
+  font-size: 15px;
+  font-weight: 620;
 }
 
 .shell-sidebar__footer {
@@ -291,6 +292,25 @@ select {
   font-size: 12px;
 }
 
+.shell-sidebar__datasets-help {
+  display: flex;
+  margin-top: auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #edf1f5;
+  color: #334155;
+  padding: 14px 8px 2px;
+  font-size: 13px;
+  font-weight: 640;
+}
+
+.shell-sidebar__datasets-help span {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .shell-sidebar__secondary-nav {
   border-top: 1px solid #edf1f5;
   margin-top: 10px;
@@ -340,7 +360,7 @@ select {
 .shell-sidebar__card-label {
   color: #64748b;
   font-size: 12px;
-  font-weight: 760;
+  font-weight: 650;
 }
 
 .shell-sidebar__balance strong {
@@ -364,7 +384,7 @@ select {
   background: #6d4aff;
   color: #fff;
   cursor: pointer;
-  font-weight: 760;
+  font-weight: 650;
 }
 
 .app-shell--upload .shell-sidebar__card-label {
@@ -398,6 +418,13 @@ select {
   cursor: pointer;
   padding: 8px 10px;
   text-align: left;
+}
+
+.shell-sidebar__choice-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  background: #0f9f58;
 }
 
 .shell-sidebar__choice--selected {
@@ -1592,6 +1619,15 @@ select {
 .page-files .summary-strip-item {
   padding-top: 14px;
   padding-bottom: 14px;
+}
+
+.app-shell--files .shell-sidebar__balance strong {
+  color: #5b3df5;
+}
+
+.app-shell--files .shell-sidebar__card-action svg,
+.app-shell--datasets .shell-sidebar__card-action svg {
+  display: none;
 }
 
 .page-files .page-header .button-row {
@@ -2868,7 +2904,7 @@ select {
   background: #fff;
   color: #111827;
   padding: 0 12px;
-  font-weight: 700;
+  font-weight: 620;
 }
 
 .summary-strip {
@@ -2953,7 +2989,7 @@ select {
 .resource-table-header {
   color: #64748b;
   font-size: 12px;
-  font-weight: 820;
+  font-weight: 700;
 }
 
 .resource-table-row {
@@ -3008,6 +3044,7 @@ select {
 
 .page-files .resource-table-row strong {
   font-size: 14px;
+  font-weight: 640;
 }
 
 .page-files .resource-table-row--selected {
@@ -3555,7 +3592,14 @@ select {
 
 .page-activity .activity-timeline-row {
   min-height: 70px;
-  padding: 10px 38px 10px 18px;
+  padding: 8px 38px 8px 18px;
+}
+
+.page-activity .activity-timeline-row--expanded {
+  min-height: 92px;
+  align-items: start;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .page-activity .activity-timeline-row::after {
@@ -3607,7 +3651,7 @@ select {
 
 .page-activity .activity-timeline-body {
   grid-template-columns: 300px minmax(0, 1fr);
-  gap: 3px 16px;
+  gap: 2px 16px;
 }
 
 .page-activity .detail-rail .panel-title {
@@ -3663,8 +3707,13 @@ select {
   overflow: hidden;
 }
 
+.page-activity .tag-row--secondary {
+  grid-column: 2;
+  grid-row: 3;
+}
+
 .page-activity .tag {
-  min-height: 27px;
+  min-height: 26px;
   white-space: nowrap;
 }
 
