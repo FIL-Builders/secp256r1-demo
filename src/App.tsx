@@ -846,7 +846,9 @@ export default function App() {
   })();
 
   const demoStorageBalance =
-    activeItemId === 'upload'
+    activeItemId === 'home'
+      ? { value: '23.48 FIL', detail: '≈ $132.45 USD' }
+      : activeItemId === 'upload'
       ? { value: '23.48 FIL', detail: '≈ $184.27 USD' }
       : activeItemId === 'datasets'
         ? { value: '120.46 FIL', detail: '≈ $8,452.12 USD' }

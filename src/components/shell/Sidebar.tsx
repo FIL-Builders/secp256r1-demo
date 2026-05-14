@@ -75,10 +75,12 @@ export function Sidebar({
   const secondaryItems = visibleItems.filter((item) => item.secondary);
   const selectedNetworkLabel = network === 'mainnet' ? 'Mainnet' : 'Calibration';
   const selectedNetworkDetail = network === 'mainnet' ? 'Filecoin mainnet · 314' : 'Filecoin testnet · 314159';
+  const isHomePage = activeItemId === 'home';
   const isFilesPage = activeItemId === 'files';
   const isDatasetsPage = activeItemId === 'datasets';
   const isActivityPage = activeItemId === 'activity';
   const isUploadPage = activeItemId === 'upload';
+  const homeSecondaryItems = secondaryItems.filter((item) => item.id !== 'network-states' && item.id !== 'verification-checks');
   const networkCard = (
     <section key="network" className={classNames('shell-sidebar__card', isActivityPage && 'shell-sidebar__network-card--activity')}>
       <div className="shell-sidebar__card-head">
@@ -194,6 +196,31 @@ export function Sidebar({
         })}
       </nav>
 
+      {isHomePage ? (
+        <nav className="shell-sidebar__nav shell-sidebar__secondary-nav shell-sidebar__secondary-nav--home" aria-label="Secondary">
+          {homeSecondaryItems.map((item) => {
+            const Icon = item.icon;
+            const selected = item.id === activeItemId;
+
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={classNames(
+                  'shell-sidebar__item',
+                  selected && 'shell-sidebar__item--active',
+                )}
+                aria-current={selected ? 'page' : undefined}
+                onClick={() => onNavigate?.(item.id)}
+              >
+                <Icon className="shell-sidebar__item-icon" aria-hidden="true" />
+                <span className="shell-sidebar__item-label">{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+      ) : null}
+
       <div className="shell-sidebar__footer">
         <section className="shell-sidebar__card shell-sidebar__balance">
           <span className="shell-sidebar__card-label">Storage Balance</span>
@@ -231,7 +258,7 @@ export function Sidebar({
         </section>
       )}
 
-      <nav className="shell-sidebar__nav shell-sidebar__secondary-nav" aria-label="Secondary">
+      {isHomePage ? null : <nav className="shell-sidebar__nav shell-sidebar__secondary-nav" aria-label="Secondary">
         {secondaryItems.map((item) => {
           const Icon = item.icon;
           const selected = item.id === activeItemId;
@@ -250,9 +277,9 @@ export function Sidebar({
               <Icon className="shell-sidebar__item-icon" aria-hidden="true" />
               <span className="shell-sidebar__item-label">{item.label}</span>
             </button>
-          );
-        })}
-      </nav>
+            );
+          })}
+      </nav>}
 
       <section className="shell-sidebar__card shell-sidebar__mode-card">
         <span className="shell-sidebar__card-label">Runtime Mode</span>
