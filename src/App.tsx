@@ -584,7 +584,9 @@ export default function App() {
 
   const simulationMode = runtimeMode === 'simulation';
   const demoWalletLabel =
-    activeItemId === 'upload'
+    activeItemId === 'home'
+      ? 'f1zq...3k7a'
+      : activeItemId === 'upload'
       ? '0x8f3a...7c1d'
       : activeItemId === 'datasets'
         ? 'f012...8a7F'
