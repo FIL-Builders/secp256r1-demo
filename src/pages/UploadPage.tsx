@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import uploadPasskeyIllustration from '../assets/upload-passkey-illustration.png';
 import type { RuntimeMode } from './HomePage';
 
 export type UploadCtaState = 'disabled' | 'live' | 'simulated';
@@ -195,38 +196,7 @@ export function UploadPage({ ctaState }: UploadPageProps) {
 function PasskeyCloudIllustration() {
   return (
     <div className="passkey-illustration" aria-hidden="true">
-      <svg viewBox="0 0 260 150">
-        <defs>
-          <linearGradient id="passkey-cloud-fill" x1="64" y1="28" x2="188" y2="130" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#ffffff" />
-            <stop offset="1" stopColor="#f0ecff" />
-          </linearGradient>
-          <linearGradient id="passkey-lock" x1="100" y1="65" x2="156" y2="124" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#7c4dff" />
-            <stop offset="1" stopColor="#5834ee" />
-          </linearGradient>
-        </defs>
-        <ellipse cx="130" cy="116" rx="96" ry="22" fill="#ede9ff" opacity="0.66" />
-        <path
-          d="M54 104h132c18 0 32-14 32-31 0-16-13-30-30-30-4 0-8 1-12 2-8-25-31-42-58-42-30 0-55 22-59 52-17 1-31 15-31 32 0 9 4 17 10 23"
-          fill="url(#passkey-cloud-fill)"
-          stroke="#8b5cf6"
-          strokeWidth="1.8"
-        />
-        <path d="M64 85h42M58 97h28M74 73h24" stroke="#b6a7ff" strokeLinecap="round" strokeWidth="1.6" />
-        <rect x="105" y="74" width="62" height="56" rx="10" fill="url(#passkey-lock)" />
-        <path d="M119 74V58c0-12 8-20 18-20s18 8 18 20v16" fill="none" stroke="#5b3df5" strokeLinecap="round" strokeWidth="6" />
-        <circle cx="136" cy="101" r="7" fill="#ffffff" />
-        <path d="M136 107v11" stroke="#ffffff" strokeLinecap="round" strokeWidth="5" />
-        <rect x="176" y="94" width="52" height="52" rx="10" fill="#ffffff" stroke="#b6a7ff" strokeWidth="1.5" />
-        <path
-          d="M202 122c0-8 5-13 12-13 6 0 10 4 10 10m-32 7c0-14 9-23 22-23 10 0 18 7 18 17m-32 10c0-5 3-9 8-9 4 0 7 3 7 8m-23 6c-2-4-3-8-3-13 0-17 11-29 26-29 13 0 23 9 25 22"
-          fill="none"
-          stroke="#6d4aff"
-          strokeLinecap="round"
-          strokeWidth="2"
-        />
-      </svg>
+      <img src={uploadPasskeyIllustration} alt="" />
     </div>
   );
 }
