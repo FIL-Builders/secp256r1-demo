@@ -329,7 +329,7 @@ function activityDisplay(event: ActivityEvent, runtimeMode: DemoRuntimeMode, net
   }
 
   const demoNetwork = networkLabel;
-  const tx = event.transactionHash ? `Tx: ${shortId(event.transactionHash, 7, 4)}` : undefined;
+  const tx = activityMockTx(event.kind) ?? (event.transactionHash ? `Tx: ${shortId(event.transactionHash, 7, 4)}` : undefined);
 
   switch (event.kind) {
     case 'dataset-created':
@@ -406,6 +406,27 @@ function activityDisplay(event: ActivityEvent, runtimeMode: DemoRuntimeMode, net
         network: demoNetwork,
         tags: [tx].filter(Boolean) as string[],
       };
+  }
+}
+
+function activityMockTx(kind: ActivityKind): string | undefined {
+  switch (kind) {
+    case 'dataset-created':
+      return 'Tx: 0x6a3b...7f2c';
+    case 'upload':
+      return 'Tx: 0x8b7e...a19d';
+    case 'piece-added':
+      return 'Tx: 0x9c1d...4a8f';
+    case 'payment-approved':
+      return 'Tx: 0x1e7a...d44f';
+    case 'session-authorized':
+      return 'Tx: 0x3f2c...b21a';
+    case 'verification-failed':
+      return 'Tx: 0x5b9a...c33e';
+    case 'session-revoked':
+      return 'Tx: 0x7d2f...88ee';
+    default:
+      return undefined;
   }
 }
 
