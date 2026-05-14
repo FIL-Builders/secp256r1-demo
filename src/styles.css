@@ -46,9 +46,12 @@ select {
   grid-template-columns: 264px minmax(0, 1fr);
 }
 
-.app-shell--files,
+.app-shell--files {
+  grid-template-columns: 274px minmax(0, 1fr);
+}
+
 .app-shell--activity {
-  grid-template-columns: 272px minmax(0, 1fr);
+  grid-template-columns: 273px minmax(0, 1fr);
 }
 
 .app-shell--datasets {
@@ -84,7 +87,7 @@ select {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 8px 18px;
+  padding: 0 0 18px;
 }
 
 .shell-sidebar__brand-mark {
@@ -109,8 +112,8 @@ select {
 
 .shell-sidebar__brand-title {
   color: #111827;
-  font-size: 26px;
-  font-weight: 840;
+  font-size: 24px;
+  font-weight: 820;
   line-height: 1.05;
 }
 
@@ -1526,11 +1529,11 @@ select {
 }
 
 .page-files {
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) 375px;
   align-items: start;
-  column-gap: 24px;
+  column-gap: 16px;
   row-gap: 18px;
-  padding-top: 24px;
+  padding: 24px 21px 28px 28px;
 }
 
 .page-files > .page-header,
@@ -1563,7 +1566,8 @@ select {
 
 .page-files .data-toolbar {
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) 140px 122px 136px 142px;
+  grid-template-columns: minmax(280px, 306px) 104px 108px 108px 126px;
+  gap: 16px;
 }
 
 .page-files .search-field {
@@ -1578,6 +1582,16 @@ select {
 .page-files .data-toolbar .select-field {
   min-width: 0;
   white-space: nowrap;
+}
+
+.page-files .data-toolbar .secondary-button:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.page-files .summary-strip-item {
+  padding-top: 14px;
+  padding-bottom: 14px;
 }
 
 .page-files .page-header .button-row {
@@ -3079,6 +3093,43 @@ select {
   color: #6d4aff;
 }
 
+.zip-file-icon {
+  position: relative;
+  display: grid;
+  width: 19px;
+  height: 23px;
+  place-items: end center;
+  border: 1px solid #c4b5fd;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #faf5ff 0%, #ede9fe 100%);
+  color: #6d4aff;
+  font-size: 7px;
+  font-weight: 850;
+  line-height: 1;
+  padding-bottom: 3px;
+  text-transform: uppercase;
+}
+
+.zip-file-icon::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 7px;
+  height: 7px;
+  border-bottom: 1px solid #c4b5fd;
+  border-left: 1px solid #c4b5fd;
+  border-radius: 0 2px 0 2px;
+  background: #fff;
+}
+
+.detail-hero-icon .zip-file-icon {
+  width: 25px;
+  height: 31px;
+  font-size: 8px;
+  padding-bottom: 4px;
+}
+
 .detail-rail {
   display: grid;
   gap: 16px;
@@ -3197,6 +3248,17 @@ select {
 .page-files .callout.compact.success strong {
   font-size: 16px;
   line-height: 1.2;
+}
+
+.file-verification-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  background: #0f9f58;
+  color: #fff;
 }
 
 .page-files .status-list {

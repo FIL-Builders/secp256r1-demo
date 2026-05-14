@@ -265,20 +265,20 @@ function SynapseBrandMark() {
   return (
     <svg viewBox="0 0 44 32" role="img" aria-label="Synapse">
       <path
-        d="M16.7 25.2H12.4a8.5 8.5 0 0 1-1.5-16.9 10.5 10.5 0 0 1 19.6 1.2 7.9 7.9 0 0 1 2.2-.3 8 8 0 1 1 0 16H29"
+        d="M16 25.5h-4.1a8 8 0 0 1-1.5-15.9 10.2 10.2 0 0 1 19.5.9 7.7 7.7 0 0 1 2.4-.4 7.7 7.7 0 1 1 0 15.4h-3.7"
         fill="none"
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="3.2"
+        strokeWidth="2.8"
       />
       <path
-        d="M16.3 20.5c2.4-4.3 5.3-6.4 8.8-6.4 2 0 3.6.5 4.9 1.5M17.8 25.2c1.8-4 4.2-6 7.3-6 1.8 0 3.3.5 4.4 1.6"
+        d="M19 19.2h8.3v7.3H19zM20.8 19.2v-2.4a2.4 2.4 0 0 1 4.8 0v2.4M23.1 22v1.8"
         fill="none"
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="3.2"
+        strokeWidth="2.4"
       />
     </svg>
   );

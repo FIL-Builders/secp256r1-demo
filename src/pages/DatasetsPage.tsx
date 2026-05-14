@@ -214,7 +214,9 @@ export function DatasetsPage({
                   </span>
                   <span>
                     <span className={`badge ${verificationTone(display.proofStatus)}`}>
-                      {verificationLabel(display.proofStatus)}
+                      {runtimeMode === 'simulation' && display.proofStatus === 'failed'
+                        ? 'Unverified'
+                        : verificationLabel(display.proofStatus)}
                     </span>
                     <small>{display.proofNote}</small>
                   </span>

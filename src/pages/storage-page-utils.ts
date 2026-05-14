@@ -118,11 +118,11 @@ export function paymentRailLabel(status: PaymentRailStatus | undefined): string 
   }
 
   if (status === 'due-soon') {
-    return 'Due soon';
+    return 'Due Soon';
   }
 
   if (status === 'past-due') {
-    return 'Past due';
+    return 'Past Due';
   }
 
   if (status === 'not-applicable') {

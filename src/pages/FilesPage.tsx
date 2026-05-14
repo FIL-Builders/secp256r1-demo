@@ -1,5 +1,6 @@
 import {
   Archive,
+  Check,
   ChevronDown,
   Download,
   ExternalLink,
@@ -208,7 +209,6 @@ export function FilesPage({
               <span />
             </div>
             {filteredFiles.map((file) => {
-              const Icon = iconForMime(file.mimeType);
               const dataset = datasetById.get(file.datasetId);
               const modifiedDisplay = fileModifiedDisplay(file, runtimeMode);
 
@@ -221,7 +221,7 @@ export function FilesPage({
                 >
                   <span className="resource-name">
                     <span className={`resource-icon ${iconToneForMime(file.mimeType)}`}>
-                      <Icon size={16} />
+                      {renderFileIcon(file.mimeType, 16)}
                     </span>
                     <span>
                       <strong>{file.name}</strong>
@@ -313,7 +313,13 @@ export function FilesPage({
                 </div>
 
                 <section className={`callout compact ${selectedFile.verificationStatus === 'verified' ? 'success' : 'warning'}`}>
-                  <ShieldCheck size={18} />
+                  {selectedFile.verificationStatus === 'verified' ? (
+                    <span className="file-verification-icon">
+                      <Check size={18} />
+                    </span>
+                  ) : (
+                    <ShieldCheck size={18} />
+                  )}
                   <span>
                     <strong>{verificationSummaryTitle(selectedFile.verificationStatus)}</strong>
                     <br />
@@ -356,12 +362,12 @@ export function FilesPage({
                   {selectedFile.retrievalUrl ? (
                     <a className="primary-action" href={selectedFile.retrievalUrl} target="_blank" rel="noreferrer">
                       <Download size={16} />
-                      <span>Retrieve file</span>
+                      <span>Retrieve File</span>
                     </a>
                   ) : runtimeMode === 'simulation' ? (
                     <button type="button" className="primary-action">
                       <Download size={16} />
-                      <span>Retrieve file</span>
+                      <span>Retrieve File</span>
                     </button>
                   ) : (
                     <button type="button" className="primary-action is-disabled" disabled>
@@ -371,7 +377,7 @@ export function FilesPage({
                   )}
                   <button type="button" className="secondary-button" disabled>
                     <Trash2 size={16} />
-                    <span>Schedule removal</span>
+                    <span>Schedule Removal</span>
                   </button>
                   {selectedExplorerUrl ? (
                     <a className="secondary-button" href={selectedExplorerUrl} target="_blank" rel="noreferrer">
@@ -587,9 +593,13 @@ function iconToneForMime(mimeType: string): string {
   return 'resource-icon--archive';
 }
 
-function renderFileIcon(mimeType: string) {
+function renderFileIcon(mimeType: string, size = 22) {
+  if (mimeType.includes('zip') || mimeType.includes('archive')) {
+    return <span className="zip-file-icon">zip</span>;
+  }
+
   const Icon = iconForMime(mimeType);
-  return <Icon size={22} />;
+  return <Icon size={size} />;
 }
 
 function fileDisplayRank(name: string): number {
