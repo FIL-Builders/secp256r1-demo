@@ -230,7 +230,7 @@ export function FilesPage({
                   </span>
                   <span>
                     <strong>{file.datasetLabel ?? dataset?.label ?? 'Unknown dataset'}</strong>
-                    <small>{shortId(file.datasetId)}</small>
+                    <small>{fileDatasetIdDisplay(file, runtimeMode)}</small>
                   </span>
                   <span>
                     <strong className="file-provider-code">
@@ -335,7 +335,7 @@ export function FilesPage({
                   <StatusRow
                     label="Dataset"
                     value={selectedFile.datasetLabel ?? selectedFile.datasetId}
-                    detail={shortId(selectedFile.datasetId, 8, 4)}
+                    detail={fileDatasetIdDisplay(selectedFile, runtimeMode)}
                     accent
                   />
                   <StatusRow
@@ -443,6 +443,23 @@ function providerCode(value?: string): string {
   }
 
   return `F${value.slice(-7)}`;
+}
+
+function fileDatasetIdDisplay(file: FileSummary, runtimeMode: DemoRuntimeMode): string {
+  if (runtimeMode !== 'simulation') {
+    return shortId(file.datasetId, 8, 4);
+  }
+
+  const idsByDataset: Record<string, string> = {
+    'Research Q2': 'ds_9f3a...b7c1',
+    Reports: 'ds_1a2b...c8d9',
+    Whitepapers: 'ds_2c3d...e0f1',
+    'Research Q1': 'ds_7e6f...a2b3',
+    Demos: 'ds_4d5e...f6a7',
+    Notes: 'ds_9a8b...c7d6',
+  };
+
+  return idsByDataset[file.datasetLabel ?? ''] ?? shortId(file.datasetId, 8, 4);
 }
 
 function Metric({
