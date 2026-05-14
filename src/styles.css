@@ -2068,8 +2068,8 @@ select {
 .page-upload-passkey .feature-row {
   grid-template-columns: 220px 188px 168px;
   max-width: 606px;
-  margin-top: -70px;
-  margin-bottom: 9px;
+  margin-top: -62px;
+  margin-bottom: 1px;
 }
 
 .feature-row span {
@@ -2110,6 +2110,22 @@ select {
 
 .drop-zone--passkey small {
   color: #64748b;
+}
+
+.drop-zone--passkey > svg {
+  transform: translate(-3px, -15px) scale(1.1);
+}
+
+.drop-zone--passkey strong {
+  transform: translateY(-13px);
+}
+
+.drop-zone--passkey .primary-button {
+  width: 158px;
+}
+
+.drop-zone--passkey small {
+  transform: translateY(12px);
 }
 
 .upload-file-row {
