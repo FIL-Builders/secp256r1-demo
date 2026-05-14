@@ -93,7 +93,7 @@ export function Sidebar({
     >
       <div className="shell-sidebar__card-head">
         <span className="shell-sidebar__card-label">Network</span>
-        <Globe2 size={14} />
+        {isFilesPage ? <HelpCircle size={13} /> : <Globe2 size={14} />}
       </div>
       <div className="shell-sidebar__choices" role="group" aria-label="Network selection">
         {(['mainnet', 'calibration'] as const).map((option) => {
@@ -113,7 +113,7 @@ export function Sidebar({
                 <strong>{option === 'mainnet' ? 'Mainnet' : 'Calibration'}</strong>
                 <small>{option === 'mainnet' ? 'Filecoin mainnet · 314' : 'Filecoin testnet · 314159'}</small>
               </span>
-              {selected ? (isHomePage ? <ChevronDown size={15} /> : <CheckCircle2 size={15} />) : null}
+              {selected ? (isHomePage || isFilesPage ? <ChevronDown size={15} /> : <CheckCircle2 size={15} />) : null}
             </button>
           );
         })}
