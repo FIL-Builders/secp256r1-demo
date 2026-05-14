@@ -2576,7 +2576,7 @@ select {
   grid-template-columns: minmax(0, 1fr) 304px;
   align-items: start;
   gap: 20px;
-  padding: 30px 41px 10px 28px;
+  padding: 23px 41px 10px 28px;
 }
 
 .home-main-column {
