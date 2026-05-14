@@ -576,6 +576,10 @@ function iconToneForMime(mimeType: string): string {
     return 'resource-icon--video';
   }
 
+  if (mimeType.includes('wordprocessingml')) {
+    return 'resource-icon--doc';
+  }
+
   if (mimeType.includes('ipynb') || mimeType.includes('json')) {
     return 'resource-icon--code';
   }

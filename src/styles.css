@@ -1942,7 +1942,11 @@ select {
   background: #fff;
   color: #334155;
   padding: 14px 15px;
-  font-size: 12px;
+  font-size: 12.5px;
+}
+
+.page-upload-passkey .upload-bottom-note {
+  margin-top: 5px;
 }
 
 .upload-bottom-note > span {
@@ -3063,6 +3067,11 @@ select {
 .resource-icon--code {
   background: #e2e8f0;
   color: #475569;
+}
+
+.resource-icon--doc {
+  background: #dbeafe;
+  color: #2563eb;
 }
 
 .resource-icon--archive {

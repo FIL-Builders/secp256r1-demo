@@ -149,6 +149,14 @@ export function paymentRailTone(status: PaymentRailStatus | undefined): string {
 }
 
 export function fileKindLabel(mimeType: string): string {
+  if (mimeType === 'application/x-directory') {
+    return 'Folder';
+  }
+
+  if (mimeType === 'application/x-ipynb+json') {
+    return 'IPYNB';
+  }
+
   if (mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
     return 'DOCX';
   }
