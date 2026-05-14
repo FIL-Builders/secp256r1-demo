@@ -255,6 +255,17 @@ select {
   min-height: 52px;
 }
 
+.app-shell--home .shell-sidebar__network-card--home {
+  gap: 6px;
+  padding: 10px 14px;
+}
+
+.app-shell--home .shell-sidebar__network-card--home .shell-sidebar__choice {
+  min-height: 40px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
 .app-shell--files .shell-sidebar__footer {
   margin-top: -7px;
 }

@@ -82,7 +82,14 @@ export function Sidebar({
   const isUploadPage = activeItemId === 'upload';
   const homeSecondaryItems = secondaryItems.filter((item) => item.id !== 'network-states' && item.id !== 'verification-checks');
   const networkCard = (
-    <section key="network" className={classNames('shell-sidebar__card', isActivityPage && 'shell-sidebar__network-card--activity')}>
+    <section
+      key="network"
+      className={classNames(
+        'shell-sidebar__card',
+        isHomePage && 'shell-sidebar__network-card--home',
+        isActivityPage && 'shell-sidebar__network-card--activity',
+      )}
+    >
       <div className="shell-sidebar__card-head">
         <span className="shell-sidebar__card-label">Network</span>
         <Globe2 size={14} />
@@ -236,7 +243,7 @@ export function Sidebar({
 
       </div>
 
-      {isActivityPage ? (
+      {isHomePage ? null : isActivityPage ? (
         <div className="shell-sidebar__version-footer">
           <span><SynapseBrandMark variant="cloud" /> Synapse v0.9.0</span>
           <a href="https://docs.filecoin.io/" target="_blank" rel="noreferrer"><HelpCircle size={14} /> Help &amp; Docs</a>
@@ -281,14 +288,14 @@ export function Sidebar({
           })}
       </nav>}
 
-      <section className="shell-sidebar__card shell-sidebar__mode-card">
+      {isHomePage ? null : <section className="shell-sidebar__card shell-sidebar__mode-card">
         <span className="shell-sidebar__card-label">Runtime Mode</span>
         <RuntimeModeToggle
           value={runtimeMode}
           onChange={(value) => onRuntimeModeChange?.(value)}
           className="shell-sidebar__runtime-toggle"
         />
-      </section>
+      </section>}
     </aside>
   );
 }
