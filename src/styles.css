@@ -2517,6 +2517,7 @@ select {
 
 .upload-rail .upload-verified-card {
   gap: 12px;
+  margin-top: 14px;
   min-height: 190px;
   padding: 18px 20px 12px;
 }
@@ -4020,7 +4021,7 @@ select {
 
 .page-files .detail-rail > .panel:first-child {
   gap: 10px;
-  min-height: 570px;
+  min-height: 560px;
   padding: 18px 20px 0;
 }
 
