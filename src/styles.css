@@ -568,6 +568,11 @@ select {
   background: #0f9f58;
 }
 
+.shell-sidebar__choice-dot--empty {
+  border: 1.5px solid #64748b;
+  background: transparent;
+}
+
 .shell-sidebar__choice--selected {
   border-color: #b8a8ff;
   background: #fbfaff;

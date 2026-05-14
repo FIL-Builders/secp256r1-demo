@@ -108,12 +108,12 @@ export function Sidebar({
               aria-pressed={selected}
               onClick={() => onNetworkChange?.(option)}
             >
-              {(isFilesPage || isHomePage) && selected ? <span className="shell-sidebar__choice-dot" /> : <Icon size={16} />}
+              {(isFilesPage || isHomePage || isUploadPage) && selected ? <span className="shell-sidebar__choice-dot" /> : isUploadPage ? <span className="shell-sidebar__choice-dot shell-sidebar__choice-dot--empty" /> : <Icon size={16} />}
               <span>
                 <strong>{option === 'mainnet' ? 'Mainnet' : 'Calibration'}</strong>
                 <small>{option === 'mainnet' ? 'Filecoin mainnet · 314' : 'Filecoin testnet · 314159'}</small>
               </span>
-              {selected ? (isHomePage || isFilesPage ? <ChevronDown size={15} /> : <CheckCircle2 size={15} />) : null}
+              {selected ? (isHomePage || isFilesPage ? <ChevronDown size={15} /> : isUploadPage ? null : <CheckCircle2 size={15} />) : null}
             </button>
           );
         })}
