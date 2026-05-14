@@ -164,7 +164,7 @@ select {
 }
 
 .app-shell--upload .shell-sidebar__footer {
-  margin-top: 26px;
+  margin-top: 35px;
 }
 
 .app-shell--upload .shell-sidebar {
@@ -241,7 +241,7 @@ select {
 
 .app-shell--home .shell-sidebar__footer {
   gap: 10px;
-  margin-top: -13px;
+  margin-top: -24px;
 }
 
 .app-shell--home .shell-sidebar__card {
@@ -341,7 +341,7 @@ select {
 }
 
 .app-shell--files .shell-sidebar__footer {
-  margin-top: 11px;
+  margin-top: 7px;
 }
 
 .app-shell--files .shell-sidebar__brand {
@@ -361,9 +361,12 @@ select {
   min-height: 46px;
 }
 
-.app-shell--datasets .shell-sidebar__footer,
+.app-shell--datasets .shell-sidebar__footer {
+  margin-top: 16px;
+}
+
 .app-shell--activity .shell-sidebar__footer {
-  margin-top: 21px;
+  margin-top: 34px;
 }
 
 .app-shell--activity .shell-sidebar__brand {
@@ -422,7 +425,7 @@ select {
 
 .app-shell--datasets .shell-sidebar__footer {
   gap: 10px;
-  margin-top: 18px;
+  margin-top: 16px;
 }
 
 .app-shell--datasets .shell-sidebar__card {
@@ -2173,7 +2176,7 @@ select {
 .page-upload-passkey .feature-row {
   grid-template-columns: 220px 188px 168px;
   max-width: 606px;
-  margin-top: -62px;
+  margin-top: -56px;
   margin-bottom: 1px;
 }
 
@@ -3954,6 +3957,10 @@ select {
   position: relative;
 }
 
+.page-files .detail-rail {
+  gap: 10px;
+}
+
 .detail-close-button {
   position: absolute;
   top: 18px;
@@ -4120,7 +4127,7 @@ select {
 }
 
 .page-files .detail-rail > .panel:nth-child(3) {
-  margin-top: -10px;
+  margin-top: -14px;
   margin-left: 20px;
   gap: 8px;
   padding: 18px 16px 12px;
