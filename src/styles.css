@@ -632,6 +632,16 @@ select {
   padding-left: 8px;
 }
 
+.app-shell--activity .shell-sidebar__choice > svg:first-child {
+  color: #5b3df5;
+}
+
+.app-shell--activity .shell-sidebar__choice-dot--trailing {
+  width: 7px;
+  height: 7px;
+  justify-self: end;
+}
+
 .shell-sidebar__choice span {
   display: grid;
   gap: 1px;

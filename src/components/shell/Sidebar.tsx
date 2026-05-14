@@ -3,6 +3,7 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronRight,
+  Clock3,
   CircleDollarSign,
   Copy,
   Database,
@@ -99,7 +100,7 @@ export function Sidebar({
       <div className="shell-sidebar__choices" role="group" aria-label="Network selection">
         {(['mainnet', 'calibration'] as const).map((option) => {
           const selected = option === network;
-          const Icon = option === 'mainnet' ? Globe2 : FlaskConical;
+          const Icon = option === 'mainnet' ? Globe2 : isActivityPage ? Clock3 : FlaskConical;
 
           return (
             <button
@@ -114,7 +115,7 @@ export function Sidebar({
                 <strong>{option === 'mainnet' ? 'Mainnet' : 'Calibration'}</strong>
                 <small>{option === 'mainnet' ? 'Filecoin mainnet · 314' : 'Filecoin testnet · 314159'}</small>
               </span>
-              {selected ? (isHomePage || isFilesPage ? <ChevronDown size={15} /> : isUploadPage ? null : <CheckCircle2 size={15} />) : null}
+              {selected ? (isHomePage || isFilesPage ? <ChevronDown size={15} /> : isUploadPage ? null : isActivityPage ? <span className="shell-sidebar__choice-dot shell-sidebar__choice-dot--trailing" /> : <CheckCircle2 size={15} />) : null}
             </button>
           );
         })}
