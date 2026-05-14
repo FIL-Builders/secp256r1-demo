@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Bell, CheckCircle2, ChevronDown, Circle, Fingerprint, FlaskConical, Clock3, ShieldCheck, UserRound } from 'lucide-react';
+import { Bell, CheckCircle2, ChevronDown, Circle, Fingerprint, FlaskConical, Clock3, Info, ShieldCheck, UserRound, WalletCards } from 'lucide-react';
 import { classNames } from './utils';
 import type { NetworkMode, RuntimeMode, SidebarItemId, UploadAvailability } from './types';
 import { StatusPill } from './StatusPill';
@@ -61,6 +61,7 @@ export function TopNavbar({
   network,
   onNetworkChange,
   passkeyUploadAvailability,
+  walletLabel,
   passkeySessionLabel,
   walletControls,
   className,
@@ -93,6 +94,51 @@ export function TopNavbar({
       detail={passkeySessionLabel}
     />
   );
+
+  if (activeItemId === 'home') {
+    return (
+      <header className={classNames('shell-navbar shell-navbar--home', className)}>
+        <div className="shell-home-network-toggle" role="group" aria-label="Network selection">
+          {(['mainnet', 'calibration'] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              className={classNames(option === network && 'is-active')}
+              aria-pressed={option === network}
+              onClick={() => onNetworkChange(option)}
+            >
+              {option === 'mainnet' ? 'Mainnet' : 'Calibration'}
+            </button>
+          ))}
+        </div>
+
+        <div className="shell-home-navbar-actions">
+          <div className="shell-home-precompile">
+            <span><CheckCircle2 size={22} /></span>
+            <strong>P256VERIFY</strong>
+            <small>Available</small>
+            <Info size={13} />
+          </div>
+          <button type="button" className="shell-home-wallet">
+            <span><WalletCards size={19} /></span>
+            <strong>{walletLabel}</strong>
+            <small>Root Wallet</small>
+            <ChevronDown size={15} />
+          </button>
+          <button type="button" className="shell-home-passkey">
+            <span><Fingerprint size={20} /></span>
+            <strong>Passkey Session</strong>
+            <small>{passkeySessionLabel}</small>
+            <ChevronDown size={15} />
+          </button>
+          <span className="shell-home-divider" />
+          <button type="button" className="shell-home-bell" aria-label="Notifications">
+            <Bell size={20} />
+          </button>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className={classNames('shell-navbar', className)}>

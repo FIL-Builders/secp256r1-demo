@@ -47,7 +47,7 @@ select {
 }
 
 .app-shell--home {
-  grid-template-columns: 168px minmax(0, 1fr);
+  grid-template-columns: 250px minmax(0, 1fr);
 }
 
 .app-shell--files {
@@ -190,52 +190,53 @@ select {
 }
 
 .app-shell--home .shell-sidebar {
-  gap: 10px;
-  padding: 16px 10px 14px;
+  gap: 14px;
+  padding: 20px 16px 16px;
 }
 
 .app-shell--home .shell-sidebar__brand {
-  gap: 6px;
-  padding: 0 2px 10px;
+  gap: 10px;
+  padding: 0 6px 16px;
 }
 
 .app-shell--home .shell-sidebar__brand-mark,
 .app-shell--home .shell-sidebar__brand-mark svg {
-  width: 32px;
-  height: 26px;
+  width: 42px;
+  height: 32px;
 }
 
 .app-shell--home .shell-sidebar__brand-title {
-  font-size: 20px;
+  font-size: 27px;
+  font-weight: 760;
 }
 
 .app-shell--home .shell-sidebar__item {
-  min-height: 30px;
-  gap: 8px;
-  padding: 0 10px;
+  min-height: 42px;
+  gap: 10px;
+  padding: 0 12px;
 }
 
 .app-shell--home .shell-sidebar__item-label {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 540;
 }
 
 .app-shell--home .shell-sidebar__footer {
   gap: 10px;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .app-shell--home .shell-sidebar__card {
-  gap: 8px;
-  padding: 11px;
+  gap: 10px;
+  padding: 14px;
 }
 
 .app-shell--home .shell-sidebar__balance strong {
-  font-size: 22px;
+  font-size: 25px;
 }
 
 .app-shell--home .shell-sidebar__card-action {
-  min-height: 30px;
+  min-height: 34px;
   background: #fff;
   color: #5b3df5;
 }
@@ -805,6 +806,171 @@ select {
   background: rgba(255, 255, 255, 0.92);
   padding: 10px 28px;
   backdrop-filter: blur(18px);
+}
+
+.shell-navbar--home {
+  min-height: 88px;
+  padding: 16px 28px;
+}
+
+.shell-home-network-toggle {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  background: #fff;
+  padding: 4px;
+}
+
+.shell-home-network-toggle button {
+  min-width: 96px;
+  min-height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #334155;
+  cursor: pointer;
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: 560;
+}
+
+.shell-home-network-toggle button.is-active {
+  background: #5b3df5;
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(91, 61, 245, 0.28);
+}
+
+.shell-home-navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.shell-home-precompile,
+.shell-home-wallet,
+.shell-home-passkey {
+  display: grid;
+  min-height: 48px;
+  align-content: center;
+  align-items: center;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  background: #fff;
+  color: #111827;
+  padding: 7px 12px;
+}
+
+.shell-home-precompile {
+  width: 176px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+}
+
+.shell-home-precompile > span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  grid-row: 1 / span 2;
+  place-items: center;
+  border: 2px solid #0f9f58;
+  border-radius: 999px;
+  color: #0f9f58;
+}
+
+.shell-home-precompile > svg {
+  grid-column: 3;
+  grid-row: 2;
+  color: #64748b;
+}
+
+.shell-home-wallet,
+.shell-home-passkey {
+  position: relative;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  border: 1px solid #dbe2ea;
+  cursor: pointer;
+  text-align: left;
+}
+
+.shell-home-wallet {
+  width: 198px;
+}
+
+.shell-home-passkey {
+  width: 216px;
+}
+
+.shell-home-wallet > span,
+.shell-home-passkey > span {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  grid-row: 1 / span 2;
+  place-items: center;
+  border-radius: 999px;
+}
+
+.shell-home-wallet > span {
+  background: #5b3df5;
+  color: #fff;
+}
+
+.shell-home-passkey > span {
+  background: #dcfce7;
+  color: #0f9f58;
+}
+
+.shell-home-precompile strong,
+.shell-home-wallet strong,
+.shell-home-passkey strong {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shell-home-precompile small,
+.shell-home-wallet small,
+.shell-home-passkey small {
+  color: #087443;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.shell-home-wallet small {
+  color: #64748b;
+}
+
+.shell-home-wallet > svg,
+.shell-home-passkey > svg {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  color: #475569;
+}
+
+.shell-home-divider {
+  width: 1px;
+  height: 42px;
+  background: #e5e7eb;
+}
+
+.shell-home-bell {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #111827;
+  cursor: pointer;
 }
 
 .app-shell--upload .shell-navbar,
@@ -2220,18 +2386,18 @@ select {
   grid-template-columns: minmax(0, 1fr) 304px;
   align-items: start;
   gap: 20px;
-  padding: 20px 18px 10px;
+  padding: 30px 41px 10px 28px;
 }
 
 .home-main-column {
   display: grid;
   min-width: 0;
-  gap: 16px;
+  gap: 24px;
 }
 
 .home-header-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 238px;
+  grid-template-columns: minmax(0, 1fr) 288px;
   align-items: end;
   gap: 16px;
 }
@@ -2299,7 +2465,7 @@ select {
 
 .home-metric-card {
   display: grid;
-  min-height: 112px;
+  height: 168px;
   grid-template-columns: auto minmax(0, 1fr);
   align-content: start;
   gap: 4px 10px;
@@ -2327,6 +2493,7 @@ select {
   color: #111827;
   font-size: 24px;
   line-height: 1.05;
+  white-space: nowrap;
 }
 
 .home-metric-card small {
@@ -2353,7 +2520,7 @@ select {
 
 .home-action-card {
   display: grid;
-  min-height: 148px;
+  height: 220px;
   justify-items: center;
   align-content: center;
   gap: 8px;
@@ -2465,6 +2632,7 @@ select {
 .home-rail {
   display: grid;
   gap: 14px;
+  margin-top: -13px;
 }
 
 .home-rail .panel {
@@ -2472,7 +2640,12 @@ select {
 }
 
 .home-session-card {
+  height: 298px;
   gap: 12px;
+}
+
+.home-activity-card {
+  height: 346px;
 }
 
 .home-session-card .secondary-button {

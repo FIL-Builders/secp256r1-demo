@@ -80,7 +80,7 @@ export function HomePage({
         <section className="home-metric-grid">
           <HomeMetric icon={<Database size={18} />} label="Storage Balance" value="23.48 FIL" note="≈ $132.45 USD" trend="+ 4.2% vs last 7 days" />
           <HomeMetric icon={<WalletCards size={18} />} label="Payment Account" value="Healthy" note="Approved 500 FIL" tone="success" />
-          <HomeMetric icon={<Layers3 size={18} />} label="Datasets" value={datasets.length ? String(datasets.length * 3) : '12'} note="+2 this week" tone="success" />
+          <HomeMetric icon={<Layers3 size={18} />} label="Datasets" value="12" note="+2 this week" tone="success" />
           <HomeMetric icon={<Archive size={18} />} label="Pieces" value={files.length ? String(files.length * 7) : '56'} note="18.7 GiB stored" />
         </section>
 
